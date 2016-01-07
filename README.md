@@ -1,2 +1,2 @@
-# svutils
-package for analyzing GenomonSV results
+# fusion_comp
+utility for comparing fusion results
