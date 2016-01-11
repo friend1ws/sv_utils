@@ -63,6 +63,9 @@ filter_parser.add_argument("--normal_depth_thres", metavar = "normal_depth_thres
 filter_parser.add_argument("--inversion_size_thres", metavar = "inversion_size_thres", default = 500, type = int,
                             help = "remove if the size of inversion is smaller than this value")
 
+filter_parser.add_argument("annotation_dir", metavar = "annotation_dir", default = None, type = str,
+                           help = "the path to the database directory")
+
 filter_parser.set_defaults(func = filter_main)
 ##########
 

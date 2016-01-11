@@ -1,7 +1,8 @@
 #! /usr/bin/env python
 
 import os
-
+import pysam
+import utils
 
 def summary_main(args):
 
@@ -43,6 +44,21 @@ def filter_main(args):
     if not os.path.exists(args.result_file):
         raise ValueError("file not exists: " + args.result_file)
 
+    annotation_dir = args.annotation_dir
+    ref_junc_bed = annotation_dir + "/refJunc.bed.gz"
+    ens_junc_bed = annotation_dir + "/ensJunc.bed.gz"
+    grch2ucsc_file = annotation_dir + "/grch2ucsc.txt"
+
+    ref_junc_tb = pysam.TabixFile(ref_junc_bed)
+    ens_junc_tb = pysam.TabixFile(ens_junc_bed)
+
+    # relationship between CRCh and UCSC chromosome names
+    grch2ucsc = {}
+    with open(grch2ucsc_file, 'r') as hin:
+        for line in hin:
+            F = line.rstrip('\n').split('\t')
+            grch2ucsc[F[0]] = F[1]
+
     with open(args.result_file, 'r') as hin:
         for line in hin:
             F = line.rstrip('\n').split('\t')
@@ -52,6 +68,10 @@ def filter_main(args):
             if int(F[15]) + int(F[16]) < int(args.normal_depth_thres): continue
             if float(F[17]) > float(args.normal_freq_thres): continue
             if float(F[18]) < float(args.fisher_thres): continue
+
+            if F[7] == "deletion":
+                chr_ucsc = grch2ucsc[F[0]] if F[0] in grch2ucsc else F[0]
+                if utils.junction_check(chr_ucsc, F[1], F[4], ref_junc_tb, ens_junc_tb): continue
 
             print >> hout, '\t'.join(F)
 
