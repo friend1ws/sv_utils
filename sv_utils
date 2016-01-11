@@ -11,11 +11,11 @@ subparsers = parser.add_subparsers()
 
 ##########
 # summary 
-summary_parser = subparsers.add_parser("summary",
+summary_parser = subparsers.add_parser("count_summary",
                                     help = "summarize the frequency of each variant type (deletion, tandem_duplication, inversion, translocation) for each sample")
 
 summary_parser.add_argument("result_list", metavar = "result_list.txt", default = None, type = str,
-                    help = "1st column: sample IDs, 2nd column: genomon SV result path")
+                    help = "1st column: sample IDs, 2nd column: tumor type, 3rd column: genomon SV result path")
 
 summary_parser.add_argument("output", metavar = "output.txt", default = None, type = str,
                     help = "the path to the output file")

@@ -7,7 +7,7 @@ import utils
 def summary_main(args):
 
     hout = open(args.output, 'w')
-    print >> hout, '\t'.join(["sample", "deletion", "tandem_duplication", "inversion", "translocation", "total"])
+    print >> hout, '\t'.join(["sample", "type", "deletion", "tandem_duplication", "inversion", "translocation", "total"])
 
     annotation_dir = args.annotation_dir
     ref_junc_bed = annotation_dir + "/refJunc.bed.gz"
@@ -28,7 +28,7 @@ def summary_main(args):
     with open(args.result_list, 'r') as hin:
 
         for line in hin:
-            sample, result_file = line.rstrip('\n').split('\t')
+            sample, tumor_type, result_file = line.rstrip('\n').split('\t')
             if not os.path.exists(result_file):
                 raise ValueError("file not exists: " + result_file)
 
@@ -43,7 +43,7 @@ def summary_main(args):
                     type2count[sv_good_list[i][7]] = type2count[sv_good_list[i][7]] + 1
 
             total = type2count["deletion"] + type2count["tandem_duplication"] + type2count["inversion"] + type2count["translocation"]
-            print >> hout, sample + '\t' + str(type2count["deletion"]) + '\t' + str(type2count["tandem_duplication"]) + '\t' + \
+            print >> hout, sample + '\t' + tumor_type + '\t' + str(type2count["deletion"]) + '\t' + str(type2count["tandem_duplication"]) + '\t' + \
                                         str(type2count["inversion"]) + '\t' + str(type2count["translocation"]) + '\t' + str(total) 
  
     hout.close()
