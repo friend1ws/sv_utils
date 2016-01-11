@@ -20,6 +20,9 @@ summary_parser.add_argument("result_list", metavar = "result_list.txt", default 
 summary_parser.add_argument("output", metavar = "output.txt", default = None, type = str,
                     help = "the path to the output file")
 
+summary_parser.add_argument("annotation_dir", metavar = "annotation_dir", default = None, type = str,
+                           help = "the path to the database directory")
+
 summary_parser.add_argument("--fisher_thres", metavar = "fisher_thres", default = 1.0, type = float,
                             help = "remove if the - log(fisher p-value) is smaller than this value")
 
@@ -48,6 +51,9 @@ filter_parser.add_argument("result_file", metavar = "genomonSV.result.txt", defa
 filter_parser.add_argument("output", metavar = "output.txt", default = None, type = str,
                     help = "the path to the output file")
 
+filter_parser.add_argument("annotation_dir", metavar = "annotation_dir", default = None, type = str,
+                           help = "the path to the database directory")
+
 filter_parser.add_argument("--fisher_thres", metavar = "fisher_thres", default = 1.0, type = float,
                             help = "remove if the - log(fisher p-value) is smaller than this value")
 
@@ -62,9 +68,6 @@ filter_parser.add_argument("--normal_depth_thres", metavar = "normal_depth_thres
 
 filter_parser.add_argument("--inversion_size_thres", metavar = "inversion_size_thres", default = 500, type = int,
                             help = "remove if the size of inversion is smaller than this value")
-
-filter_parser.add_argument("annotation_dir", metavar = "annotation_dir", default = None, type = str,
-                           help = "the path to the database directory")
 
 filter_parser.set_defaults(func = filter_main)
 ##########

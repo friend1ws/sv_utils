@@ -1,5 +1,28 @@
 #! /usr/bin/env python
 
+def filter_sv_list(result_file, fisher_thres, tumor_freq_thres, normal_freq_thres, normal_depth_thres, inversion_size_thres,
+                ref_junc_tb, ens_junc_tb, grch2ucsc):
+
+    good_list = []
+    with open(result_file, 'r') as hin:
+        for line in hin:
+            F = line.rstrip('\n').split('\t')
+
+            if F[7] == "inversion" and abs(int(F[1]) - int(F[4])) < int(inversion_size_thres): continue
+            if float(F[14]) < float(tumor_freq_thres): continue
+            if int(F[15]) + int(F[16]) < int(normal_depth_thres): continue
+            if float(F[17]) > float(normal_freq_thres): continue
+            if float(F[18]) < float(fisher_thres): continue
+
+            if F[7] == "deletion":
+                chr_ucsc = grch2ucsc[F[0]] if F[0] in grch2ucsc else F[0]
+                if junction_check(chr_ucsc, F[1], F[4], ref_junc_tb, ens_junc_tb): continue
+
+            good_list.append(F)
+
+    return good_list
+
+
 def junction_check(chr, start, end, ref_junc_tb, ens_junc_tb, margin = 1):
 
     junc_flag = False
