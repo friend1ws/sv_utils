@@ -93,32 +93,36 @@ def gene_summary_main(args):
 
             if len(sv_good_list) > 0:
                 for i in range(0, len(sv_good_list)):
+                    var_type = sv_good_list[i][7]
                     genes1 = sv_good_list[i][8].split(';') if sv_good_list[i][8] != "---" else []
                     genes2 = sv_good_list[i][9].split(';') if sv_good_list[i][9] != "---" else []
                     for gene in list(set(genes1 + genes2)):
                         if gene in gene2type_sample:
-                            gene2type_sample[gene] = gene2type_sample[gene] + [(tumor_type, sample)]
+                            gene2type_sample[gene] = gene2type_sample[gene] + [(tumor_type, sample, var_type)]
                         else:
-                            gene2type_sample[gene] = [(tumor_type, sample)]
+                            gene2type_sample[gene] = [(tumor_type, sample, var_type)]
 
 
-    print >> hout, '\t'.join(["gene", "total"] + sorted(tumor_type_list.keys()) + ["Lawrence et al", "CGC"])
+    print >> hout, '\t'.join(["gene", "all_type_total", "all_type_each"] + \
+                reduce(lambda x, y: x + y, [[x + "_total", x + "_each"] for x in sorted(tumor_type_list.keys())]) + ["Lawrence et al", "CGC"])
 
     for gene in sorted(gene2type_sample):
-        type_sample = list(set(gene2type_sample[gene]))
-        type2count = {}
-        total_count = 0
-        for tumor_type in tumor_type_list.keys(): type2count[tumor_type] = 0
-        for tumor_type, sample in type_sample:
-            type2count[tumor_type] = type2count[tumor_type] + 1
-            total_count = total_count + 1
+        tumor_sample_var = list(set(gene2type_sample[gene]))
+        tumor2count= {}
+        total_count = {"deletion": 0, "tandem_duplication": 0, "inversion": 0, "translocation": 0}
+        for tumor_type in tumor_type_list.keys(): tumor2count[tumor_type] = {"deletion": 0, "tandem_duplication": 0, "inversion": 0, "translocation": 0} 
+        for tumor_type, sample, var in tumor_sample_var:
+            tumor2count[tumor_type][var] = tumor2count[tumor_type][var] + 1
+            total_count[var] = total_count[var] + 1
 
         count_bar = ""
-        for tumor_type in sorted(type2count):
-            count_bar = count_bar + '\t' + str(type2count[tumor_type])
+        for tumor_type in sorted(tumor2count):
+            count_bar = count_bar + '\t' + str(tumor2count[tumor_type]["deletion"] + tumor2count[tumor_type]["tandem_duplication"] + tumor2count[tumor_type]["inversion"] + tumor2count[tumor_type]["translocation"]) + '\t' + \
+                        str(tumor2count[tumor_type]["deletion"]) + ',' + str(tumor2count[tumor_type]["tandem_duplication"]) + ',' + str(tumor2count[tumor_type]["inversion"]) + ',' + str(tumor2count[tumor_type]["translocation"])
 
         info = gene2info[gene] if gene in gene2info else "---" + '\t' + "---"
-        print >> hout, gene + '\t' + str(total_count) + count_bar + '\t' + info
+        print >> hout, gene + '\t' + str(total_count["deletion"] + total_count["tandem_duplication"] + total_count["inversion"] + total_count["translocation"]) + '\t' + \
+                str(total_count["deletion"]) + ',' + str(total_count["tandem_duplication"]) + ',' + str(total_count["inversion"]) + ',' + str(total_count["translocation"]) +  count_bar + '\t' + info
 
     hout.close()
 
