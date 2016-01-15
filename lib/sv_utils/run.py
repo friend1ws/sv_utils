@@ -36,7 +36,7 @@ def count_main(args):
 
             sv_good_list = utils.filter_sv_list(result_file, args.fisher_thres, args.tumor_freq_thres,
                                                 args.normal_freq_thres, args.normal_depth_thres, args.inversion_size_thres,
-                                                ref_junc_tb, ens_junc_tb, grch2ucsc)
+                                                args.max_size_thres, ref_junc_tb, ens_junc_tb, grch2ucsc)
 
             if len(sv_good_list) > 0:
                 for i in range(0, len(sv_good_list)):
@@ -89,7 +89,7 @@ def gene_summary_main(args):
 
             sv_good_list = utils.filter_sv_list(result_file, args.fisher_thres, args.tumor_freq_thres,
                                                 args.normal_freq_thres, args.normal_depth_thres, args.inversion_size_thres,
-                                                ref_junc_tb, ens_junc_tb, grch2ucsc)
+                                                args.max_size_thres, ref_junc_tb, ens_junc_tb, grch2ucsc)
 
             if len(sv_good_list) > 0:
                 for i in range(0, len(sv_good_list)):
@@ -151,7 +151,7 @@ def filter_main(args):
 
     sv_good_list = utils.filter_sv_list(args.result_file, args.fisher_thres, args.tumor_freq_thres,
                                   args.normal_freq_thres, args.normal_depth_thres, args.inversion_size_thres,
-                                  ref_junc_tb, ens_junc_tb, grch2ucsc)
+                                  args.max_size_thres, ref_junc_tb, ens_junc_tb, grch2ucsc)
 
     if len(sv_good_list) > 0:
         for i in range(0, len(sv_good_list)):

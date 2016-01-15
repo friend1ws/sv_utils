@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
-def filter_sv_list(result_file, fisher_thres, tumor_freq_thres, normal_freq_thres, normal_depth_thres, inversion_size_thres,
-                ref_junc_tb, ens_junc_tb, grch2ucsc):
+def filter_sv_list(result_file, fisher_thres, tumor_freq_thres, normal_freq_thres, normal_depth_thres, 
+                    inversion_size_thres, max_size_thres, ref_junc_tb, ens_junc_tb, grch2ucsc):
 
     good_list = []
     with open(result_file, 'r') as hin:
@@ -9,6 +9,9 @@ def filter_sv_list(result_file, fisher_thres, tumor_freq_thres, normal_freq_thre
             F = line.rstrip('\n').split('\t')
 
             if F[7] == "inversion" and abs(int(F[1]) - int(F[4])) < int(inversion_size_thres): continue
+            if max_size_thres is not None:
+                if F[7] == "translocation": continue
+                if abs(int(F[1]) - int(F[4])) > int(max_size_thres): continue
             if float(F[14]) < float(tumor_freq_thres): continue
             if int(F[15]) + int(F[16]) < int(normal_depth_thres): continue
             if float(F[17]) > float(normal_freq_thres): continue

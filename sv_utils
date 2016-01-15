@@ -9,6 +9,26 @@ parser.add_argument("--version", action = "version", version = "sv_utils-0.1.0")
 
 subparsers = parser.add_subparsers()
 
+parser.add_argument("--fisher_thres", metavar = "fisher_thres", default = 1.0, type = float,
+                   help = "remove if the - log(fisher p-value) is smaller than this value")
+
+parser.add_argument("--tumor_freq_thres", metavar = "tumor_freq_thres", default = 0.07, type = float,
+                   help = "remove if the tumor allele frequency is small than this value")
+
+parser.add_argument("--normal_freq_thres", metavar = "normal_freq_thres", default = 0.05, type = int,
+                   help = "remove if the normal allele frequency is larger than this value")
+
+parser.add_argument("--normal_depth_thres", metavar = "normal_depth_thres", default = 10, type = float,
+                   help = "remove if the normal read depth is smaller than this value")
+
+parser.add_argument("--inversion_size_thres", metavar = "inversion_size_thres", default = 500, type = int,
+                   help = "remove if the size of inversion is smaller than this value")
+
+parser.add_argument("--max_size_thres", metavar = "max_size_thres", default = None, type = int,
+                   help = "remove if the size of variant is larger than this value")
+
+# subparsers = parser.add_subparsers()
+
 ##########
 # count_summary 
 count = subparsers.add_parser("count",
@@ -22,21 +42,6 @@ count.add_argument("output", metavar = "output.txt", default = None, type = str,
 
 count.add_argument("annotation_dir", metavar = "annotation_dir", default = None, type = str,
                    help = "the path to the database directory")
-
-count.add_argument("--fisher_thres", metavar = "fisher_thres", default = 1.0, type = float,
-                   help = "remove if the - log(fisher p-value) is smaller than this value")
-
-count.add_argument("--tumor_freq_thres", metavar = "tumor_freq_thres", default = 0.07, type = float,
-                   help = "remove if the tumor allele frequency is small than this value")
-
-count.add_argument("--normal_freq_thres", metavar = "normal_freq_thres", default = 0.05, type = int,
-                   help = "remove if the normal allele frequency is larger than this value")
-
-count.add_argument("--normal_depth_thres", metavar = "normal_depth_thres", default = 10, type = float,
-                   help = "remove if the normal read depth is smaller than this value")
-
-count.add_argument("--inversion_size_thres", metavar = "inversion_size_thres", default = 500, type = int,
-                   help = "remove if the size of inversion is smaller than this value")
 
 count.set_defaults(func = count_main)
 
@@ -57,21 +62,6 @@ gene_summary.add_argument("annotation_dir", metavar = "annotation_dir", default 
 gene_summary.add_argument("cancer_gene_list", metavar = "cancer_gene_list", default = None, type = str,
                          help = "the path to the cancer list file")
 
-gene_summary.add_argument("--fisher_thres", metavar = "fisher_thres", default = 1.0, type = float,
-                          help = "remove if the - log(fisher p-value) is smaller than this value")
-
-gene_summary.add_argument("--tumor_freq_thres", metavar = "tumor_freq_thres", default = 0.07, type = float,
-                          help = "remove if the tumor allele frequency is small than this value")
-
-gene_summary.add_argument("--normal_freq_thres", metavar = "normal_freq_thres", default = 0.05, type = int,
-                          help = "remove if the normal allele frequency is larger than this value")
-
-gene_summary.add_argument("--normal_depth_thres", metavar = "normal_depth_thres", default = 10, type = float,
-                          help = "remove if the normal read depth is smaller than this value")
-
-gene_summary.add_argument("--inversion_size_thres", metavar = "inversion_size_thres", default = 500, type = int,
-                          help = "remove if the size of inversion is smaller than this value")
-
 gene_summary.set_defaults(func = gene_summary_main)
 
 
@@ -88,21 +78,6 @@ filter_parser.add_argument("output", metavar = "output.txt", default = None, typ
 
 filter_parser.add_argument("annotation_dir", metavar = "annotation_dir", default = None, type = str,
                            help = "the path to the database directory")
-
-filter_parser.add_argument("--fisher_thres", metavar = "fisher_thres", default = 1.0, type = float,
-                            help = "remove if the - log(fisher p-value) is smaller than this value")
-
-filter_parser.add_argument("--tumor_freq_thres", metavar = "tumor_freq_thres", default = 0.07, type = float,
-                            help = "remove if the tumor allele frequency is small than this value")
-
-filter_parser.add_argument("--normal_freq_thres", metavar = "normal_freq_thres", default = 0.05, type = int,
-                            help = "remove if the normal allele frequency is larger than this value")
-
-filter_parser.add_argument("--normal_depth_thres", metavar = "normal_depth_thres", default = 10, type = float,
-                            help = "remove if the normal read depth is smaller than this value")
-
-filter_parser.add_argument("--inversion_size_thres", metavar = "inversion_size_thres", default = 500, type = int,
-                            help = "remove if the size of inversion is smaller than this value")
 
 filter_parser.set_defaults(func = filter_main)
 ##########
