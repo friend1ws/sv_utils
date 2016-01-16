@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-import os
+import os, subprocess
 import pysam
 import utils
 
@@ -159,4 +159,96 @@ def filter_main(args):
 
     hout.close()
 
+
+def concentrate_main(args):
+
+    hout = open(args.output + ".tmp.sv_list", 'w')
+
+    annotation_dir = args.annotation_dir
+    ref_junc_bed = annotation_dir + "/refJunc.bed.gz"
+    ens_junc_bed = annotation_dir + "/ensJunc.bed.gz"
+    grch2ucsc_file = annotation_dir + "/grch2ucsc.txt"
+
+    ref_junc_tb = pysam.TabixFile(ref_junc_bed)
+    ens_junc_tb = pysam.TabixFile(ens_junc_bed)
+
+    # relationship between CRCh and UCSC chromosome names
+    grch2ucsc = {}
+    with open(grch2ucsc_file, 'r') as hin:
+        for line in hin:
+            F = line.rstrip('\n').split('\t')
+            grch2ucsc[F[0]] = F[1]
+
+    tumor_type_list = {}
+    gene2type_sample = {}
+    with open(args.result_list, 'r') as hin:
+        for line in hin:
+
+            sample, tumor_type, result_file = line.rstrip('\n').split('\t')
+            if tumor_type not in tumor_type_list: tumor_type_list[tumor_type] = 1
+
+            if not os.path.exists(result_file):
+                raise ValueError("file not exists: " + result_file)
+
+            sv_good_list = utils.filter_sv_list(result_file, args.fisher_thres, args.tumor_freq_thres,
+                                                args.normal_freq_thres, args.normal_depth_thres, args.inversion_size_thres,
+                                                args.max_size_thres, ref_junc_tb, ens_junc_tb, grch2ucsc)
+
+            if len(sv_good_list) > 0:
+                for i in range(0, len(sv_good_list)):
+                    if sv_good_list[i][7] in ["deletion", "tandem_duplication"]:
+                        print >> hout, sample + '\t' + tumor_type + '\t' + '\t'.join(sv_good_list[i])
+
+    hout.close()
+
+    hout = open(args.output + ".tmp.sv_list.sort", 'w')
+    subprocess.call(["sort", "-k3,3", "-k4,4n", "-k6,6", "-k7,7n", args.output + ".tmp.sv_list"], stdout = hout)
+    hout.close()
+
+
+    margin = args.set_margin
+    count_thres = args.set_count 
+    temp_keys = []
+    temp_ind = -1
+    passed_keys = []
+
+    hout = open(args.output, 'w')
+
+    with open(args.output + ".tmp.sv_list.sort", 'r') as hin:
+        for line in hin:
+            F = line.rstrip('\n').split('\t')
+            if F[3] == "178098812":
+                pass
+
+            temp_keys.append(F)
+            if len(temp_keys) < count_thres: continue
+
+            if temp_keys[0][2] == temp_keys[count_thres - 1][2] and int(temp_keys[count_thres - 1][3]) - int(temp_keys[0][3]) <= margin:
+                # current frame satisties the concentrated condition
+                if temp_ind == -1: 
+                    passed_keys = passed_keys + temp_keys
+                else:
+                    passed_keys = passed_keys + temp_keys[temp_ind:]
+                temp_ind = count_thres - 1
+            else:
+                # current frame does not satisfy the concentrated condition
+                if temp_ind == -1:
+                    # flush
+                    for i in range(0, len(passed_keys)):
+                        print >> hout, '\t'.join(passed_keys[i])
+                    passed_keys = []
+                    temp_ind = -1
+                else:
+                    temp_ind = temp_ind - 1
+
+            temp_keys.pop(0)
+
+        if len(passed_keys) > 0:
+            for i in range(0, len(passed_keys)):
+                print '\t'.join(passed_keys[i])
+
+    hout.close()
+
+    subprocess.call(["rm", "-rf", args.output + ".tmp.sv_list"])
+    subprocess.call(["rm", "-rf", args.output + ".tmp.sv_list.sort"])
 

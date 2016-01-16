@@ -82,6 +82,27 @@ filter_parser.add_argument("annotation_dir", metavar = "annotation_dir", default
 filter_parser.set_defaults(func = filter_main)
 ##########
 
+# concentrate
+concentrate_parser = subparsers.add_parser("concentrate",
+                                           help = "list up concentrated variants")
+
+concentrate_parser.add_argument("result_list", metavar = "result_list.txt", default = None, type = str,
+                                help = "1st column: sample IDs, 2nd column: tumor type, 3rd column: genomon SV result path")
+
+concentrate_parser.add_argument("output", metavar = "output.txt", default = None, type = str,
+                                help = "the path to the output file")
+
+concentrate_parser.add_argument("annotation_dir", metavar = "annotation_dir", default = None, type = str,
+                                help = "the path to the database directory")
+
+concentrate_parser.add_argument("--set_count", metavar = "set_count", default = 2, type = int,
+                                help = "extract #variants is equal or more than this value within specified margin")
+ 
+concentrate_parser.add_argument("--set_margin", metavar = "set_margin", default = 500, type = int,
+                                help = "extract #variants is equal or more than the specified threshould within this value")
+
+concentrate_parser.set_defaults(func = concentrate_main)
+
 args = parser.parse_args()
 
 args.func(args)   
