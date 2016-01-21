@@ -30,6 +30,11 @@ parser.add_argument("--max_size_thres", default = None, type = int,
 parser.add_argument("--within_exon", default = False, action = "store_true",
                     help = "keep only variants within exon")
 
+parser.add_argument("--control", default = None, type = str,
+                    help = "the path to control data created by merge_control")
+
+parser.add_argument("--control_num_thres", default = 3, type = int,
+                    help = "remove if more than specified number of control sample are found")
 
 # subparsers = parser.add_subparsers()
 

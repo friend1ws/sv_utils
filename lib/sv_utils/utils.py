@@ -1,7 +1,10 @@
 #! /usr/bin/env python
 
+import sys
+
 def filter_sv_list(result_file, fisher_thres, tumor_freq_thres, normal_freq_thres, normal_depth_thres, 
-                    inversion_size_thres, max_size_thres, within_exon, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb, grch2ucsc, normal_mode = False):
+                    inversion_size_thres, max_size_thres, within_exon, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb, grch2ucsc, 
+                    control_tb, control_num_thres, normal_mode = False):
 
     good_list = []
     with open(result_file, 'r') as hin:
@@ -21,10 +24,12 @@ def filter_sv_list(result_file, fisher_thres, tumor_freq_thres, normal_freq_thre
 
             if within_exon:
                 if F[7] == "translocation": continue
-                if F[10] == "TP53":
-                    pass
                 chr_ucsc = grch2ucsc[F[0]] if F[0] in grch2ucsc else F[0]
                 if not in_exon_check(chr_ucsc, F[1], F[4], ref_exon_tb, ens_exon_tb): continue
+
+            if control_tb is not None:
+                if control_check(F[0], F[1], F[2], F[3], F[4], F[5], F[6], control_tb, control_num_thres): 
+                    continue
 
             if F[7] == "deletion":
                 chr_ucsc = grch2ucsc[F[0]] if F[0] in grch2ucsc else F[0]
@@ -33,6 +38,54 @@ def filter_sv_list(result_file, fisher_thres, tumor_freq_thres, normal_freq_thre
             good_list.append(F)
 
     return good_list
+
+
+def control_check(chr1, pos1, dir1, chr2, pos2, dir2, inseq, control_tb, control_num_thres):
+
+    inseq_size = (0 if inseq == "---" else len(inseq))
+    control_panel_check_margin = 50 # should this be changable?
+    control_flag = 0
+
+    ####################
+    # get the records for control junction data for the current position
+    tabixErrorFlag = 0
+    try:
+        records = control_tb.fetch(chr1, int(pos1) - control_panel_check_margin, int(pos1) + control_panel_check_margin)
+    except Exception as inst:
+        print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
+        tabixErrorMsg = str(inst.args)
+        tabixErrorFlag = 1
+    
+    ####################
+
+       ####################
+    # for each record in control junction extracted, check the consistency with the current junction
+    if tabixErrorFlag == 0:
+
+        match_record_count = 0
+        for record_line in records:
+            record = record_line.split('\t')
+
+            if chr1 == record[0] and chr2 == record[3] and dir1 == record[8] and dir2 == record[9]:
+    
+                record_inseq_size = (0 if record[7] == "---" else len(record[7]))
+
+                # detailed check on the junction position considering inserted sequences
+                if dir1 == "+":
+                    expectedDiffSize = (int(pos1) - int(record[2])) + (inseq_size - record_inseq_size)
+                    if (dir2 == "+" and int(pos2) == int(record[5]) - int(expectedDiffSize)) or (dir2 == "-" and int(pos2) == int(record[5]) + int(expectedDiffSize)):
+                        match_record_count = match_record_count + 1
+                else:
+                    expectedDiffSize = (int(pos1) - int(record[2])) + (record_inseq_size - inseq_size)
+                    if (dir2 == "+" and int(pos2) == int(record[5]) + int(expectedDiffSize)) or (dir2 == "-" and int(pos2) == int(record[5]) - int(expectedDiffSize)):
+                        match_record_count = match_record_count + 1
+
+        return match_record_count >= control_num_thres
+
+    else:
+        
+        return False
+
 
 
 def in_exon_check(chr, start, end, ref_exon_tb, ens_exon_tb, margin = 5):

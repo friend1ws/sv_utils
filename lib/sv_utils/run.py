@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-import os, subprocess
+import sys, os, subprocess
 import pysam
 import utils
 
@@ -18,6 +18,7 @@ def count_main(args):
     ens_junc_tb = pysam.TabixFile(ens_junc_bed)
     ref_exon_tb = pysam.TabixFile(ref_exon_bed)
     ens_exon_tb = pysam.TabixFile(ens_exon_bed)
+    control_tb = pysam.TabixFile(args.control) if args.control is not None else None
 
     # relationship between CRCh and UCSC chromosome names
     grch2ucsc = {}
@@ -27,7 +28,7 @@ def count_main(args):
             grch2ucsc[F[0]] = F[1]
 
     # make directory for output if necessary
-    if not os.path.exists(os.path.dirname(args.output)):
+    if os.path.dirname(args.output) != "" and not os.path.exists(os.path.dirname(args.output)):
         os.makedirs(os.path.dirname(args.output))
     
     hout = open(args.output, 'w')
@@ -44,7 +45,8 @@ def count_main(args):
 
             sv_good_list = utils.filter_sv_list(result_file, args.fisher_thres, args.tumor_freq_thres, args.normal_freq_thres,
                                                  args.normal_depth_thres, args.inversion_size_thres, args.max_size_thres,
-                                                 args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_bed, ens_junc_bed, grch2ucsc)
+                                                 args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_bed, ens_junc_bed, grch2ucsc, 
+                                                 control_tb, args.control_num_thres, False)
 
 
             if len(sv_good_list) > 0:
@@ -80,6 +82,7 @@ def gene_summary_main(args):
     ens_junc_tb = pysam.TabixFile(ens_junc_bed)
     ref_exon_tb = pysam.TabixFile(ref_exon_bed)
     ens_exon_tb = pysam.TabixFile(ens_exon_bed)
+    control_tb = pysam.TabixFile(args.control) if args.control is not None else None
 
     # relationship between CRCh and UCSC chromosome names
     grch2ucsc = {}
@@ -89,7 +92,7 @@ def gene_summary_main(args):
             grch2ucsc[F[0]] = F[1]
 
     # make directory for output if necessary
-    if not os.path.exists(os.path.dirname(args.output)):
+    if os.path.dirname(args.output) != "" and not os.path.exists(os.path.dirname(args.output)):
         os.makedirs(os.path.dirname(args.output))
     
     hout = open(args.output, 'w')
@@ -105,9 +108,12 @@ def gene_summary_main(args):
             if not os.path.exists(result_file):
                 raise ValueError("file not exists: " + result_file)
 
+            print >> sys.stderr, "reading: " + sample + ' ' + tumor_type
+
             sv_good_list = utils.filter_sv_list(result_file, args.fisher_thres, args.tumor_freq_thres, args.normal_freq_thres,
                                                 args.normal_depth_thres, args.inversion_size_thres, args.max_size_thres,
-                                                args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_bed, ens_junc_bed, grch2ucsc)
+                                                args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_bed, ens_junc_bed, grch2ucsc, 
+                                                control_tb, args.control_num_thres, False)
 
             if len(sv_good_list) > 0:
                 for i in range(0, len(sv_good_list)):
@@ -189,11 +195,12 @@ def filter_main(args):
     ref_exon_bed = annotation_dir + "/refExon.bed.gz"
     ens_exon_bed = annotation_dir + "/ensExon.bed.gz"
     grch2ucsc_file = annotation_dir + "/grch2ucsc.txt"
-
+    
     ref_junc_tb = pysam.TabixFile(ref_junc_bed)
     ens_junc_tb = pysam.TabixFile(ens_junc_bed)
     ref_exon_tb = pysam.TabixFile(ref_exon_bed)
     ens_exon_tb = pysam.TabixFile(ens_exon_bed)
+    control_tb = pysam.TabixFile(args.control) if args.control is not None else None
 
     # make directory for output if necessary
     if not os.path.exists(os.path.dirname(args.output)):
@@ -210,7 +217,8 @@ def filter_main(args):
 
     sv_good_list = utils.filter_sv_list(result_file, args.fisher_thres, args.tumor_freq_thres, args.normal_freq_thres,
                                          args.normal_depth_thres, args.inversion_size_thres, args.max_size_thres,
-                                         args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_bed, ens_junc_bed, grch2ucsc)
+                                         args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_bed, ens_junc_bed, grch2ucsc, 
+                                         control_tb, args.control_num_thres, False)
 
     if len(sv_good_list) > 0:
         for i in range(0, len(sv_good_list)):
@@ -232,6 +240,7 @@ def concentrate_main(args):
     ens_junc_tb = pysam.TabixFile(ens_junc_bed)
     ref_exon_tb = pysam.TabixFile(ref_exon_bed)
     ens_exon_tb = pysam.TabixFile(ens_exon_bed)
+    control_tb = pysam.TabixFile(args.control) if args.control is not None else None
 
     # relationship between CRCh and UCSC chromosome names
     grch2ucsc = {}
@@ -241,7 +250,7 @@ def concentrate_main(args):
             grch2ucsc[F[0]] = F[1]
 
     # make directory for output if necessary
-    if not os.path.exists(os.path.dirname(args.output)):
+    if os.path.dirname(args.output) != "" and not os.path.exists(os.path.dirname(args.output)):
         os.makedirs(os.path.dirname(args.output))
 
     hout = open(args.output + ".tmp.sv_list", 'w')
@@ -259,7 +268,8 @@ def concentrate_main(args):
 
             sv_good_list = utils.filter_sv_list(result_file, args.fisher_thres, args.tumor_freq_thres, args.normal_freq_thres,
                                                  args.normal_depth_thres, args.inversion_size_thres, args.max_size_thres,
-                                                 args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_bed, ens_junc_bed, grch2ucsc)
+                                                 args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_bed, ens_junc_bed, grch2ucsc, 
+                                                 control_tb, args.control_num_thres, False)
 
             if len(sv_good_list) > 0:
                 for i in range(0, len(sv_good_list)):
@@ -333,6 +343,7 @@ def merge_control_main(args):
     ens_junc_tb = pysam.TabixFile(ens_junc_bed)
     ref_exon_tb = pysam.TabixFile(ref_exon_bed)
     ens_exon_tb = pysam.TabixFile(ens_exon_bed)
+    control_tb = pysam.TabixFile(args.control) if args.control is not None else None
 
     # relationship between CRCh and UCSC chromosome names
     grch2ucsc = {}
@@ -360,7 +371,8 @@ def merge_control_main(args):
 
             sv_good_list = utils.filter_sv_list(result_file, args.fisher_thres, args.tumor_freq_thres, args.normal_freq_thres,
                                                  args.normal_depth_thres, args.inversion_size_thres, args.max_size_thres,
-                                                 args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_bed, ens_junc_bed, grch2ucsc, True)
+                                                 args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_bed, ens_junc_bed, grch2ucsc, 
+                                                 control_tb, args.control_num_thres, True)
 
 
             for i in range(0, len(sv_good_list)):
