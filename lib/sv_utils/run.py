@@ -145,7 +145,7 @@ def gene_summary_main(args):
                     ["Lawrence et al", "CGC"])
     else:
         print >> hout, '\t'.join(["gene", "all_type_total", "all_type_each"] + \
-                    reduce(lambda x, y: x + y, [[x + "_total", x + "_each"] for x in sorted(tumor_type_list.keys())]) + ["Lawrence et al", "CGC"])
+                    reduce(lambda x, y: x + y, [[x + "_total", x + "_each"] for x in sorted(tumor_type_list.keys())]) + ["Lawrence et al", "CGC", "kinbase"])
 
     for gene in sorted(gene2type_sample):
         tumor_sample_var = list(set(gene2type_sample[gene]))
@@ -175,7 +175,7 @@ def gene_summary_main(args):
                 count_bar = count_bar + '\t' +  str(tumor2count_inframe[tumor_type]["deletion"] + tumor2count_inframe[tumor_type]["tandem_duplication"]) + '\t' + \
                             str(tumor2count_inframe[tumor_type]["deletion"]) + ',' + str(tumor2count_inframe[tumor_type]["tandem_duplication"])
 
-        info = gene2info[gene] if gene in gene2info else "---" + '\t' + "---"
+        info = gene2info[gene] if gene in gene2info else "---" + '\t' + "---" + '\t' + "---"
 
         print >> hout, gene + '\t' + count_bar + '\t' + info
 
