@@ -1,0 +1,1152 @@
+AAK1	---	---	Other:NAK:BIKE
+AATK	---	---	TK:Lmr
+ABI1	---	T	---
+ABL1	---	T, Mis	TK:Abl
+ABL2	---	T	TK:Abl
+ABR	---	---	Atypical:BCR
+ACKR3	---	T	---
+ACO1	PANCAN;MEL	---	---
+ACSL3	---	T	---
+ACSL6	---	T	---
+ACTR2	---	---	TKL:STKR:STKR2
+ACVR1	---	Mis	TKL:STKR:STKR1
+ACVR1B	PANCAN;BRCA;CRC	---	TKL:STKR:STKR1
+ACVR1C	---	---	TKL:STKR:STKR1
+ACVR2B	PANCAN	---	TKL:STKR:STKR2
+ACVRL1	---	---	TKL:STKR:STKR1
+ADCK1	---	---	Atypical:ABC1:ABC1-B
+ADCK2	---	---	Atypical:ABC1:ABC1-C
+ADCK3	---	---	Atypical:ABC1:ABC1-A
+ADCK4	---	---	Atypical:ABC1:ABC1-A
+ADCK5	---	---	Atypical:ABC1:ABC1-D
+ADNP	PANCAN;UCEC	---	---
+ADRBK1	---	---	AGC:GRK:BARK
+ADRBK2	---	---	AGC:GRK:BARK
+AFF1	---	T	---
+AFF3	---	T	---
+AFF4	---	T	---
+AIM1	---	---	Other:Aur
+AJUBA	PANCAN;HNSC	---	---
+AKAP9	---	T	---
+AKT1	PANCAN;BRCA;UCEC	Mis	AGC:Akt
+AKT2	---	A	AGC:Akt
+AKT3	---	---	AGC:Akt
+ALDH2	---	T	---
+ALK	PANCAN;NB	T, Mis, A	TK:ALK
+ALKBH6	PANCAN;UCEC	---	---
+ALPK1	---	---	Atypical:Alpha:Alpha-Unclassified
+ALPK2	PANCAN;MEL	---	Atypical:Alpha:Alpha-Unclassified
+AMER1	---	F, D, N, Mis	---
+AMHR2	---	---	TKL:STKR:STKR2
+ANK3	PANCAN;UCEC;MEL	---	---
+ANKK1	---	---	TKL:RIPK
+APC	PANCAN;CRC;LUAD	D, Mis, N, F, S	---
+APOL2	PANCAN	---	---
+ARAF	---	---	TKL:RAF:RAF
+ARHGAP26	---	T, F, S	---
+ARHGAP35	PANCAN;UCEC;HNSC;KIRC;LUAD;LUSC	---	---
+ARHGEF12	---	T	---
+ARID1A	PANCAN;BLCA;BRCA;CRC;UCEC;ESO;KIRC;LUAD;LUSC	Mis, N, F, S, D, T	---
+ARID1B	---	Mis, F, N, O	---
+ARID2	PANCAN;CRC;HNSC;LUAD;MEL	N, S, F	---
+ARID5B	PANCAN;UCEC	---	---
+ARNT	---	T	---
+ASPSCR1	---	T	---
+ASXL1	PANCAN;LAML;HNSC;LUSC	F, N, Mis	---
+ASXL2	PANCAN	---	---
+ATF1	---	T	---
+ATIC	---	T	---
+ATM	PANCAN;CLL;UCEC;KIRC;LUAD;PRAD	D, Mis, N, F, S	---
+ATP1A1	---	Mis, O	---
+ATP2B3	---	O	---
+ATP5B	PANCAN	---	---
+ATR	---	F	Atypical:PIKK:ATR
+ATRX	---	Mis, F, N	---
+AURKA	---	---	Other:Aur
+AURKC	---	---	Other:Aur
+AXIN1	---	D, Mis, N, F, S	---
+AXIN2	PANCAN;CRC	Mis, F, N	---
+AXL	---	---	TK:Axl
+AZGP1	PANCAN;GBM	---	---
+B2M	PANCAN;CRC;DLBCL;HNSC	---	---
+BAP1	PANCAN;KIRC	N, Mis, F, S, O	---
+BAZ1A	---	---	Atypical:BAZ
+BAZ1B	---	---	Atypical:BAZ
+BCKDK	---	---	Atypical:PDHK:BCKDK
+BCL10	---	T	---
+BCL11A	---	T	---
+BCL11B	---	T	---
+BCL2	---	T	---
+BCL3	---	T	---
+BCL5	---	T	---
+BCL6	---	T, Mis	---
+BCL7A	---	T	---
+BCL9	---	T	---
+BCLAF1	PANCAN;BLCA;CRC;MEL	---	---
+BCOR	PANCAN;CRC;UCEC;GBM	F, N, S, T	---
+BCR	---	T	Atypical:BCR
+BHMT2	PANCAN	---	---
+BIRC3	---	D, F, N, T, Mis	---
+BLK	---	---	TK:Src:SrcB
+BLM	---	Mis, N, F	---
+BLVRA	---	---	Atypical:BLVRA
+BMP2K	---	---	Other:NAK:BIKE
+BMPR1A	---	Mis, N, F	TKL:STKR:STKR1
+BMPR1B	---	---	TKL:STKR:STKR1
+BMPR2	---	---	TKL:STKR:STKR2
+BMX	---	---	TK:Tec
+BRAF	PANCAN;CRC;DLBCL;GBM;LUAD;MEL;MM	Mis, T, O	TKL:RAF:RAF
+BRCA1	PANCAN;KIRC;OV	D, Mis, N, F, S	---
+BRCA2	---	D, Mis, N, F, S	---
+BRD2	---	---	Atypical:BRD
+BRD3	---	T	Atypical:BRD
+BRD4	---	T	Atypical:BRD
+BRDT	---	---	Atypical:BRD
+BRE	PANCAN	---	---
+BRIP1	---	F, N, Mis	---
+BRSK1	---	---	CAMK:CAMKL:BRSK
+BRSK2	---	---	CAMK:CAMKL:BRSK
+BTG1	---	T	---
+BTK	---	---	TK:Tec
+BUB1	---	---	Other:BUB
+BUB1B	---	Mis, N, F, S	Other:BUB
+C12orf9	---	T	---
+C15orf65	---	T	---
+C2orf44	---	T	---
+C3orf70	PANCAN;BLCA	---	---
+CACNA1D	---	Mis	---
+CALR	---	F, Mis	---
+CAMK1	---	---	CAMK:CAMK1
+CAMK1D	---	---	CAMK:CAMK1
+CAMK1G	---	---	CAMK:CAMK1
+CAMK2A	---	---	CAMK:CAMK2
+CAMK2B	---	---	CAMK:CAMK2
+CAMK2D	---	---	CAMK:CAMK2
+CAMK2G	---	---	CAMK:CAMK2
+CAMK4	---	---	CAMK:CAMK1
+CAMKK1	---	---	Other:CAMKK:CAMKK-Meta
+CAMKK2	---	---	Other:CAMKK:CAMKK-Meta
+CAMKV	---	---	CAMK:CAMK-Unique
+CAMTA1	---	T	---
+CANT1	---	T	---
+CAP2	PANCAN;UCEC	---	---
+CARD11	PANCAN;DLBCL	Mis	---
+CARS	---	T	---
+CASC5	---	T	---
+CASK	---	---	CAMK:CASK
+CASP8	PANCAN;BRCA;CRC;UCEC;HNSC	N, S, F	---
+CBFA2T3	---	T	---
+CBFB	PANCAN;BRCA	T	---
+CBL	---	T, Mis, S, O	---
+CBLB	---	Mis, S	---
+CBLC	---	M	---
+CCDC120	PANCAN;KIRC	---	---
+CCDC6	PANCAN;UCEC	T	---
+CCK	---	---	TKL:RIPK
+CCNB1IP1	---	T	---
+CCND1	PANCAN;UCEC	T	---
+CCND2	---	T	---
+CCND3	---	T	---
+CCNE1	---	A	---
+CD1D	PANCAN;GBM	---	---
+CD274	---	T	---
+CD70	PANCAN;CRC;DLBCL	---	---
+CD74	---	T	---
+CD79A	---	S	---
+CD79B	PANCAN;DLBCL	Mis, S	---
+CDC27	PANCAN;CRC	---	---
+CDC42BPA	---	---	AGC:DMPK:GEK
+CDC42BPB	---	---	AGC:DMPK:GEK
+CDC42BPG	---	---	AGC:DMPK:GEK
+CDC7	---	---	Other:CDC7
+CDC73	---	Mis, N, F	---
+CDH1	PANCAN;BRCA	Mis, N, F, S	---
+CDH11	---	T	---
+CDK1	---	---	CMGC:CDK:CDC2
+CDK10	---	---	CMGC:CDK:CDK10
+CDK12	PANCAN;LUAD;OV	Mis, N, F	---
+CDK19	---	---	CMGC:CDK:CDK8
+CDK2	---	---	CMGC:CDK:CDK2
+CDK3	---	---	CMGC:CDK:CDK2
+CDK4	PANCAN;MEL	Mis	CMGC:CDK:CDK4
+CDK5	---	---	CMGC:CDK:CDK5
+CDK6	---	T	CMGC:CDK:CDK4
+CDK7	---	---	CMGC:CDK:CDK7
+CDK8	---	---	CMGC:CDK:CDK8
+CDK9	---	---	CMGC:CDK:CDK9
+CDKL1	---	---	CMGC:CDKL
+CDKL2	---	---	CMGC:CDKL
+CDKL3	---	---	CMGC:CDKL
+CDKL4	---	---	CMGC:CDKL
+CDKL5	---	---	CMGC:CDKL
+CDKN1A	PANCAN;BLCA	---	---
+CDKN1B	PANCAN;BRCA;CARC;UCEC;LUAD	F	---
+CDKN2A	PANCAN;BLCA;ESO;HNSC;LUAD;LUSC;MEL	D, Mis, N, F, S	---
+CDKN2C	---	D	---
+CDKN2a(p14)	---	D, S	---
+CDX2	---	T	---
+CEBPA	PANCAN;LAML	Mis, N, F	---
+CEP76	PANCAN	---	---
+CEP89	---	T	---
+CHCHD7	---	T	---
+CHD4	PANCAN;UCEC	---	---
+CHD8	PANCAN;GBM	---	---
+CHEK1	---	---	CAMK:CAMKL:CHK1
+CHEK2	---	F	CAMK:RAD53
+CHIC2	---	T	---
+CHN1	---	T	---
+CHUK	---	---	Other:IKK
+CIC	---	Mis, F, S,T	---
+CIITA	---	T	---
+CIT	---	---	AGC:DMPK:CRIK
+CLIP1	---	T	---
+CLK1	---	---	CMGC:CLK
+CLK2	---	---	CMGC:CLK
+CLK3	---	---	CMGC:CLK
+CLK4	---	---	CMGC:CLK
+CLP1	---	T	---
+CLTC	---	T	---
+CLTCL1	---	T	---
+CNBD1	PANCAN;CRC	---	---
+CNBP	---	T	---
+CNKSR1	PANCAN	---	---
+CNOT3	---	Mis, N, F	---
+CNTRL	---	T	---
+COL1A1	---	T	---
+COL2A1	---	F, Mis, N, T	---
+COL5A1	PANCAN;UCEC;ESO;PRAD	---	---
+COL5A3	PANCAN;KIRC	---	---
+COX6C	---	T	---
+CREB1	---	T	---
+CREB3L1	---	T	---
+CREB3L2	---	T	---
+CREBBP	PANCAN;BLCA;DLBCL;OV	T, N, F, Mis, O	---
+CRLF2	---	Mis, T	---
+CRTC1	---	T	---
+CRTC3	---	T	---
+CSF1R	---	---	TK:PDGFR
+CSF3R	---	N, Mis, S, O	---
+CSK	---	---	TK:Csk
+CSNK1A1	---	---	CK1:CK1:CK1-A
+CSNK1A1L	---	---	CK1:CK1:CK1-A
+CSNK1D	---	---	CK1:CK1:CK1-D
+CSNK1E	---	---	CK1:CK1:CK1-D
+CSNK1G1	---	---	CK1:CK1:CK1-G
+CSNK1G2	---	---	CK1:CK1:CK1-G
+CSNK1G3	---	---	CK1:CK1:CK1-G
+CSNK2A1	---	---	CMGC:CK2
+CTCF	PANCAN;BRCA;UCEC;HNSC	---	---
+CTNNB1	PANCAN;CRC;UCEC;LUAD;MED;MEL	Mis, O, T	---
+CUL4B	PANCAN;BRCA	---	---
+CUX1	PANCAN;UCEC	N,F,S,Mis,O,T	---
+CYLD	---	Mis, N, F, S	---
+DAPK1	---	---	CAMK:DAPK:DAPK
+DAPK2	---	---	CAMK:DAPK:DAPK
+DAPK3	---	---	CAMK:DAPK:DAPK
+DAXX	---	Mis, F, N	---
+DCLK1	---	---	CAMK:DCAMKL
+DCLK2	---	---	CAMK:DCAMKL
+DCLK3	---	---	CAMK:DCAMKL
+DCTN1	---	T	---
+DDB2	---	Mis, N	---
+DDIT3	---	T	---
+DDR1	---	---	TK:DDR
+DDX10	---	T	---
+DDX3X	PANCAN;CLL;MED	---	---
+DDX5	PANCAN;BLCA;GBM	T	---
+DDX6	---	T	---
+DEK	---	T	---
+DIAPH1	PANCAN;UCEC	---	---
+DICER1	---	Mis, F, N	---
+DIS3	PANCAN;MM	---	---
+DMPK	---	---	AGC:DMPK:GEK
+DNAH12	PANCAN	---	---
+DNER	PANCAN;UCEC	---	---
+DNM2	---	F, N, S, Mis, O	---
+DNMT3A	PANCAN;LAML	Mis, F, N, S	---
+DUX4L1	---	T	---
+DYRK1A	---	---	CMGC:DYRK:DYRK1
+DYRK1B	---	---	CMGC:DYRK:DYRK1
+DYRK2	---	---	CMGC:DYRK:DYRK2
+DYRK3	---	---	CMGC:DYRK:DYRK2
+DYRK4	---	---	CMGC:DYRK:DYRK2
+EBF1	---	T	---
+ECT2L	---	N, S, Mis	---
+EEF2K	---	---	Atypical:Alpha:eEF2K
+EGFR	PANCAN;GBM;KIRC;LUAD;LUSC	A, O, Mis	TK:EGFR
+EIF2AK1	---	---	Other:PEK:HRI
+EIF2AK2	---	---	Other:PEK:PKR
+EIF2AK3	---	---	Other:PEK:PEK
+EIF2AK4	---	---	Other:PEK:GCN2
+EIF2S2	PANCAN;UCEC	---	---
+EIF3E	---	T	---
+EIF4A2	---	T	---
+ELF3	PANCAN;BLCA;CRC	---	---
+ELF4	---	T	---
+ELK4	---	T	---
+ELL	---	T	---
+ELN	---	T	---
+EML4	---	T	---
+EP300	PANCAN;BRCA;UCEC;HNSC;LUSC	T,  N, F, Mis, O	---
+EPHA1	---	---	TK:Eph
+EPHA10	---	---	TK:Eph
+EPHA2	PANCAN;BLCA;HNSC	---	TK:Eph
+EPHA3	---	---	TK:Eph
+EPHA4	---	---	TK:Eph
+EPHA5	---	---	TK:Eph
+EPHA6	---	---	TK:Eph
+EPHA7	---	---	TK:Eph
+EPHA8	---	---	TK:Eph
+EPHB1	---	---	TK:Eph
+EPHB2	---	---	TK:Eph
+EPHB3	---	---	TK:Eph
+EPHB4	---	---	TK:Eph
+EPHB6	---	---	TK:Eph
+EPS15	---	T	---
+ERBB2	PANCAN;BRCA;CRC;UCEC;ESO;LUAD;OV	A, Mis, O	TK:EGFR
+ERBB3	PANCAN;BLCA;BRCA;CRC;UCEC	Mis, N	TK:EGFR
+ERBB4	---	---	TK:EGFR
+ERC1	---	T	---
+ERCC2	PANCAN;BLCA	Mis, N, F, S	---
+ERCC3	---	Mis, S	---
+ERCC4	---	Mis, N, F	---
+ERCC5	---	Mis, N, F	---
+ERG	---	T	---
+ERN1	---	---	Other:IRE
+ERN2	---	---	Other:IRE
+ESR1	---	Mis	---
+ETNK1	---	Mis	---
+ETV1	---	T	---
+ETV4	---	T	---
+ETV5	---	T	---
+ETV6	---	T	---
+EWSR1	---	T	---
+EXT1	---	Mis, N, F, S	---
+EXT2	---	Mis, N, F, S	---
+EZH1	PANCAN	---	---
+EZH2	PANCAN;LAML;DLBCL	Mis	---
+EZR	PANCAN;BLCA;GBM;MM	T	---
+FAM131B	---	T	---
+FAM166A	PANCAN	---	---
+FAM198A	---	---	PKL:FJ
+FAM198B	---	---	PKL:FJ
+FAM20A	---	---	PKL:FJ
+FAM20B	---	---	PKL:FJ
+FAM20C	---	---	PKL:FJ
+FAM46C	PANCAN;MM	Mis, F, O	---
+FANCA	---	D, Mis, N, F, S	---
+FANCC	---	D, Mis, N, F, S	---
+FANCD2	---	D, Mis, N, F	---
+FANCE	---	N, F, S	---
+FANCF	---	N, F	---
+FANCG	---	Mis, N, F, S	---
+FAS	---	Mis	---
+FASTK	---	---	Atypical:FAST
+FAT1	PANCAN;UCEC;HNSC;LUAD;LUSC	---	---
+FBXO11	---	Mis, F, D	---
+FBXW7	PANCAN;BLCA;CRC;UCEC;LUSC	Mis, N, D, F	---
+FCGR2B	---	T	---
+FCRL4	---	T	---
+FER	---	---	TK:Fer
+FES	---	---	TK:Fer
+FEV	---	T	---
+FGFBP1	PANCAN	---	---
+FGFR1	---	T	TK:FGFR
+FGFR1OP	---	T	---
+FGFR2	PANCAN;BRCA;UCEC	Mis	TK:FGFR
+FGFR3	PANCAN;BLCA;KIRC;LUSC;MM	Mis, T	TK:FGFR
+FGFR4	---	Mis	TK:FGFR
+FGR	---	---	TK:Src:SrcA
+FH	---	Mis, N, F	---
+FHIT	---	T	---
+FIP1L1	---	T	---
+FLCN	---	Mis. N, F	---
+FLG	PANCAN;ESO	---	---
+FLI1	---	T	---
+FLT1	---	---	TK:VEGFR
+FLT3	PANCAN;LAML;UCEC	Mis, O	TK:PDGFR
+FLT4	---		TK:VEGFR
+FNBP1	---	T	---
+FOXA1	PANCAN;BRCA;PRAD	Mis, F	---
+FOXL2	---	Mis	---
+FOXO1	---	T	---
+FOXO3	---	T	---
+FOXO4	---	T	---
+FOXP1	---	T	---
+FOXQ1	PANCAN;BLCA	---	---
+FRK	---	---	TK:Src:Frk
+FRMD7	PANCAN;MEL	---	---
+FSTL3	---	T	---
+FUBP1	---	F, N	---
+FUS	---	T	---
+GAK	---	---	Other:NAK:GAK
+GAS7	---	T	---
+GATA1	---	Mis, F	---
+GATA2	---	Mis	---
+GATA3	PANCAN;BRCA	F, N, S	---
+GMPS	---	T	---
+GNA11	---	Mis	---
+GNA13	PANCAN;DLBCL	---	---
+GNAQ	---	Mis	---
+GNAS	---	Mis	---
+GNB1	PANCAN	---	---
+GNPTAB	PANCAN;BRCA;UCEC	---	---
+GOLGA5	---	T	---
+GOPC	---	O	---
+GOT1	PANCAN;CRC	---	---
+GPC3	---	T, D, Mis, N, F, S	---
+GPHN	---	T	---
+GPS2	PANCAN	---	---
+GRIN2A	---	Mis, N	---
+GRK1	---	---	AGC:GRK:GRK
+GRK4	---	---	AGC:GRK:GRK
+GRK5	---	---	AGC:GRK:GRK
+GRK6	---	---	AGC:GRK:GRK
+GRK7	---	---	CAMK:MAPKAPK:MNK
+GSG2	---	---	Other:Haspin
+GSK3A	---	---	CMGC:GSK
+GSK3B	---	---	CMGC:GSK
+GTF2F1	---	---	Atypical:GTF2F1
+GUCY2D	---	---	RGC:RGC
+GUCY2F	---	---	RGC:RGC
+GUSB	PANCAN;KIRC	---	---
+H3F3A	---	Mis	---
+H3F3B	---	Mis	---
+HCK	---	---	TK:Src:SrcB
+HERPUD1	---	T	---
+HEY1	---	T	---
+HIP1	---	T	---
+HIPK1	---	---	CMGC:DYRK:HIPK
+HIPK2	---	---	CMGC:DYRK:HIPK
+HIPK3	---	---	CMGC:DYRK:HIPK
+HIPK4	---	---	CMGC:DYRK:HIPK
+HIST1H1E	PANCAN;CLL	---	---
+HIST1H3B	PANCAN;BRCA;DLBCL	Mis	---
+HIST1H4E	PANCAN	---	---
+HIST1H4I	---	T	---
+HLA-A	PANCAN;DLBCL;HNSC;LUSC	T	---
+HLA-B	PANCAN;HNSC	---	---
+HLF	---	T	---
+HMGA1	---	T	---
+HMGA2	---	T	---
+HMGN2P46	---	T	---
+HNF1A	---	Mis, F	---
+HNRNPA2B1	---	T	---
+HOOK3	---	T	---
+HOXA11	---	T	---
+HOXA13	---	T	---
+HOXA9	---	T	---
+HOXC11	---	T	---
+HOXC13	---	T	---
+HOXD11	---	T	---
+HOXD13	---	T	---
+HRAS	PANCAN;BLCA;HNSC;LUSC	Mis	---
+HSP90AA1	---	T	---
+HSP90AB1	PANCAN	T	---
+HUNK	---	---	CAMK:CAMKL:HUNK
+IDH1	PANCAN;LAML;CLL;GBM;MM	Mis	---
+IDH2	PANCAN;LAML;CRC	Mis	---
+IGF1R	---	---	TK:InsR
+IGH	---	T	---
+IGK	---	T	---
+IGL	---	T	---
+IKBKB	---	Mis	Other:IKK
+IKBKE	---	---	Other:IKK
+IKZF1	---	D,T	---
+IL2	---	T	---
+IL21R	---	T	---
+IL6ST	---	O	---
+IL7R	PANCAN;ESO	Mis, O	---
+ILK	---	---	TKL:MLK:ILK
+ING1	PANCAN;UCEC	---	---
+INPPL1	PANCAN;UCEC	---	---
+INSR	---	---	TK:InsR
+INSRR	---	---	TK:InsR
+INTS12	PANCAN;MM	---	---
+IPO7	PANCAN;HNSC	---	---
+IRAK1	---	---	TKL:IRAK
+IRAK2	---	---	TKL:IRAK
+IRAK3	---	---	TKL:IRAK
+IRAK4	---	---	TKL:IRAK
+IRF4	PANCAN;MM	T	---
+IRF6	PANCAN	---	---
+ITGB7	PANCAN	---	---
+ITK	---	T	TK:Tec
+ITPKB	PANCAN;DLBCL	---	---
+JAK1	CLL	Mis	TK:Jak
+JAK2	---	T, Mis, O	TK:Jak
+JAK3	---	Mis	TK:Jak
+JAZF1	---	T	---
+JUN	---	A	---
+KALRN	---	---	CAMK:Trio
+KAT6A	---	T	---
+KAT6B	---	T	---
+KCNJ5	---	Mis	---
+KDM5A	---	T	---
+KDM5C	PANCAN;KIRC	N, F, S, Mis	---
+KDM6A	PANCAN;LAML;BLCA;HNSC	D, N, F, S	---
+KDR	---	Mis	TK:VEGFR
+KDSR	---	T	---
+KEAP1	PANCAN;LUAD;LUSC	---	---
+KEL	PANCAN;GBM	---	---
+KIAA1549	---	T	---
+KIAA1598	---	T	---
+KIAA1804	---	---	TKL:MLK:MLK
+KIF5B	---	T	---
+KIT	PANCAN;LAML;MEL	Mis, O	TK:PDGFR
+KLF4	---	Mis	---
+KLF6	---	Mis, N	---
+KLHL8	PANCAN;UCEC	---	---
+KLK2	---	T	---
+KMT2A	---	T, O	---
+KMT2C	---	N	---
+KMT2D	---	N, F, Mis	---
+KRAS	PANCAN;LAML;BRCA;CRC;DLBCL;UCEC;ESO;LUAD;MM;OV	Mis	---
+KSR1	---	---	TKL:RAF:KSR
+KSR2	---	---	TKL:RAF:KSR
+KTN1	---	T	---
+LASP1	---	T	---
+LATS1	---	---	AGC:NDR:LATS
+LATS2	---	---	AGC:NDR:LATS
+LCK	---	T	TK:Src:SrcB
+LCP1	---	T	---
+LCTL	PANCAN;MEL	---	---
+LHFP	---	T	---
+LIFR	---	T	---
+LIMK1	---	---	TKL:LISK:LIMK
+LIMK2	---	---	TKL:LISK:LIMK
+LMNA	---	T	---
+LMO1	---	T, A	---
+LMO2	---	T	---
+LMTK2	---	---	TK:Lmr
+LMTK3	---	---	TK:Lmr
+LPP	---	T	---
+LRIG3	---	T	---
+LRRK1	---	---	TKL:LRRK
+LRRK2	---	---	TKL:LRRK
+LSM14A	---	T	---
+LTK	---	---	TK:ALK
+LYL1	---	T	---
+LYN	---	---	TK:Src:SrcB
+MAF	---	T	---
+MAFB	---	T	---
+MAK	---	---	CMGC:RCK:MAK
+MALAT1	---	T	---
+MALT1	---	T	---
+MAML2	---	T	---
+MAP2K1	PANCAN;DLBCL;LUAD	Mis	STE:STE7:MEK1
+MAP2K2	---	Mis	STE:STE7:MEK1
+MAP2K3	---	---	STE:STE7:MEK3
+MAP2K4	PANCAN;BRCA;CRC	D, Mis, N	STE:STE7:MEK4
+MAP2K5	---	---	STE:STE7:MEK5
+MAP2K6	---	---	STE:STE7:MEK3
+MAP2K7	---	---	STE:STE7:MEK7
+MAP3K1	PANCAN;BRCA;GBM	N, F, Mis, O, S	STE:STE11:MEKK1
+MAP3K10	---	---	TKL:MLK:MLK
+MAP3K11	---	---	TKL:MLK:MLK
+MAP3K12	---	---	TKL:MLK:LZK
+MAP3K13	---	F	TKL:MLK:LZK
+MAP3K14	---	---	STE:STE-Unique
+MAP3K15	---	---	STE:STE11:ASK
+MAP3K2	---	---	STE:STE11:MEKK2
+MAP3K3	---	---	STE:STE11:MEKK2
+MAP3K4	---	---	STE:STE11:MEKK4
+MAP3K5	---	---	STE:STE11:ASK
+MAP3K6	---	---	STE:STE11:ASK
+MAP3K7	---	---	TKL:MLK:TAK1
+MAP3K8	---	---	STE:STE-Unique
+MAP3K9	---	---	TKL:MLK:MLK
+MAP4K1	---	---	STE:STE20:KHS
+MAP4K2	---	---	STE:STE20:KHS
+MAP4K3	PANCAN;HNSC	---	STE:STE20:KHS
+MAP4K5	---	---	STE:STE20:KHS
+MAPK1	---	---	CMGC:MAPK:ERK1
+MAPK10	---	---	CMGC:MAPK:JNK
+MAPK11	---	---	CMGC:MAPK:p38
+MAPK12	---	---	CMGC:MAPK:p38
+MAPK13	---	---	CMGC:MAPK:p38
+MAPK14	---	---	CMGC:MAPK:p38
+MAPK15	---	---	CMGC:MAPK:ERK7
+MAPK3	---	---	CMGC:MAPK:ERK1
+MAPK4	---	---	CMGC:MAPK:ERK3
+MAPK6	---	---	CMGC:MAPK:ERK3
+MAPK7	---	---	CMGC:MAPK:ERK5
+MAPK8	---	---	CMGC:MAPK:JNK
+MAPK9	---	---	CMGC:MAPK:JNK
+MAPKAPK2	---	---	CAMK:MAPKAPK:MK2
+MAPKAPK3	---	---	CAMK:MAPKAPK:MK2
+MAPKAPK5	---	---	CAMK:MAPKAPK:MK5
+MARK1	---	---	CAMK:CAMKL:MARK
+MARK2	---	---	CAMK:CAMKL:MARK
+MARK3	---	---	CAMK:CAMKL:MARK
+MARK4	---	---	CAMK:CAMKL:MARK
+MAST1	---	---	AGC:MAST:MAST
+MAST2	---	---	AGC:MAST:MAST
+MAST3	---	---	AGC:MAST:MAST
+MAST4	---	---	AGC:MAST:MAST
+MASTL	---	---	AGC:MAST:MASTL
+MATK	---	---	TK:Csk
+MAX	---	Mis, N, F	---
+MBD1	PANCAN	---	---
+MDM2	---	A	---
+MDM4	---	A	---
+MDS2	---	T	---
+MECOM	---	T	---
+MED12	PANCAN;CLL;PRAD	Mis, S	---
+MED23	PANCAN;BRCA	---	---
+MELK	---	---	CAMK:CAMKL:MELK
+MEN1	---	D, Mis, N, F, S	---
+MERTK	---	---	TK:Axl
+MET	PANCAN;LUAD	Mis	TK:Met
+MGA	PANCAN;BLCA;UCEC	---	---
+MICALCL	PANCAN;UCEC	---	---
+MITF	---	A	---
+MKL1	---	T	---
+MKNK1	---	---	CAMK:MAPKAPK:MNK
+MLF1	---	T	---
+MLH1	---	D, Mis, N, F, S	---
+MLKL	---	---	TKL:TKL-Unique
+MLL	PANCAN;BLCA;BRCA	---	---
+MLL2	PANCAN;BLCA;DLBCL;HNSC;LUSC	---	---
+MLL3	PANCAN;BLCA;BRCA;HNSC;LUAD	---	---
+MLL4	PANCAN;UCEC	---	---
+MLLT1	---	T	---
+MLLT10	---	T	---
+MLLT11	---	T	---
+MLLT3	---	T	---
+MLLT4	---	T	---
+MLLT6	---	T	---
+MN1	---	T	---
+MNX1	---	T	---
+MOK	---	---	CMGC:RCK:MOK
+MORC4	PANCAN;UCEC	---	---
+MOS	---	---	Other:MOS
+MPL	---	Mis	---
+MPO	PANCAN;KIRC	---	---
+MSH2	---	D, Mis, N, F, S	---
+MSH6	---	Mis, N, F, S	---
+MSI2	---	T	---
+MSN	---	T	---
+MST1R	---	---	TK:Met
+MTCP1	---	T	---
+MTOR	PANCAN;UCEC;KIRC	---	Atypical:PIKK:FRAP
+MUC1	---	T	---
+MUC17	PANCAN;GBM	---	---
+MUSK	---	---	TK:Musk
+MUTYH	---	Mis	---
+MXRA5	PANCAN;LAML;MEL	---	---
+MYB	PANCAN;BRCA	T	---
+MYC	---	A, T	---
+MYCL	---	A	---
+MYCN	PANCAN;UCEC	A	---
+MYD88	PANCAN;CLL;DLBCL	Mis	---
+MYH11	---	T	---
+MYH9	---	T	---
+MYLK	---	---	CAMK:MLCK
+MYLK2	---	---	CAMK:MLCK
+MYO3A	---	---	STE:STE20:NinaC
+MYO3B	---	---	STE:STE20:NinaC
+MYO5A	---	T	---
+MYOCD	PANCAN;MEL	---	---
+MYOD1	---	Mis	---
+MYT1	---	---	Other:WEE:Myt1
+NAB2	---	T	---
+NACA	---	T	---
+NBN	---	Mis, N, F	---
+NBPF1	PANCAN;LUAD	---	---
+NCKIPSD	---	T	---
+NCOA1	---	T	---
+NCOA2	---	T	---
+NCOA4	---	T	---
+NCOR1	PANCAN;BRCA;HNSC;MEL	Mis, F, N, O	---
+NDRG1	---	T	---
+NEK1	---	---	Other:NEK:NEK1
+NEK10	---	---	Other:NEK:NEK10
+NEK11	---	---	Other:NEK:NEK11
+NEK2	---	---	Other:NEK:NEK2
+NEK3	---	---	Other:NEK:NEK1
+NEK4	---	---	Other:NEK:NEK4
+NEK5	---	---	Other:NEK:NEK1
+NEK6	---	---	Other:NEK:NEK6
+NEK7	---	---	Other:NEK:NEK6
+NEK8	---	---	Other:NEK:NEK8
+NEK9	---	---	Other:NEK:NEK9
+NF1	PANCAN;GBM;LUAD;LUSC;OV	D, Mis, N, F, S, O	---
+NF2	---	D, Mis, N, F, S, O	---
+NFATC2	---	T	---
+NFE2L2	PANCAN;BLCA;UCEC;HNSC;LUSC	Mis	---
+NFIB	---	T	---
+NFKB2	---	T	---
+NFKBIE	---	F	---
+NIN	---	T	---
+NKX2-1	---	A	---
+NLK	---	---	CMGC:MAPK:nmo
+NME3	---	---	NDK:NDK
+NME4	---	---	NDK:NDK
+NME5	---	---	NDK:NDK
+NME6	---	---	NDK:NDK
+NONO	---	T	---
+NOTCH1	PANCAN;DLBCL;HNSC;LUSC	T, Mis, O	---
+NOTCH2	---	N, F, Mis	---
+NPM1	PANCAN;LAML	T, F	---
+NPR1	---	---	RGC:RGC
+NPR2	---	---	RGC:RGC
+NR4A3	---	T	---
+NRAS	PANCAN;LAML;CLL;CRC;UCEC;LUAD;MEL;MM;OV	Mis	---
+NRBP1	---	---	Other:NRBP
+NRBP2	---	---	Other:NRBP
+NRG1	---	T	---
+NRK	---	---	STE:STE20:MSN
+NSD1	PANCAN;HNSC;LUSC	T	---
+NT5C2	---	Mis	---
+NTN4	PANCAN;CRC	---	---
+NTRK1	---	T	TK:Trk
+NTRK2	---	---	TK:Trk
+NTRK3	---	T	TK:Trk
+NUAK1	---	---	CAMK:CAMKL:NuaK
+NUAK2	---	---	CAMK:CAMKL:NuaK
+NUMA1	---	T	---
+NUP210L	PANCAN;GBM	---	---
+NUP214	---	T	---
+NUP98	---	T	---
+NUTM1	---	T	---
+NUTM2A	---	T	---
+NUTM2B	---	T	---
+OBSCN	---	---	CAMK:Trio
+ODAM	PANCAN	---	---
+OLIG2	---	T	---
+OMA1	PANCAN	---	---
+OMD	---	T	---
+OR4A16	PANCAN;MEL	---	---
+OR52N1	PANCAN;MEL	---	---
+OTUD7A	PANCAN;HNSC	---	---
+OXSR1	---	---	STE:STE20:FRAY
+P2RY8	---	T	---
+PAFAH1B2	---	T	---
+PAK1	---	---	STE:STE20:PAKA
+PAK2	---	---	STE:STE20:PAKA
+PAK3	---	---	STE:STE20:PAKA
+PAK4	---	---	STE:STE20:PAKB
+PAK6	---	---	STE:STE20:PAKB
+PAK7	---	---	STE:STE20:PAKB
+PALB2	---	F, N, Mis	---
+PAN3	---	---	Other:PAN3
+PAPD5	PANCAN;LAML	---	---
+PASK	---	---	CAMK:CAMKL:PASK
+PAX3	---	T	---
+PAX5	---	T, Mis, D, F, S	---
+PAX7	---	T	---
+PAX8	---	T	---
+PBK	---	---	Other:TOPK
+PBRM1	PANCAN;UCEC;HNSC;KIRC	Mis, N, F, S, D, O	---
+PBX1	---	T	---
+PCBP1	PANCAN;CRC	---	---
+PCM1	---	T	---
+PCSK7	---	T	---
+PDAP1	PANCAN	---	---
+PDCD1LG2	---	T	---
+PDCD2L	PANCAN	---	---
+PDE4DIP	---	T	---
+PDGFB	---	T	---
+PDGFRA	---	Mis, O, T	TK:PDGFR
+PDGFRB	---	T	TK:PDGFR
+PDIK1L	---	---	Other:NKF4
+PDK1	---	---	Atypical:PDHK:PDHK
+PDK2	---	---	Atypical:PDHK:PDHK
+PDK3	---	---	Atypical:PDHK:PDHK
+PDK4	---	---	Atypical:PDHK:PDHK
+PDPK1	---	---	AGC:PDK1
+PDSS2	PANCAN;LAML	---	---
+PER1	---	T	---
+PHF6	PANCAN;LAML;BLCA	F, N, S, Mis	---
+PHKG1	---	---	CAMK:PHK
+PHKG2	---	---	CAMK:PHK
+PHOX2B	---	Mis, F	---
+PICALM	---	T	---
+PIK3CA	PANCAN;BLCA;BRCA;CRC;UCEC;ESO;GBM;HNSC;KIRC;LUAD;LUSC;MEL	Mis	---
+PIK3R1	PANCAN;BRCA;UCEC;ESO;GBM	Mis, F, O	---
+PIK3R4	---	---	Other:VPS15
+PIM1	---	T	CAMK:PIM
+PIM2	---	---	CAMK:PIM
+PIM3	---	---	CAMK:PIM
+PINK1	---	---	Other:NKF2
+PKN3	---	---	AGC:PKN
+PLAG1	---	T	---
+PLCG1	---	Mis	---
+PLCG2	PANCAN	---	---
+PLK1	---	---	Other:PLK:PLK1
+PLK2	---	---	Other:PLK:PLK2
+PLK3	---	---	Other:PLK:PLK2
+PLK4	---	---	Other:PLK:SAK
+PML	---	T	---
+PMS1	---	Mis, N	---
+PMS2	---	Mis, N, F	---
+PNCK	---	---	CAMK:CAMK1
+POLE	PANCAN;UCEC	Mis	---
+POT1	---	Mis, N	---
+POU2AF1	PANCAN;DLBCL	T	---
+POU2F2	PANCAN;DLBCL	---	---
+POU5F1	---	T	---
+PPARG	---	T	---
+PPFIBP1	---	T	---
+PPM1D	PANCAN;UCEC	---	---
+PPP2R1A	PANCAN;UCEC	Mis	---
+PPP6C	PANCAN;MEL	Mis	---
+PRCC	---	T	---
+PRDM1	PANCAN;MM	D, N, Mis, F, S	---
+PRDM16	---	T	---
+PRF1	---	M	---
+PRKAA1	---	---	CAMK:CAMKL:AMPK
+PRKAA2	---	---	CAMK:CAMKL:AMPK
+PRKACA	---	---	AGC:PKC:PKCa
+PRKACB	---	---	AGC:PKA
+PRKACG	---	---	AGC:PKA
+PRKAR1A	---	T, Mis, N, F, S	---
+PRKCB	---	---	AGC:PKC:PKCa
+PRKCD	---	---	AGC:PKC:PKCd
+PRKCE	---	---	AGC:PKC:PKCh
+PRKCG	---	---	AGC:PKC:PKCa
+PRKCH	---	---	AGC:PKC:PKCh
+PRKCI	---	---	AGC:PKC:PKCi
+PRKCQ	---	---	AGC:PKC:PKCd
+PRKCZ	---	---	AGC:PKC:PKCi
+PRKD1	---	---	CAMK:PKD
+PRKD2	---	---	CAMK:PKD
+PRKD3	---	---	CAMK:PKD
+PRKDC	---	---	Atypical:PIKK:DNAPK
+PRKG1	---	---	AGC:PKG
+PRKG2	---	---	AGC:PKG
+PRKX	---	---	AGC:PKA
+PRKY	---	---	AGC:PKA
+PRPF4B	---	---	CMGC:DYRK:PRP4
+PRRX1	---	T	---
+PSIP1	---	T	---
+PSKH1	---	---	CAMK:PSK
+PSKH2	---	---	CAMK:PSK
+PTCH1	---	Mis, N, F, S	---
+PTEN	PANCAN;BRCA;CRC;DLBCL;UCEC;GBM;HNSC;KIRC;LUSC;MEL	D, Mis, N, F, S	---
+PTK2	---	---	TK:FAK
+PTK2B	---	---	TK:FAK
+PTK6	---	---	TK:Src:SRM
+PTK7	---	---	TK:CCK4
+PTPN11	PANCAN;LAML;GBM;MM	Mis	---
+PTPRB	---	N, Mis, S, F	---
+PTPRC	---	Mis, N, S	---
+PTPRK	---	T	---
+PWWP2A	---	T	---
+PXK	---	---	Other:Slob
+QKI	PANCAN;GBM	---	---
+RAB40A	PANCAN;BRCA	---	---
+RABEP1	---	T	---
+RAC1	PANCAN;HNSC;MEL	Mis, F	---
+RAD21	PANCAN;LAML	Mis, N, F	---
+RAD51B	---	T	---
+RAF1	---	T	TKL:RAF:RAF
+RALGDS	---	T	---
+RANBP17	---	T	---
+RANBP2	---	T	---
+RAP1GDS1	---	T	---
+RARA	---	T	---
+RASA1	PANCAN;UCEC;HNSC;LUSC	---	---
+RB1	PANCAN;BLCA;BRCA;UCEC;GBM;HNSC;LUAD;LUSC;OV	D, Mis, N, F, S	---
+RBM10	PANCAN;CRC;LUAD	---	---
+RBM15	---	T	---
+RECQL4	---	N, F, S	---
+REL	---	A	---
+RET	---	T, Mis, N, F	TK:Ret
+RHEB	PANCAN;KIRC	---	---
+RHOA	PANCAN;BLCA;HNSC	Mis, F, O	---
+RHOH	---	T	---
+RIOK1	---	---	Atypical:RIO:RIO1
+RIOK2	---	---	Atypical:RIO:RIO2
+RIOK3	---	---	Atypical:RIO:RIO3
+RIPK1	---	---	TKL:RIPK
+RIPK3	---	---	TKL:RIPK
+RIPK4	---	---	TKL:RIPK
+RIT1	PANCAN;LUAD	---	---
+RMI2	---	T	---
+RNASEL	---	---	Other:Other-Unique
+RNF213	---	T	---
+RNF217-AS1	---	T	---
+RNF43	---	Mis, N, F, S	---
+ROCK1	---	---	CMGC:RCK:MAK
+ROCK2	---	---	AGC:DMPK:ROCK
+ROR1	---	---	TK:Ror
+ROR2	---	---	TK:Ror
+ROS1	---	T	TK:Sev
+RPL10	---	Mis	---
+RPL22	---	T	---
+RPL5	PANCAN;GBM	Mis, N, F	---
+RPN1	---	T	---
+RPS15	PANCAN;CLL	---	---
+RPS2	PANCAN;CLL	---	---
+RPS6KA1	---	---	AGC:RSK:RSKp90
+RPS6KA2	---	---	AGC:RSK:RSKp90
+RPS6KA3	---	---	AGC:RSK:RSKp90
+RPS6KA4	---	---	AGC:RSK:MSK
+RPS6KA5	---	---	AGC:RSK:MSK
+RPS6KA6	---	---	AGC:RSK:RSKp90
+RPS6KB1	---	---	AGC:RSK:RSKp70
+RPS6KB2	---	---	AGC:RSK:RSKp70
+RPS6KC1	---	---	AGC:RSKL
+RPS6KL1	---	---	AGC:RSKL
+RSBN1L	PANCAN;UCEC	---	---
+RSPO2	---	T	---
+RSPO3	---	T	---
+RUNDC2A	---	T	---
+RUNX1	PANCAN;LAML;BRCA	T	---
+RUNX1T1	---	T	---
+RXRA	PANCAN;BLCA;MEL	---	---
+RYK	---	---	TK:Ryk
+SACS	PANCAN;UCEC;ESO	---	---
+SBDS	---	Gene Conversion	---
+SBK1	---	---	Other:NKF1
+SCYL1	---	---	Other:SCY1
+SCYL2	---	---	Other:SCY1
+SCYL3	---	---	Other:SCY1
+SDC4	---	T	---
+SDHAF2	---	M	---
+SDHB	---	Mis, N, F	---
+SDHC	---	Mis, N, F	---
+SDHD	---	Mis, N, F, S	---
+SELP	PANCAN;UCEC	---	---
+SEPT12	PANCAN	---	---
+SEPT5	---	T	---
+SEPT6	---	T	---
+SEPT9	---	T	---
+SERPINB13	PANCAN;LUSC	---	---
+SET	---	T	---
+SETBP1	---	Mis	---
+SETD2	PANCAN;BLCA;GBM;KIRC	N, F, S, Mis	---
+SETDB1	PANCAN;CLL;ESO	---	---
+SF3B1	PANCAN;BRCA;CLL	Mis	---
+SFPQ	---	T	---
+SFRS2	PANCAN;LAML	---	---
+SGK1	PANCAN;UCEC	---	AGC:SGK
+SGK2	---	---	AGC:SGK
+SH2B3	---	Mis, F, N	---
+SH3GL1	---	T	---
+SIK2	---	---	CAMK:CAMKL:QIK
+SIRT4	PANCAN;CRC	---	---
+SLC1A3	PANCAN;UCEC	---	---
+SLC26A3	PANCAN;GBM	---	---
+SLC34A2	---	T	---
+SLC44A3	PANCAN;UCEC	---	---
+SLC45A3	---	T	---
+SLC4A5	PANCAN;LUAD	---	---
+SLK	---	---	TK:Src:SrcA
+SMAD2	PANCAN;CRC	---	---
+SMAD4	PANCAN;CRC;ESO;HNSC;LUAD	D, Mis, N, F	---
+SMARCA4	PANCAN;ESO;LUAD	F, N, Mis, S	---
+SMARCB1	PANCAN;ESO;OV;RHAB	D, N, F, S	---
+SMARCD1	---	N	---
+SMARCE1	---	F, Mis, N	---
+SMC1A	PANCAN;LAML;GBM	---	---
+SMC3	PANCAN;LAML	---	---
+SMG1	---	---	Atypical:PIKK:SMG1
+SMO	---	Mis	---
+SND1	---	T	---
+SNRK	---	---	CAMK:CAMKL:SNRK
+SNX25	PANCAN;BLCA	---	---
+SOCS1	---	F, O	---
+SOS1	PANCAN;UCEC	---	---
+SOX17	PANCAN;UCEC	---	---
+SOX2	---	A	---
+SPECC1	---	T	---
+SPEG	---	---	CAMK:Trio
+SPEN	PANCAN;BRCA;CLL	F, Mis, N	---
+SPOP	PANCAN;UCEC;PRAD	Mis	---
+SRC	---	---	TK:Src:SrcA
+SRGAP3	---	T	---
+SRM	---	---	TK:Src:SRM
+SRPK1	---	---	CMGC:SRPK
+SRPK2	---	---	CMGC:SRPK
+SRPK3	---	---	CMGC:SRPK
+SRSF2	---	Mis	---
+SRSF3	---	T	---
+SS18	---	T	---
+SS18L1	---	T	---
+SSX1	---	T	---
+SSX2	---	T	---
+SSX4	---	T	---
+STAG2	PANCAN;LAML;BLCA;BRCA;GBM	Mis, N, F, S	---
+STAR	---	---	RGC:RGC
+STAT3	---	Mis,O	---
+STAT5B	---	Mis, O	---
+STAT6	---	T	---
+STIL	---	T	---
+STK10	---	---	STE:STE20:SLK
+STK11	PANCAN;LUAD;LUSC	D, Mis, N, F, S	CAMK:CAMKL:LKB
+STK16	---	---	Other:NAK:MPSK
+STK17A	---	---	CAMK:DAPK:DRAK
+STK17B	---	---	CAMK:DAPK:DRAK
+STK19	PANCAN;MEL	---	Atypical:G11
+STK24	---	---	STE:STE20:YSK
+STK25	---	---	STE:STE20:YSK
+STK3	---	---	STE:STE20:MST
+STK31	---	---	Other:Other-Unique
+STK32A	---	---	AGC:YANK
+STK32B	---	---	AGC:YANK
+STK32C	---	---	AGC:YANK
+STK33	---	---	CAMK:STK33
+STK35	---	---	Other:NKF4
+STK36	---	---	Other:ULK:Fused
+STK38	---	---	AGC:NDR:NDR
+STK38L	---	---	AGC:NDR:NDR
+STK39	---	---	STE:STE20:FRAY
+STK4	---	---	STE:STE20:MST
+STK40	---	---	CAMK:SgK495
+STRN	---	T	---
+STX2	PANCAN;LUAD	---	---
+STYK1	---	---	TK:TK-Unique
+SUFU	---	D, F, S	---
+SUZ12	---	T	---
+SYK	---	T	TK:Syk
+TAF1	---	---	Atypical:TAF1
+TAF15	---	T	---
+TAF1L	---	---	Atypical:TAF1
+TAL1	---	T	---
+TAL2	---	T	---
+TAOK1	---	---	STE:STE20:TAO
+TAOK2	---	---	STE:STE20:TAO
+TAOK3	---	---	STE:STE20:TAO
+TAP1	PANCAN;UCEC	---	---
+TBC1D12	PANCAN;BLCA	---	---
+TBCK	---	---	Other:TBCK
+TBK1	---	---	Other:IKK
+TBL1XR1	PANCAN;BRCA;UCEC	F, Mis	---
+TBX3	PANCAN;BRCA	F	---
+TCEA1	---	T	---
+TCEB1	PANCAN;KIRC	---	---
+TCF12	---	T	---
+TCF3	---	T	---
+TCF7L2	PANCAN;CRC	T	---
+TCL1A	---	T	---
+TCL6	---	T	---
+TCP11L2	PANCAN;UCEC	---	---
+TDRD10	PANCAN;UCEC	---	---
+TEC	---	---	TK:Tec
+TEK	---	---	TK:Tie
+TERT	---	Promoter Mis	---
+TESK1	---	---	TKL:LISK:TESK
+TESK2	---	---	TKL:LISK:TESK
+TET1	---	T	---
+TET2	PANCAN;LAML	Mis, N, F	---
+TEX14	---	---	Other:NKF5
+TFE3	---	T	---
+TFEB	---	T	---
+TFG	---	T	---
+TFPT	---	T	---
+TFRC	---	T	---
+TGFBR1	---	---	TKL:STKR:STKR1
+TGFBR2	PANCAN;BLCA;HNSC	---	TKL:STKR:STKR2
+THRAP3	---	T	---
+TIE1	---	---	TK:Tie
+TIMM17A	PANCAN	---	---
+TKT	---	---	TK:DDR
+TLK1	---	---	Other:TLK
+TLK2	---	---	Other:TLK
+TLX1	---	T	---
+TLX3	---	T	---
+TMPRSS2	---	T	---
+TNF	PANCAN;DLBCL	---	---
+TNFAIP3	---	D, N, F	---
+TNFRSF14	PANCAN;DLBCL	Mis, N, F	---
+TNFRSF17	---	T	---
+TNIK	---	---	STE:STE20:MSN
+TNK1	---	---	TK:Ack
+TNK2	---	---	TK:Ack
+TNNI3K	---	---	TKL:MLK:HH498
+TOP1	---	T	---
+TP53	PANCAN;LAML;BLCA;BRCA;CLL;CRC;DLBCL;UCEC;ESO;GBM;HNSC;KIRC;LUAD;LUSC;MED;MEL;MM;OV;PRAD	Mis, N, F, T	---
+TP53BP1	PANCAN;UCEC	---	---
+TP53RK	---	---	Other:Bud32
+TPM3	---	T	---
+TPM4	---	T	---
+TPR	---	T	---
+TPX2	PANCAN;UCEC	---	---
+TRA	---	T	---
+TRAF3	PANCAN;CRC;MM	---	---
+TRAF7	---	Mis	---
+TRB	---	T	---
+TRD	---	T	---
+TRIB1	---	---	CAMK:Trbl
+TRIB2	---	---	CAMK:Trbl
+TRIB3	---	---	CAMK:Trbl
+TRIM23	PANCAN;CRC	---	---
+TRIM24	---	T	Atypical:TIF1
+TRIM27	---	T	---
+TRIM28	---	---	Atypical:TIF1
+TRIM29	---	---	Atypical:PIKK:ATM
+TRIM33	---	T	Atypical:TIF1
+TRIO	---	---	CAMK:Trio
+TRIP11	---	T	---
+TRPM6	---	---	Atypical:Alpha:ChaK
+TRPM7	---	---	Atypical:Alpha:ChaK
+TRRAP	---	Mis	Atypical:PIKK:TRRAP
+TSC1	PANCAN;BLCA	D, Mis, N, F, S	---
+TSC2	---	D, Mis, N, F, S	---
+TSHR	---	Mis	---
+TSSK1B	---	---	CAMK:TSSK
+TSSK2	---	---	CAMK:TSSK
+TSSK3	---	---	CAMK:TSSK
+TSSK4	---	---	CAMK:TSSK
+TTBK1	---	---	CK1:TTBK
+TTBK2	---	---	CK1:TTBK
+TTK	---	---	Other:TTK
+TTL	---	T	---
+TTLL9	PANCAN;UCEC	---	---
+TTN	---	---	CAMK:MLCK
+TXK	---	---	TK:Tec
+TXNDC8	PANCAN;UCEC	---	---
+TYK2	---	---	TK:Jak
+TYRO3	---	---	TK:Axl
+U2AF1	PANCAN;LAML;LUAD	Mis	---
+UBR5	---	F, N, Mis, S	---
+UHMK1	---	---	Other:KIS
+ULK1	---	---	Other:ULK:ULK
+ULK2	---	---	Other:ULK:ULK
+ULK3	---	---	Other:ULK:ULK
+ULK4	---	---	Other:ULK:ULK
+USP6	---	T	---
+VHL	PANCAN;KIRC	D, Mis, N, F, S	---
+VRK1	---	---	CK1:VRK
+VRK2	---	---	CK1:VRK
+VRK3	---	---	CK1:VRK
+VTI1A	---	T	---
+WAS	---	Mis, N, F, S	---
+WASF3	PANCAN;MEL	---	---
+WEE1	---	---	Other:WEE:WEE1
+WHSC1	---	T	---
+WHSC1L1	---	T	---
+WIF1	---	T	---
+WNK1	---	---	Other:WNK
+WNK2	---	---	Other:WNK
+WNK3	---	---	Other:WNK
+WNK4	---	---	Other:WNK
+WRN	---	Mis, N, F, S	---
+WT1	PANCAN;LAML	D, Mis, N, F, S	---
+WWTR1	---	T	---
+XIRP2	PANCAN;MEL	---	---
+XPA	---	Mis, N, F, S	---
+XPC	---	Mis, N, F, S	---
+XPO1	PANCAN;CLL	Mis	---
+YES1	---	---	TK:Src:SrcA
+YWHAE	---	T	---
+ZAK	---	---	TKL:MLK:ZAK
+ZAP70	---	---	TK:Syk
+ZBTB16	---	T	---
+ZCCHC8	---	T	---
+ZFHX3	PANCAN;UCEC	---	---
+ZNF180	PANCAN	---	---
+ZNF198	---	T	---
+ZNF278	---	T	---
+ZNF331	---	T	---
+ZNF384	---	T	---
+ZNF471	PANCAN;DLBCL;UCEC	---	---
+ZNF483	PANCAN	---	---
+ZNF521	---	T	---
+ZNF620	PANCAN;UCEC	---	---
+ZNF750	PANCAN;HNSC;MEL	---	---
+ZRANB3	PANCAN;UCEC	---	---
+ZRSR2	---	F, S, Mis	---
