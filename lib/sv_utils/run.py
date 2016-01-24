@@ -32,7 +32,12 @@ def count_main(args):
         os.makedirs(os.path.dirname(args.output))
     
     hout = open(args.output, 'w')
-    print >> hout, '\t'.join(["sample", "type", "deletion", "tandem_duplication", "inversion", "translocation", "total"])
+    if args.inseq == True:
+        print >> hout, '\t'.join(["sample", "type", "deletion_nonseq", "deletion_inseq", "tandem_duplication_nonseq", "tandem_duplication_inseq",
+                                    "inversion_nonseq", "inversion_inseq", "translocation_nonseq", "translocation_inseq", "total_nonseq", "total_inseq"])
+    else:
+        print >> hout, '\t'.join(["sample", "type", "deletion", "tandem_duplication", "inversion", "translocation", "total"])
+
 
     with open(args.result_list, 'r') as hin:
 
@@ -41,21 +46,43 @@ def count_main(args):
             if not os.path.exists(result_file):
                 raise ValueError("file not exists: " + result_file)
 
-            type2count = {"deletion": 0, "tandem_duplication": 0, "inversion": 0, "translocation": 0}
-
             sv_good_list = utils.filter_sv_list(result_file, args.fisher_thres, args.tumor_freq_thres, args.normal_freq_thres,
                                                  args.normal_depth_thres, args.inversion_size_thres, args.max_size_thres,
                                                  args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_bed, ens_junc_bed, grch2ucsc, 
                                                  control_tb, args.control_num_thres, False)
+            
+            if args.inseq == True:
+                type2count = {"deletion_nonseq": 0, "deletion_inseq": 0, "tandem_duplication_nonseq": 0, "tandem_duplication_inseq": 0,
+                                "inversion_nonseq": 0, "inversion_inseq": 0, "translocation_nonseq": 0, "translocation_inseq": 0}
 
+                if len(sv_good_list) > 0:
+                    for i in range(0, len(sv_good_list)):
+                        if sv_good_list[i][6] != "---":
+                            type2count[sv_good_list[i][7] + "_inseq"] = type2count[sv_good_list[i][7] + "_inseq"] + 1
+                        else:
+                            type2count[sv_good_list[i][7] + "_nonseq"] = type2count[sv_good_list[i][7] + "_nonseq"] + 1
 
-            if len(sv_good_list) > 0:
-                for i in range(0, len(sv_good_list)):
-                    type2count[sv_good_list[i][7]] = type2count[sv_good_list[i][7]] + 1
+                    total_nonseq = type2count["deletion_nonseq"] + type2count["tandem_duplication_nonseq"] + \
+                                        type2count["inversion_nonseq"] + type2count["translocation_nonseq"]
+                    total_inseq = type2count["deletion_inseq"] + type2count["tandem_duplication_inseq"] + \
+                                        type2count["inversion_inseq"] + type2count["translocation_inseq"]
 
-            total = type2count["deletion"] + type2count["tandem_duplication"] + type2count["inversion"] + type2count["translocation"]
-            print >> hout, sample + '\t' + tumor_type + '\t' + str(type2count["deletion"]) + '\t' + str(type2count["tandem_duplication"]) + '\t' + \
-                                        str(type2count["inversion"]) + '\t' + str(type2count["translocation"]) + '\t' + str(total) 
+                    print >> hout, sample + '\t' + tumor_type + '\t' + str(type2count["deletion_nonseq"]) + '\t' + str(type2count["deletion_inseq"]) + '\t' + \
+                                        str(type2count["tandem_duplication_nonseq"]) + '\t' + str(type2count["tandem_duplication_inseq"]) + '\t' + \
+                                        str(type2count["inversion_nonseq"]) + '\t' + str(type2count["inversion_inseq"]) + '\t' + \
+                                        str(type2count["translocation_nonseq"]) + '\t' + str(type2count["translocation_inseq"]) + '\t' + \
+                                        str(total_nonseq) + '\t' + str(total_inseq)
+
+            else:
+                type2count = {"deletion": 0, "tandem_duplication": 0, "inversion": 0, "translocation": 0}
+
+                if len(sv_good_list) > 0:
+                    for i in range(0, len(sv_good_list)):
+                        type2count[sv_good_list[i][7]] = type2count[sv_good_list[i][7]] + 1
+
+                total = type2count["deletion"] + type2count["tandem_duplication"] + type2count["inversion"] + type2count["translocation"]
+                print >> hout, sample + '\t' + tumor_type + '\t' + str(type2count["deletion"]) + '\t' + str(type2count["tandem_duplication"]) + '\t' + \
+                                            str(type2count["inversion"]) + '\t' + str(type2count["translocation"]) + '\t' + str(total) 
  
     hout.close()
 

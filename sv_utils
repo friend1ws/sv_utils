@@ -52,6 +52,9 @@ count.add_argument("output", metavar = "output.txt", default = None, type = str,
 count.add_argument("annotation_dir", metavar = "annotation_dir", default = None, type = str,
                    help = "the path to the database directory")
 
+count.add_argument("--inseq", default = False, action = "store_true",
+                   help = "separete variant by existence of inserted sequences")
+
 count.set_defaults(func = count_main)
 
 ##########
