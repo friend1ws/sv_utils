@@ -94,6 +94,9 @@ filter_parser.add_argument("output", metavar = "output.txt", default = None, typ
 filter_parser.add_argument("annotation_dir", metavar = "annotation_dir", default = None, type = str,
                            help = "the path to the database directory")
 
+filter_parser.add_argument("--closest_exon", default = False, action = "store_true",
+                           help = "add the closest exon and distance to them")
+
 filter_parser.set_defaults(func = filter_main)
 ##########
 

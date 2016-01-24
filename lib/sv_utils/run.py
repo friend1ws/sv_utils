@@ -62,16 +62,16 @@ def count_main(args):
                         else:
                             type2count[sv_good_list[i][7] + "_nonseq"] = type2count[sv_good_list[i][7] + "_nonseq"] + 1
 
-                    total_nonseq = type2count["deletion_nonseq"] + type2count["tandem_duplication_nonseq"] + \
-                                        type2count["inversion_nonseq"] + type2count["translocation_nonseq"]
-                    total_inseq = type2count["deletion_inseq"] + type2count["tandem_duplication_inseq"] + \
-                                        type2count["inversion_inseq"] + type2count["translocation_inseq"]
+                total_nonseq = type2count["deletion_nonseq"] + type2count["tandem_duplication_nonseq"] + \
+                                    type2count["inversion_nonseq"] + type2count["translocation_nonseq"]
+                total_inseq = type2count["deletion_inseq"] + type2count["tandem_duplication_inseq"] + \
+                                    type2count["inversion_inseq"] + type2count["translocation_inseq"]
 
-                    print >> hout, sample + '\t' + tumor_type + '\t' + str(type2count["deletion_nonseq"]) + '\t' + str(type2count["deletion_inseq"]) + '\t' + \
-                                        str(type2count["tandem_duplication_nonseq"]) + '\t' + str(type2count["tandem_duplication_inseq"]) + '\t' + \
-                                        str(type2count["inversion_nonseq"]) + '\t' + str(type2count["inversion_inseq"]) + '\t' + \
-                                        str(type2count["translocation_nonseq"]) + '\t' + str(type2count["translocation_inseq"]) + '\t' + \
-                                        str(total_nonseq) + '\t' + str(total_inseq)
+                print >> hout, sample + '\t' + tumor_type + '\t' + str(type2count["deletion_nonseq"]) + '\t' + str(type2count["deletion_inseq"]) + '\t' + \
+                                    str(type2count["tandem_duplication_nonseq"]) + '\t' + str(type2count["tandem_duplication_inseq"]) + '\t' + \
+                                    str(type2count["inversion_nonseq"]) + '\t' + str(type2count["inversion_inseq"]) + '\t' + \
+                                    str(type2count["translocation_nonseq"]) + '\t' + str(type2count["translocation_inseq"]) + '\t' + \
+                                    str(total_nonseq) + '\t' + str(total_inseq)
 
             else:
                 type2count = {"deletion": 0, "tandem_duplication": 0, "inversion": 0, "translocation": 0}
@@ -230,7 +230,7 @@ def filter_main(args):
     control_tb = pysam.TabixFile(args.control) if args.control is not None else None
 
     # make directory for output if necessary
-    if not os.path.exists(os.path.dirname(args.output)):
+    if os.path.dirname(args.output) != "" and not os.path.exists(os.path.dirname(args.output)):
         os.makedirs(os.path.dirname(args.output))
     
     hout = open(args.output, 'w')
@@ -242,14 +242,21 @@ def filter_main(args):
             F = line.rstrip('\n').split('\t')
             grch2ucsc[F[0]] = F[1]
 
-    sv_good_list = utils.filter_sv_list(result_file, args.fisher_thres, args.tumor_freq_thres, args.normal_freq_thres,
+    sv_good_list = utils.filter_sv_list(args.result_file, args.fisher_thres, args.tumor_freq_thres, args.normal_freq_thres,
                                          args.normal_depth_thres, args.inversion_size_thres, args.max_size_thres,
                                          args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_bed, ens_junc_bed, grch2ucsc, 
                                          control_tb, args.control_num_thres, False)
 
     if len(sv_good_list) > 0:
         for i in range(0, len(sv_good_list)):
-            print >> hout, '\t'.join(sv_good_list[i])
+            if args.closest_exon == True:
+                chr_ucsc1 = grch2ucsc[sv_good_list[i][0]] if sv_good_list[i][0] in grch2ucsc else sv_good_list[i][0] 
+                chr_ucsc2 = grch2ucsc[sv_good_list[i][3]] if sv_good_list[i][3] in grch2ucsc else sv_good_list[i][3]
+                dist_to_exon, target_exon = utils.distance_to_closest(chr_ucsc1, sv_good_list[i][1], chr_ucsc2, sv_good_list[i][4], ref_exon_tb)
+                if len(target_exon) == 0: target_exon = ["---"]
+                print >> hout, '\t'.join(sv_good_list[i]) + '\t' + str(dist_to_exon) + '\t' + ';'.join(target_exon)
+            else:
+                print >> hout, '\t'.join(sv_good_list[i])
 
     hout.close()
 

@@ -161,3 +161,65 @@ def junction_check(chr, start, end, ref_junc_tb, ens_junc_tb, margin = 1):
  
 
 
+
+# get the closest exon and distances to them
+def distance_to_closest(chr1, pos1, chr2, pos2, ref_exon_tb, search_max = 500000):
+
+    cur_dist = search_max
+    target_gene = []
+
+    # check junction annotation for refGene for the first break point
+    tabixErrorFlag = 0
+    try:
+        records = ref_exon_tb.fetch(chr1, int(pos1) - search_max, int(pos1) + search_max)
+    except Exception as inst:
+        print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
+        tabixErrorFlag = 1
+
+    if tabixErrorFlag == 0:
+        for record_line in records:
+            record = record_line.split('\t')
+            # if within exon
+            temp_dist = search_max
+            if int(record[1]) < int(pos1) and int(pos1) <= int(record[2]):
+                temp_dist = 0
+            else:
+                temp_dist = max(int(record[1]) - int(pos1) + 1, int(pos1) - int(record[2]))
+
+            if temp_dist < cur_dist:
+                target_gene = [record[3]]
+                cur_dist = temp_dist
+            elif temp_dist == cur_dist:
+                target_gene.append(record[3])
+
+
+    # check junction annotation for refGene for the second break point
+    tabixErrorFlag = 0
+    try:
+        records = ref_exon_tb.fetch(chr2, int(pos2) - search_max, int(pos2) + search_max)
+    except Exception as inst:
+        print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
+        tabixErrorFlag = 1
+    
+    if tabixErrorFlag == 0:
+        for record_line in records:
+            record = record_line.split('\t')
+            # if within exon
+            temp_dist = search_max
+            if int(record[1]) < int(pos2) and int(pos2) <= int(record[2]):
+                temp_dist = 0
+            else:
+                temp_dist = max(int(record[1]) - int(pos2) + 1, int(pos2) - int(record[2]))
+                
+            if temp_dist < cur_dist:
+                target_gene = [record[3]]
+                cur_dist = temp_dist
+            elif temp_dist == cur_dist:
+                target_gene.append(record[3])
+
+
+    target_gene = list(set(target_gene))
+    return [cur_dist, target_gene]
+
+
+
