@@ -11,6 +11,10 @@ def filter_sv_list(result_file, fisher_thres, tumor_freq_thres, normal_freq_thre
         for line in hin:
             F = line.rstrip('\n').split('\t')
 
+            if F[0] == "MT" or F[3] == "MT": continue
+            if F[0] == "hs37d5" or F[3] == "hs37d5": continue
+            if F[0].startswith("GL0") or F[3].startswith("GL0"): continue
+
             if F[7] == "inversion" and abs(int(F[1]) - int(F[4])) < int(inversion_size_thres): continue
             if max_size_thres is not None:
                 if F[7] == "translocation": continue
@@ -171,7 +175,8 @@ def distance_to_closest(chr1, pos1, chr2, pos2, ref_exon_tb, search_max = 500000
     # check junction annotation for refGene for the first break point
     tabixErrorFlag = 0
     try:
-        records = ref_exon_tb.fetch(chr1, int(pos1) - search_max, int(pos1) + search_max)
+        search_start = max(0, int(pos1) - search_max)
+        records = ref_exon_tb.fetch(chr1, search_start, int(pos1) + search_max)
     except Exception as inst:
         print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
         tabixErrorFlag = 1
@@ -196,7 +201,8 @@ def distance_to_closest(chr1, pos1, chr2, pos2, ref_exon_tb, search_max = 500000
     # check junction annotation for refGene for the second break point
     tabixErrorFlag = 0
     try:
-        records = ref_exon_tb.fetch(chr2, int(pos2) - search_max, int(pos2) + search_max)
+        search_start = max(0, int(pos2) - search_max)
+        records = ref_exon_tb.fetch(chr2, search_start, int(pos2) + search_max)
     except Exception as inst:
         print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
         tabixErrorFlag = 1
