@@ -36,6 +36,10 @@ parser.add_argument("--control", default = None, type = str,
 parser.add_argument("--control_num_thres", default = 3, type = int,
                     help = "remove if more than specified number of control sample are found")
 
+parser.add_argument("--remove_simple_repeat", default = False, action = "store_true",
+                    help = "remove variants with overlapping simple repeat annotation by UCSC")
+
+
 # subparsers = parser.add_subparsers()
 
 ##########

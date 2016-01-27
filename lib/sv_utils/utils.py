@@ -3,8 +3,8 @@
 import sys
 
 def filter_sv_list(result_file, fisher_thres, tumor_freq_thres, normal_freq_thres, normal_depth_thres, 
-                    inversion_size_thres, max_size_thres, within_exon, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb, grch2ucsc, 
-                    control_tb, control_num_thres, normal_mode = False):
+                    inversion_size_thres, max_size_thres, within_exon, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb, 
+                    simple_repeat_tb, grch2ucsc, control_tb, control_num_thres, normal_mode = False):
 
     good_list = []
     with open(result_file, 'r') as hin:
@@ -30,9 +30,14 @@ def filter_sv_list(result_file, fisher_thres, tumor_freq_thres, normal_freq_thre
                 if F[7] == "translocation": continue
                 chr_ucsc = grch2ucsc[F[0]] if F[0] in grch2ucsc else F[0]
                 if not in_exon_check(chr_ucsc, F[1], F[4], ref_exon_tb, ens_exon_tb): continue
-
+    
             if control_tb is not None:
                 if control_check(F[0], F[1], F[2], F[3], F[4], F[5], F[6], control_tb, control_num_thres): 
+                    continue
+
+            if F[7] in ["deletion", "tandem_duplication"] and simple_repeat_tb is not None:
+                chr_ucsc = grch2ucsc[F[0]] if F[0] in grch2ucsc else F[0]
+                if simple_repeat_check(chr_ucsc, F[1], F[4], simple_repeat_tb):
                     continue
 
             if F[7] == "deletion":
@@ -227,5 +232,45 @@ def distance_to_closest(chr1, pos1, chr2, pos2, ref_exon_tb, search_max = 500000
     target_gene = list(set(target_gene))
     return [cur_dist, target_gene]
 
+
+
+def make_normal_mut_db(input_file, output_file_prefix, posterior_quantile_thres):
+
+    hout = open(output_file + ".bed", 'w')
+    with open(input_file, 'r') as hin:
+        posterior_ind = -1
+        header = hin.readline().rstrip('\n').split('\t')
+        for i in range(0, len(header)):
+            if header[i] == "90%_posterior_quantile": posterior_ind = i
+
+        for line in hin:
+            F = line.rstrip('\n').split('\t')
+            if F[1] != F[2] and float(F[posterior_ind]) > float(posterior_quantile_thres):
+                print >> hout, F[0] + '\t' + str(int(F[1]) - 1) + '\t' + F[2] + '\t' + F[3] + '\t' + F[4]
+
+    hout.close()
+
+    subprocess.call(["bgzip", "-f", output_file + ".bed"])
+    subprocess.call(["tabix", "-p", "bed", output_file + ".bed.gz"])
+
+
+
+def simple_repeat_check(chr, start, end, simple_repeat_tb):
+
+    # check junction annotation for refGene for the first break point
+    tabixErrorFlag = 0
+    try:
+        records = simple_repeat_tb.fetch(chr, int(start) - 1, int(end) + 1)
+    except Exception as inst:
+        print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
+        tabixErrorFlag = 1
+
+    if tabixErrorFlag == 0:
+        for record_line in records:
+            record = record_line.split('\t')
+            if int(record[1]) <= int(start) + 1 and int(end) - 1 <= int(record[2]):
+                return True
+
+    return False
 
 

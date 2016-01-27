@@ -12,7 +12,7 @@ rm -rf refGene.txt.gz
 rm -rf ensGene.txt.gz
 wget http://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/refGene.txt.gz
 wget http://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/ensGene.txt.gz
-
+ 
 echo "python listGene.py refGene.txt.gz ref | sort -k1,1 -k2,2n -k3,3n - > refGene.bed"
 python listGene.py refGene.txt.gz ref | sort -k1,1 -k2,2n -k3,3n - > refGene.bed
 
@@ -67,5 +67,16 @@ tabix -f -p bed refJunc.bed.gz
 
 echo "tabix -f -p bed ensJunc.bed.gz"
 tabix -f -p bed ensJunc.bed.gz
+
+# simple repeat
+rm -rf simpleRepeat.txt.gz
+wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/database/simpleRepeat.txt.gz
+zcat simpleRepeat.txt.gz | cut -f 2- > simpleRepeat.bed
+
+echo "bgzip -f simpleRepeat.bed"
+bgzip -f simpleRepeat.bed
+
+echo "tabix -f -p bed simpleRepeat.bed.gz"
+tabix -f -p bed simpleRepeat.bed.gz
 
 
