@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-import sys, os, subprocess
+import sys, os, subprocess, gzip
 import pysam
 import utils
 
@@ -219,7 +219,13 @@ def filter_main(args):
     if not os.path.exists(args.result_file):
         raise ValueError("file not exists: " + args.result_file)
 
+    if args.mutation_result != "" and args.reference == "":
+        print >> sys.stderr, "input reference when using mutation_result"
+        sys.exit(1)
+
     annotation_dir = args.annotation_dir
+    ref_gene_bed = annotation_dir + "/refGene.bed.gz"
+    ens_gene_bed = annotation_dir + "/ensGene.bed.gz"
     ref_junc_bed = annotation_dir + "/refJunc.bed.gz"
     ens_junc_bed = annotation_dir + "/ensJunc.bed.gz"
     ref_exon_bed = annotation_dir + "/refExon.bed.gz"
@@ -227,6 +233,8 @@ def filter_main(args):
     grch2ucsc_file = annotation_dir + "/grch2ucsc.txt"
     simple_repeat_bed = annotation_dir + "/simpleRepeat.bed.gz"
  
+    ref_gene_tb = pysam.TabixFile(ref_gene_bed)
+    ens_gene_tb = pysam.TabixFile(ens_gene_bed)
     ref_junc_tb = pysam.TabixFile(ref_junc_bed)
     ens_junc_tb = pysam.TabixFile(ens_junc_bed)
     ref_exon_tb = pysam.TabixFile(ref_exon_bed)
@@ -248,20 +256,75 @@ def filter_main(args):
             grch2ucsc[F[0]] = F[1]
 
     sv_good_list = utils.filter_sv_list(args.result_file, args.fisher_thres, args.tumor_freq_thres, args.normal_freq_thres,
-                                         args.normal_depth_thres, args.inversion_size_thres, args.max_size_thres,
-                                         args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_bed, ens_junc_bed, grch2ucsc, 
-                                         simple_repeat_tb, control_tb, args.control_num_thres, False)
+                                        args.normal_depth_thres, args.inversion_size_thres, args.max_size_thres,
+                                        args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_bed, ens_junc_bed,
+                                        simple_repeat_tb, grch2ucsc, control_tb, args.control_num_thres, False)
 
-    if len(sv_good_list) > 0:
-        for i in range(0, len(sv_good_list)):
-            if args.closest_exon == True:
-                chr_ucsc1 = grch2ucsc[sv_good_list[i][0]] if sv_good_list[i][0] in grch2ucsc else sv_good_list[i][0] 
-                chr_ucsc2 = grch2ucsc[sv_good_list[i][3]] if sv_good_list[i][3] in grch2ucsc else sv_good_list[i][3]
-                dist_to_exon, target_exon = utils.distance_to_closest(chr_ucsc1, sv_good_list[i][1], chr_ucsc2, sv_good_list[i][4], ref_exon_tb)
-                if len(target_exon) == 0: target_exon = ["---"]
-                print >> hout, '\t'.join(sv_good_list[i]) + '\t' + str(dist_to_exon) + '\t' + ';'.join(target_exon)
-            else:
-                print >> hout, '\t'.join(sv_good_list[i])
+    mut_tb = None
+    if args.mutation_result != "":
+        utils.make_mut_db(args.mutation_result, args.output + ".mutation", args.reference)
+        mut_tb = pysam.TabixFile(args.output + ".mutation.bed.gz")
+
+    dup_list = {}
+    for i in range(0, len(sv_good_list)):
+        if args.re_annotation == True:
+            chr_ucsc1 = grch2ucsc[sv_good_list[i][0]] if sv_good_list[i][0] in grch2ucsc else sv_good_list[i][0]
+            chr_ucsc2 = grch2ucsc[sv_good_list[i][3]] if sv_good_list[i][3] in grch2ucsc else sv_good_list[i][3]
+            sv_good_list[8], sv_good_list[9], sv_good_list[10], sv_good_list[11] = \
+                utils.get_gene_annotation(chr_ucsc1, sv_good_list[1], chr_ucsc2, sv_good_list[4], ref_gene_tb, ref_exon_tb)
+
+        print_line = '\t'.join(sv_good_list[i])
+        if args.mutation_result != "" and sv_good_list[7] in ["deletion", "tandem_duplication"] and abs(int(sv_good_list[1]) - sv_good_list[4]) <= 100:
+            
+            ##########
+            # check exon annotation for the side 1
+            tabixErrorFlag = 0
+            try:
+                records = mut_tb.fetch(sv_good_list[0], int(sv_good_list[1]) - 50, int(sv_good_list[4]) + 50)
+            except Exception as inst:
+                print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
+                tabixErrorFlag = 1
+
+            duplicated_flag = 0
+            if tabixErrorFlag == 0:
+                for record_line in records:
+                    record = record_line.split('\t')
+                    if int(record[4]) - int(record[1]) == int(sv_good_list[4]) - int(sv_good_list[1]) and record[7] == sv_good_list[7]:
+                        duplicated_flag = 1
+                        dup_list[record[0] + '\t' + record[1] + '\t' + record[2]] = 1
+
+            print_line = print_line + '\t' + "mut;sv" if duplicated_flag == 1 else print_line + '\t' + "sv"
+
+        if args.closest_exon == True:
+            chr_ucsc1 = grch2ucsc[sv_good_list[i][0]] if sv_good_list[i][0] in grch2ucsc else sv_good_list[i][0] 
+            chr_ucsc2 = grch2ucsc[sv_good_list[i][3]] if sv_good_list[i][3] in grch2ucsc else sv_good_list[i][3]
+            dist_to_exon, target_exon = utils.distance_to_closest(chr_ucsc1, sv_good_list[i][1], chr_ucsc2, sv_good_list[i][4], ref_exon_tb)
+            if len(target_exon) == 0: target_exon = ["---"]
+            print_line = print_line  + '\t' + str(dist_to_exon) + '\t' + ';'.join(target_exon)
+
+        print >> hout, print_line
+
+
+    if args.mutation_result != "":
+        with gzip.open(args.output + ".mutation.bed.gz") as hin:
+            for line in hin:
+                F = line.rstrip('\n').split('\t')
+                bed_key = F[0] + '\t' + F[1] + '\t' + F[2]
+                if bed_key in dup_list: continue
+
+                chr_ucsc1 = grch2ucsc[F[3]] if F[3] in grch2ucsc else F[3] 
+                chr_ucsc2 = grch2ucsc[F[6]] if F[6] in grch2ucsc else F[6] 
+                F[11], F[12], F[13], F[14] = utils.get_gene_annotation(chr_ucsc1, F[4], chr_ucsc2, F[7], ref_gene_tb, ref_exon_tb)
+                print_line = '\t'.join(F[3:]) + '\t' + "mut"
+
+                if args.closest_exon == True:
+                    chr_ucsc1 = grch2ucsc[sv_good_list[i][0]] if sv_good_list[i][0] in grch2ucsc else sv_good_list[i][0]
+                    chr_ucsc2 = grch2ucsc[sv_good_list[i][3]] if sv_good_list[i][3] in grch2ucsc else sv_good_list[i][3]
+                    dist_to_exon, target_exon = utils.distance_to_closest(chr_ucsc1, sv_good_list[i][1], chr_ucsc2, sv_good_list[i][4], ref_exon_tb)
+                    if len(target_exon) == 0: target_exon = ["---"]
+                    print_line = print_line  + '\t' + str(dist_to_exon) + '\t' + ';'.join(target_exon)
+
+                print >> hout, print_line
 
     hout.close()
 

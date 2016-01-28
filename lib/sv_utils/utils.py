@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
-import sys
+import sys, subprocess
+import my_seq
 
 def filter_sv_list(result_file, fisher_thres, tumor_freq_thres, normal_freq_thres, normal_depth_thres, 
                     inversion_size_thres, max_size_thres, within_exon, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb, 
@@ -234,24 +235,69 @@ def distance_to_closest(chr1, pos1, chr2, pos2, ref_exon_tb, search_max = 500000
 
 
 
-def make_normal_mut_db(input_file, output_file_prefix, posterior_quantile_thres):
+# def make_mut_db(input_file, output_file_prefix, reference, gene_tb, exon_tb):
+def make_mut_db(input_file, output_file_prefix, reference):
 
-    hout = open(output_file + ".bed", 'w')
+    hout = open(output_file_prefix + ".bed", 'w')
     with open(input_file, 'r') as hin:
-        posterior_ind = -1
+        ref_ind = -1
+        alt_ind = -1
+        tum_ref_ind = -1
+        nor_ref_ind = -1
+        tum_var_ind = -1
+        nor_var_ind = -1 
+        fisher_ind = -1
         header = hin.readline().rstrip('\n').split('\t')
         for i in range(0, len(header)):
-            if header[i] == "90%_posterior_quantile": posterior_ind = i
+            if header[i] == "Ref": ref_ind = i
+            if header[i] == "Alt": alt_ind = i
+            if header[i] == "readPairNum_tumor": tum_ref_ind = i
+            if header[i] == "variantPairNum_tumor": tum_var_ind = i
+            if header[i] == "readPairNum_normal": nor_ref_ind = i
+            if header[i] == "variantPairNum_normal": nor_var_ind = i
+            if header[i] == "P-value(fhsher_realignment)": fisher_ind = i
 
         for line in hin:
             F = line.rstrip('\n').split('\t')
-            if F[1] != F[2] and float(F[posterior_ind]) > float(posterior_quantile_thres):
-                print >> hout, F[0] + '\t' + str(int(F[1]) - 1) + '\t' + F[2] + '\t' + F[3] + '\t' + F[4]
+            if len(F[ref_ind]) >= 10 or len(F[alt_ind]) >= 10:
 
+                bed_key = F[0] + '\t' + str(int(F[1]) - 1) + '\t' + F[2]
+                read_info = F[tum_ref_ind] + '\t' + F[tum_var_ind] + '\t' + \
+                                str(round(float(F[tum_var_ind]) / (float(F[tum_ref_ind]) + float(F[tum_var_ind])), 3)) + '\t' + \
+                                F[nor_ref_ind] + '\t' + F[nor_var_ind] + '\t' + \
+                                str(round(float(F[nor_var_ind]) / (float(F[nor_ref_ind]) + float(F[nor_var_ind])), 3)) + '\t' + F[fisher_ind]
+
+                var_info = ""
+                # deletion
+                if len(F[ref_ind]) >= 10:
+                    var_info = F[0] + '\t' + str(int(F[1]) - 1) + '\t' + "+" + '\t' + \
+                                   F[0] + '\t' + str(int(F[1]) + len(F[ref_ind])) + '\t' + "-" + '\t' + "---" + '\t' + "deletion"
+                    # gene_annotation = get_gene_annotation(F[0],  str(int(F[1]) - 1), F[0], str(int(F[1]) + len(F[ref_ind])), gene_tb, exon_tb)
+                    gene_annotation = "---" + '\t' + "---" + '\t' + "---" + '\t' + "---"
+                    print >> hout, bed_key + '\t' + var_info + '\t' + gene_annotation + '\t' + read_info
+ 
+                # tandem_duplication
+                elif len(F[alt_ind]) >= 10:
+                    # tandem_duplication check
+                    flanking_seq_1 = my_seq.get_seq(reference, F[0], int(F[1]) + 1, int(F[1]) + len(F[alt_ind]))
+                    flanking_seq_1_match = my_seq.exact_alignment(F[alt_ind], flanking_seq_1)
+                    flanking_seq_2 = my_seq.get_seq(reference, F[0], int(F[1]) - len(F[alt_ind]) + 1, int(F[1])) 
+                    flanking_seq_2_match = my_seq.exact_alignment(F[alt_ind], flanking_seq_2)
+                    print '\t'.join(F[0:4])
+                    print F[alt_ind] + '\t' + flanking_seq_1 + '\t' + str(flanking_seq_1_match)
+                    print F[alt_ind] + '\t' + flanking_seq_2 + '\t' + str(flanking_seq_2_match)
+    
+                    if flanking_seq_1_match == len(F[alt_ind]) or flanking_seq_2_match == len(F[alt_ind]):
+                        var_info = F[0] + '\t' +  str(int(F[1]) + 1) + '\t' + "-" + '\t' + \
+                                       F[0] + '\t' + str(int(F[1]) + len(F[alt_ind])) + '\t' + "+" + '\t' + "---" + '\t' + "tandem_duplication"
+                        # gene_annotation = get_gene_annotation(F[0],  str(int(F[1]) + 1), F[0], str(int(F[1]) + len(F[alt_ind])), gene_tb, exon_tb)
+                        gene_annotation = "---" + '\t' + "---" + '\t' + "---" + '\t' + "---"
+                        print >> hout, bed_key + '\t' + var_info + '\t' + gene_annotation + '\t' + read_info
+ 
     hout.close()
 
-    subprocess.call(["bgzip", "-f", output_file + ".bed"])
-    subprocess.call(["tabix", "-p", "bed", output_file + ".bed.gz"])
+    subprocess.call(["bgzip", "-f", output_file_prefix + ".bed"])
+    subprocess.call(["tabix", "-p", "bed", output_file_prefix + ".bed.gz"])
 
 
 
@@ -273,4 +319,84 @@ def simple_repeat_check(chr, start, end, simple_repeat_tb):
 
     return False
 
+
+
+def get_gene_annotation(chr1, pos1, chr2, pos2, gene_tb, exon_tb):
+
+    ##########
+    # check gene annotation for the side 1  
+    tabixErrorFlag = 0
+    try:
+        records = gene_tb.fetch(chr1, int(pos1) - 1, int(pos1))
+    except Exception as inst:
+        print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
+        tabixErrorFlag = 1
+
+    gene1 = [];
+    if tabixErrorFlag == 0:
+        for record_line in records:
+            record = record_line.split('\t')
+            gene1.append(record[3])
+
+    if len(gene1) == 0: gene1.append("---")
+    gene1 = list(set(gene1))
+    ##########
+
+    ##########
+    # check gene annotation for the side 2
+    tabixErrorFlag = 0
+    try:
+        records = gene_tb.fetch(chr2, int(pos2) - 1, int(pos2))
+    except Exception as inst:
+        print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
+        tabixErrorFlag = 1
+
+    gene2 = [];
+    if tabixErrorFlag == 0:
+        for record_line in records:
+            record = record_line.split('\t')
+            gene2.append(record[3])
+
+    if len(gene2) == 0: gene2.append("---")
+    gene2 = list(set(gene2))
+    ##########
+
+    ##########
+    # check exon annotation for the side 1
+    tabixErrorFlag = 0
+    try:
+        records = exon_tb.fetch(chr1, int(pos1) - 1, int(pos1))
+    except Exception as inst:
+        print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
+        tabixErrorFlag = 1
+
+    exon1 = [];
+    if tabixErrorFlag == 0:
+        for record_line in records:
+            record = record_line.split('\t')
+            exon1.append(record[3])
+
+    if len(exon1) == 0: exon1.append("---")
+    exon1 = list(set(exon1))
+    ##########
+
+    ##########
+    # check exon annotation for the side 2
+    tabixErrorFlag = 0
+    try:
+        records = exon_tb.fetch(chr2, int(pos2) - 1, int(pos2))
+    except Exception as inst:
+        print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
+        tabixErrorFlag = 1
+   
+    exon2 = [];
+    if tabixErrorFlag == 0:
+        for record_line in records:
+            record = record_line.split('\t')
+            exon2.append(record[3])
+
+    if len(exon2) == 0: exon2.append("---")
+    exon2 = list(set(exon2))
+
+    return [';'.join(gene1), ';'.join(gene2), ';'.join(exon1), ';'.join(exon2)]
 
