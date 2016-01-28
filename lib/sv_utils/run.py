@@ -270,17 +270,18 @@ def filter_main(args):
         if args.re_annotation == True:
             chr_ucsc1 = grch2ucsc[sv_good_list[i][0]] if sv_good_list[i][0] in grch2ucsc else sv_good_list[i][0]
             chr_ucsc2 = grch2ucsc[sv_good_list[i][3]] if sv_good_list[i][3] in grch2ucsc else sv_good_list[i][3]
-            sv_good_list[8], sv_good_list[9], sv_good_list[10], sv_good_list[11] = \
-                utils.get_gene_annotation(chr_ucsc1, sv_good_list[1], chr_ucsc2, sv_good_list[4], ref_gene_tb, ref_exon_tb)
+            sv_good_list[i][8], sv_good_list[i][9], sv_good_list[i][10], sv_good_list[i][11] = \
+                utils.get_gene_annotation(chr_ucsc1, sv_good_list[i][1], chr_ucsc2, sv_good_list[i][4], ref_gene_tb, ref_exon_tb)
 
         print_line = '\t'.join(sv_good_list[i])
-        if args.mutation_result != "" and sv_good_list[7] in ["deletion", "tandem_duplication"] and abs(int(sv_good_list[1]) - sv_good_list[4]) <= 100:
+        if args.mutation_result != "" and sv_good_list[i][7] in ["deletion", "tandem_duplication"] and \
+            abs(int(sv_good_list[i][1]) - int(sv_good_list[i][4])) <= 100:
             
             ##########
             # check exon annotation for the side 1
             tabixErrorFlag = 0
             try:
-                records = mut_tb.fetch(sv_good_list[0], int(sv_good_list[1]) - 50, int(sv_good_list[4]) + 50)
+                records = mut_tb.fetch(sv_good_list[i][0], int(sv_good_list[i][1]) - 50, int(sv_good_list[i][4]) + 50)
             except Exception as inst:
                 print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
                 tabixErrorFlag = 1
@@ -289,7 +290,7 @@ def filter_main(args):
             if tabixErrorFlag == 0:
                 for record_line in records:
                     record = record_line.split('\t')
-                    if int(record[4]) - int(record[1]) == int(sv_good_list[4]) - int(sv_good_list[1]) and record[7] == sv_good_list[7]:
+                    if int(record[7]) - int(record[4]) == int(sv_good_list[i][4]) - int(sv_good_list[i][1]) and record[10] == sv_good_list[i][7]:
                         duplicated_flag = 1
                         dup_list[record[0] + '\t' + record[1] + '\t' + record[2]] = 1
 
