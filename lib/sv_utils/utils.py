@@ -283,9 +283,9 @@ def make_mut_db(input_file, output_file_prefix, reference):
                     flanking_seq_1_match = my_seq.exact_alignment(F[alt_ind], flanking_seq_1)
                     flanking_seq_2 = my_seq.get_seq(reference, F[0], int(F[1]) - len(F[alt_ind]) + 1, int(F[1])) 
                     flanking_seq_2_match = my_seq.exact_alignment(F[alt_ind], flanking_seq_2)
-                    print '\t'.join(F[0:4])
-                    print F[alt_ind] + '\t' + flanking_seq_1 + '\t' + str(flanking_seq_1_match)
-                    print F[alt_ind] + '\t' + flanking_seq_2 + '\t' + str(flanking_seq_2_match)
+                    # print '\t'.join(F[0:4])
+                    # print F[alt_ind] + '\t' + flanking_seq_1 + '\t' + str(flanking_seq_1_match)
+                    # print F[alt_ind] + '\t' + flanking_seq_2 + '\t' + str(flanking_seq_2_match)
     
                     if flanking_seq_1_match == len(F[alt_ind]) or flanking_seq_2_match == len(F[alt_ind]):
                         var_info = F[0] + '\t' +  str(int(F[1]) + 1) + '\t' + "-" + '\t' + \
@@ -329,7 +329,7 @@ def get_gene_annotation(chr1, pos1, chr2, pos2, gene_tb, exon_tb):
     try:
         records = gene_tb.fetch(chr1, int(pos1) - 1, int(pos1))
     except Exception as inst:
-        print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
+        # print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
         tabixErrorFlag = 1
 
     gene1 = [];
@@ -348,7 +348,7 @@ def get_gene_annotation(chr1, pos1, chr2, pos2, gene_tb, exon_tb):
     try:
         records = gene_tb.fetch(chr2, int(pos2) - 1, int(pos2))
     except Exception as inst:
-        print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
+        # print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
         tabixErrorFlag = 1
 
     gene2 = [];
@@ -367,7 +367,7 @@ def get_gene_annotation(chr1, pos1, chr2, pos2, gene_tb, exon_tb):
     try:
         records = exon_tb.fetch(chr1, int(pos1) - 1, int(pos1))
     except Exception as inst:
-        print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
+        # print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
         tabixErrorFlag = 1
 
     exon1 = [];
@@ -386,7 +386,7 @@ def get_gene_annotation(chr1, pos1, chr2, pos2, gene_tb, exon_tb):
     try:
         records = exon_tb.fetch(chr2, int(pos2) - 1, int(pos2))
     except Exception as inst:
-        print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
+        # print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
         tabixErrorFlag = 1
    
     exon2 = [];

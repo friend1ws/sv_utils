@@ -274,28 +274,30 @@ def filter_main(args):
                 utils.get_gene_annotation(chr_ucsc1, sv_good_list[i][1], chr_ucsc2, sv_good_list[i][4], ref_gene_tb, ref_exon_tb)
 
         print_line = '\t'.join(sv_good_list[i])
-        if args.mutation_result != "" and sv_good_list[i][7] in ["deletion", "tandem_duplication"] and \
-            abs(int(sv_good_list[i][1]) - int(sv_good_list[i][4])) <= 100:
+
+        if args.mutation_result != "":
+            if sv_good_list[i][7] in ["deletion", "tandem_duplication"] and abs(int(sv_good_list[i][1]) - int(sv_good_list[i][4])) <= 100:
+
+                # check exon annotation for the side 1
+                tabixErrorFlag = 0
+                try:
+                    records = mut_tb.fetch(sv_good_list[i][0], int(sv_good_list[i][1]) - 50, int(sv_good_list[i][4]) + 50)
+                except Exception as inst:
+                    # print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
+                    tabixErrorFlag = 1
+
+                duplicated_flag = 0
+                if tabixErrorFlag == 0:
+                    for record_line in records:
+                        record = record_line.split('\t')
+                        if int(record[7]) - int(record[4]) == int(sv_good_list[i][4]) - int(sv_good_list[i][1]) and record[10] == sv_good_list[i][7]:
+                            duplicated_flag = 1
+                            dup_list[record[0] + '\t' + record[1] + '\t' + record[2]] = 1
+
+                print_line = print_line + '\t' + "mut;sv" if duplicated_flag == 1 else print_line + '\t' + "sv"
+            else:
+                print_line = print_line + '\t' + "sv"   
             
-            ##########
-            # check exon annotation for the side 1
-            tabixErrorFlag = 0
-            try:
-                records = mut_tb.fetch(sv_good_list[i][0], int(sv_good_list[i][1]) - 50, int(sv_good_list[i][4]) + 50)
-            except Exception as inst:
-                print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
-                tabixErrorFlag = 1
-
-            duplicated_flag = 0
-            if tabixErrorFlag == 0:
-                for record_line in records:
-                    record = record_line.split('\t')
-                    if int(record[7]) - int(record[4]) == int(sv_good_list[i][4]) - int(sv_good_list[i][1]) and record[10] == sv_good_list[i][7]:
-                        duplicated_flag = 1
-                        dup_list[record[0] + '\t' + record[1] + '\t' + record[2]] = 1
-
-            print_line = print_line + '\t' + "mut;sv" if duplicated_flag == 1 else print_line + '\t' + "sv"
-
         if args.closest_exon == True:
             chr_ucsc1 = grch2ucsc[sv_good_list[i][0]] if sv_good_list[i][0] in grch2ucsc else sv_good_list[i][0] 
             chr_ucsc2 = grch2ucsc[sv_good_list[i][3]] if sv_good_list[i][3] in grch2ucsc else sv_good_list[i][3]
@@ -319,13 +321,16 @@ def filter_main(args):
                 print_line = '\t'.join(F[3:]) + '\t' + "mut"
 
                 if args.closest_exon == True:
-                    chr_ucsc1 = grch2ucsc[sv_good_list[i][0]] if sv_good_list[i][0] in grch2ucsc else sv_good_list[i][0]
-                    chr_ucsc2 = grch2ucsc[sv_good_list[i][3]] if sv_good_list[i][3] in grch2ucsc else sv_good_list[i][3]
-                    dist_to_exon, target_exon = utils.distance_to_closest(chr_ucsc1, sv_good_list[i][1], chr_ucsc2, sv_good_list[i][4], ref_exon_tb)
+                    # chr_ucsc1 = grch2ucsc[sv_good_list[i][0]] if sv_good_list[i][0] in grch2ucsc else sv_good_list[i][0]
+                    # chr_ucsc2 = grch2ucsc[sv_good_list[i][3]] if sv_good_list[i][3] in grch2ucsc else sv_good_list[i][3]
+                    dist_to_exon, target_exon = utils.distance_to_closest(chr_ucsc1, F[4], chr_ucsc2, F[7], ref_exon_tb)
                     if len(target_exon) == 0: target_exon = ["---"]
                     print_line = print_line  + '\t' + str(dist_to_exon) + '\t' + ';'.join(target_exon)
 
                 print >> hout, print_line
+
+        subprocess.call(["rm", "-rf", args.output + ".mutation.bed.gz"])
+        subprocess.call(["rm", "-rf", args.output + ".mutation.bed.gz.tbi"])
 
     hout.close()
 
