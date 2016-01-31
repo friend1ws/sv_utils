@@ -230,6 +230,7 @@ def filter_main(args):
     ens_junc_bed = annotation_dir + "/ensJunc.bed.gz"
     ref_exon_bed = annotation_dir + "/refExon.bed.gz"
     ens_exon_bed = annotation_dir + "/ensExon.bed.gz"
+    ref_coding_bed = annotation_dir + "/refCoding.bed.gz"
     grch2ucsc_file = annotation_dir + "/grch2ucsc.txt"
     simple_repeat_bed = annotation_dir + "/simpleRepeat.bed.gz"
  
@@ -239,6 +240,7 @@ def filter_main(args):
     ens_junc_tb = pysam.TabixFile(ens_junc_bed)
     ref_exon_tb = pysam.TabixFile(ref_exon_bed)
     ens_exon_tb = pysam.TabixFile(ens_exon_bed)
+    ref_coding_tb = pysam.TabixFile(ref_coding_bed)
     control_tb = pysam.TabixFile(args.control) if args.control is not None else None
     simple_repeat_tb = pysam.TabixFile(simple_repeat_bed) if args.remove_simple_repeat is not None else None
 
@@ -305,6 +307,24 @@ def filter_main(args):
             if len(target_exon) == 0: target_exon = ["---"]
             print_line = print_line  + '\t' + str(dist_to_exon) + '\t' + ';'.join(target_exon)
 
+    
+        if args.coding_info == True:
+            # within gene or accross gene ?
+            gene_flag = 0
+            within_gene_flag = 0
+            for (g1, g2) in zip(sv_good_list[i][8].split(';'), sv_good_list[i][9].split(';')):
+                if g1 != "---" and g1 == g2: within_gene_flag = 1
+                if g1 != "---" or g2 != "---": gene_flag = 1
+
+            if within_gene_flag == 1:
+                chr_ucsc1 = grch2ucsc[sv_good_list[i][0]] if sv_good_list[i][0] in grch2ucsc else sv_good_list[i][0]
+                coding_info = utils.check_coding_info(chr_ucsc1, sv_good_list[i][1], sv_good_list[i][4], ref_coding_tb)
+                print_line = print_line + '\t' + "within_gene" + '\t' + coding_info                
+            elif gene_flag == 1:
+                print_line = print_line + '\t' + "across_gene" + '\t' + "---\t---" 
+            else:
+                print_line = print_line + '\t' + "intergenic" + '\t' + "---\t---"
+
         print >> hout, print_line
 
 
@@ -326,6 +346,24 @@ def filter_main(args):
                     dist_to_exon, target_exon = utils.distance_to_closest(chr_ucsc1, F[4], chr_ucsc2, F[7], ref_exon_tb)
                     if len(target_exon) == 0: target_exon = ["---"]
                     print_line = print_line  + '\t' + str(dist_to_exon) + '\t' + ';'.join(target_exon)
+
+                if args.coding_info == True:
+                    # within gene or accross gene ?
+                    gene_flag = 0
+                    within_gene_flag = 0
+                    for (g1, g2) in zip(F[11].split(';'), F[12].split(';')):
+                        if g1 != "---" and g1 == g2: within_gene_flag = 1
+                        if g1 != "---" or g2 != "---": gene_flag = 1
+
+                    if within_gene_flag == 1:
+                        chr_ucsc1 = grch2ucsc[F[3]] if F[3] in grch2ucsc else F[3]
+                        coding_info = utils.check_coding_info(chr_ucsc1, F[4], F[7], ref_coding_tb)
+                        print_line = print_line + '\t' + "within_gene" + '\t' + coding_info
+                    elif gene_flag == 1:
+                        print_line = print_line + '\t' + "across_gene" + '\t' + "---\t---"
+                    else:
+                        print_line = print_line + '\t' + "intergenic" + '\t' + "---\t---"
+
 
                 print >> hout, print_line
 

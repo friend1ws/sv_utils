@@ -31,6 +31,9 @@ python listJunc.py refGene.txt.gz ref | sort -k1,1 -k2,2n -k3,3n - > refJunc.bed
 echo "python listJunc.py ensGene.txt.gz ens | sort -k1,1 -k2,2n -k3,3n - > ensJunc.bed"
 python listJunc.py ensGene.txt.gz ens | sort -k1,1 -k2,2n -k3,3n - > ensJunc.bed
 
+echo "python listCoding.py refGene.txt.gz | sort -k1,1 -k2,2n -k3,3n > refCoding.bed"
+python listCoding.py refGene.txt.gz | sort -k1,1 -k2,2n -k3,3n > refCoding.bed
+
 # compressing  and indexing
 echo "bgzip -f refGene.bed"
 bgzip -f refGene.bed
@@ -50,6 +53,9 @@ bgzip -f refJunc.bed
 echo "bgzip -f ensJunc.bed"
 bgzip -f ensJunc.bed
 
+echo "bgzip -f refCoding.bed"
+bgzip -f refCoding.bed
+
 echo "tabix -f -p bed refGene.bed.gz"
 tabix -f -p bed refGene.bed.gz 
 
@@ -67,6 +73,9 @@ tabix -f -p bed refJunc.bed.gz
 
 echo "tabix -f -p bed ensJunc.bed.gz"
 tabix -f -p bed ensJunc.bed.gz
+
+echo "tabix -f -p bed refCoding.bed.gz"
+tabix -f -p bed refCoding.bed.gz
 
 # simple repeat
 rm -rf simpleRepeat.txt.gz

@@ -110,6 +110,9 @@ filter_parser.add_argument("--reference", metavar = "reference.fa", default = ""
 filter_parser.add_argument("--re_annotation", default = False, action = "store_true",
                            help = "gene annotaiton again")
 
+filter_parser.add_argument("--coding_info", default = False, action = "store_true",
+                           help = "get coding information")
+
 filter_parser.set_defaults(func = filter_main)
 ##########
 
