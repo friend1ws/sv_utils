@@ -8,17 +8,26 @@ def count_main(args):
 
 
     annotation_dir = args.annotation_dir
+    ref_gene_bed = annotation_dir + "/refGene.bed.gz"
+    ens_gene_bed = annotation_dir + "/ensGene.bed.gz"
     ref_junc_bed = annotation_dir + "/refJunc.bed.gz"
     ens_junc_bed = annotation_dir + "/ensJunc.bed.gz"
     ref_exon_bed = annotation_dir + "/refExon.bed.gz"
     ens_exon_bed = annotation_dir + "/ensExon.bed.gz"
+    ref_coding_bed = annotation_dir + "/refCoding.bed.gz"
     grch2ucsc_file = annotation_dir + "/grch2ucsc.txt"
+    simple_repeat_bed = annotation_dir + "/simpleRepeat.bed.gz"
 
+    ref_gene_tb = pysam.TabixFile(ref_gene_bed)
+    ens_gene_tb = pysam.TabixFile(ens_gene_bed)
     ref_junc_tb = pysam.TabixFile(ref_junc_bed)
     ens_junc_tb = pysam.TabixFile(ens_junc_bed)
     ref_exon_tb = pysam.TabixFile(ref_exon_bed)
     ens_exon_tb = pysam.TabixFile(ens_exon_bed)
+    ref_coding_tb = pysam.TabixFile(ref_coding_bed)
     control_tb = pysam.TabixFile(args.control) if args.control is not None else None
+    simple_repeat_tb = pysam.TabixFile(simple_repeat_bed) if args.remove_simple_repeat is not None else None
+
 
     # relationship between CRCh and UCSC chromosome names
     grch2ucsc = {}
@@ -47,9 +56,9 @@ def count_main(args):
                 raise ValueError("file not exists: " + result_file)
 
             sv_good_list = utils.filter_sv_list(result_file, args.fisher_thres, args.tumor_freq_thres, args.normal_freq_thres,
-                                                 args.normal_depth_thres, args.inversion_size_thres, args.max_size_thres,
-                                                 args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_bed, ens_junc_bed, grch2ucsc, 
-                                                 control_tb, args.control_num_thres, False)
+                                                args.normal_depth_thres, args.inversion_size_thres, args.max_size_thres,
+                                                args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb,
+                                                simple_repeat_tb, grch2ucsc, control_tb, args.control_num_thres, False)
             
             if args.inseq == True:
                 type2count = {"deletion_nonseq": 0, "deletion_inseq": 0, "tandem_duplication_nonseq": 0, "tandem_duplication_inseq": 0,
@@ -141,7 +150,7 @@ def gene_summary_main(args):
 
             sv_good_list = utils.filter_sv_list(result_file, args.fisher_thres, args.tumor_freq_thres, args.normal_freq_thres,
                                                 args.normal_depth_thres, args.inversion_size_thres, args.max_size_thres,
-                                                args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_bed, ens_junc_bed, 
+                                                args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb, 
                                                 simple_repeat_tb, grch2ucsc, control_tb, args.control_num_thres, False)
 
  
@@ -259,7 +268,7 @@ def filter_main(args):
 
     sv_good_list = utils.filter_sv_list(args.result_file, args.fisher_thres, args.tumor_freq_thres, args.normal_freq_thres,
                                         args.normal_depth_thres, args.inversion_size_thres, args.max_size_thres,
-                                        args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_bed, ens_junc_bed,
+                                        args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb,
                                         simple_repeat_tb, grch2ucsc, control_tb, args.control_num_thres, False)
 
     mut_tb = None
@@ -414,7 +423,7 @@ def concentrate_main(args):
 
             sv_good_list = utils.filter_sv_list(result_file, args.fisher_thres, args.tumor_freq_thres, args.normal_freq_thres,
                                                  args.normal_depth_thres, args.inversion_size_thres, args.max_size_thres,
-                                                 args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_bed, ens_junc_bed, grch2ucsc, 
+                                                 args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb, grch2ucsc, 
                                                  control_tb, args.control_num_thres, False)
 
             if len(sv_good_list) > 0:
@@ -519,7 +528,7 @@ def merge_control_main(args):
 
             sv_good_list = utils.filter_sv_list(result_file, args.fisher_thres, args.tumor_freq_thres, args.normal_freq_thres,
                                                  args.normal_depth_thres, args.inversion_size_thres, args.max_size_thres,
-                                                 args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_bed, ens_junc_bed,
+                                                 args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb,
                                                  simple_repeat_tb, grch2ucsc, control_tb, args.control_num_thres, True)
 
 

@@ -135,14 +135,14 @@ def in_exon_check(chr, start, end, ref_exon_tb, ens_exon_tb, margin = 5):
 
 
 # check whether potential rna contamination or not
-def junction_check(chr, start, end, ref_junc_tb, ens_junc_tb, margin = 1):
+def junction_check(chr, start, end, ref_junc_tb, ens_junc_tb, margin = 2):
 
     junc_flag = False
  
     # check junction annotation for refGene 
     tabixErrorFlag = 0
     try:
-        records = ref_junc_tb.fetch(chr, int(start) - 30, int(start) + 30)
+        records = ref_junc_tb.fetch(chr, int(start) - 10, int(start) + 10)
     except Exception as inst:
         tabixErrorFlag = 1
         
@@ -156,7 +156,7 @@ def junction_check(chr, start, end, ref_junc_tb, ens_junc_tb, margin = 1):
     # check junction annotation for ensGene 
     tabixErrorFlag = 0
     try:
-        records = ens_junc_tb.fetch(chr, int(start) - 30, int(start) + 30)
+        records = ens_junc_tb.fetch(chr, int(start) - 10, int(start) + 10)
     except Exception as inst:
         tabixErrorFlag = 1
         
