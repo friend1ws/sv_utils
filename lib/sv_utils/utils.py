@@ -173,7 +173,7 @@ def junction_check(chr, start, end, ref_junc_tb, ens_junc_tb, margin = 2):
 
 
 # get the closest exon and distances to them
-def distance_to_closest(chr1, pos1, chr2, pos2, ref_exon_tb, search_max = 500000):
+def distance_to_closest(chr1, pos1, chr2, pos2, ref_tb, is_exon = True, search_max = 500000):
 
     cur_dist = search_max
     target_gene = []
@@ -182,7 +182,7 @@ def distance_to_closest(chr1, pos1, chr2, pos2, ref_exon_tb, search_max = 500000
     tabixErrorFlag = 0
     try:
         search_start = max(0, int(pos1) - search_max)
-        records = ref_exon_tb.fetch(chr1, search_start, int(pos1) + search_max)
+        records = ref_tb.fetch(chr1, search_start, int(pos1) + search_max)
     except Exception as inst:
         print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
         tabixErrorFlag = 1
@@ -190,6 +190,7 @@ def distance_to_closest(chr1, pos1, chr2, pos2, ref_exon_tb, search_max = 500000
     if tabixErrorFlag == 0:
         for record_line in records:
             record = record_line.split('\t')
+            if is_exon == False and record[4] != "coding": continue 
             # if within exon
             temp_dist = search_max
             if int(record[1]) < int(pos1) and int(pos1) <= int(record[2]):
@@ -208,7 +209,7 @@ def distance_to_closest(chr1, pos1, chr2, pos2, ref_exon_tb, search_max = 500000
     tabixErrorFlag = 0
     try:
         search_start = max(0, int(pos2) - search_max)
-        records = ref_exon_tb.fetch(chr2, search_start, int(pos2) + search_max)
+        records = ref_tb.fetch(chr2, search_start, int(pos2) + search_max)
     except Exception as inst:
         print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
         tabixErrorFlag = 1
@@ -216,6 +217,7 @@ def distance_to_closest(chr1, pos1, chr2, pos2, ref_exon_tb, search_max = 500000
     if tabixErrorFlag == 0:
         for record_line in records:
             record = record_line.split('\t')
+            if is_exon == False and record[4] != "coding": continue
             # if within exon
             temp_dist = search_max
             if int(record[1]) < int(pos2) and int(pos2) <= int(record[2]):

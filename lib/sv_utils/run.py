@@ -278,9 +278,10 @@ def filter_main(args):
 
     dup_list = {}
     for i in range(0, len(sv_good_list)):
+        chr_ucsc1 = grch2ucsc[sv_good_list[i][0]] if sv_good_list[i][0] in grch2ucsc else sv_good_list[i][0]
+        chr_ucsc2 = grch2ucsc[sv_good_list[i][3]] if sv_good_list[i][3] in grch2ucsc else sv_good_list[i][3]
+
         if args.re_annotation == True:
-            chr_ucsc1 = grch2ucsc[sv_good_list[i][0]] if sv_good_list[i][0] in grch2ucsc else sv_good_list[i][0]
-            chr_ucsc2 = grch2ucsc[sv_good_list[i][3]] if sv_good_list[i][3] in grch2ucsc else sv_good_list[i][3]
             sv_good_list[i][8], sv_good_list[i][9], sv_good_list[i][10], sv_good_list[i][11] = \
                 utils.get_gene_annotation(chr_ucsc1, sv_good_list[i][1], chr_ucsc2, sv_good_list[i][4], ref_gene_tb, ref_exon_tb)
 
@@ -310,13 +311,15 @@ def filter_main(args):
                 print_line = print_line + '\t' + "sv"   
             
         if args.closest_exon == True:
-            chr_ucsc1 = grch2ucsc[sv_good_list[i][0]] if sv_good_list[i][0] in grch2ucsc else sv_good_list[i][0] 
-            chr_ucsc2 = grch2ucsc[sv_good_list[i][3]] if sv_good_list[i][3] in grch2ucsc else sv_good_list[i][3]
             dist_to_exon, target_exon = utils.distance_to_closest(chr_ucsc1, sv_good_list[i][1], chr_ucsc2, sv_good_list[i][4], ref_exon_tb)
             if len(target_exon) == 0: target_exon = ["---"]
             print_line = print_line  + '\t' + str(dist_to_exon) + '\t' + ';'.join(target_exon)
 
-    
+        if args.closest_coding == True:
+            dist_to_exon, target_exon = utils.distance_to_closest(chr_ucsc1, sv_good_list[i][1], chr_ucsc2, sv_good_list[i][4], ref_coding_tb, False)
+            if len(target_exon) == 0: target_exon = ["---"]
+            print_line = print_line  + '\t' + str(dist_to_exon) + '\t' + ';'.join(target_exon)
+ 
         if args.coding_info == True:
             # within gene or accross gene ?
             gene_flag = 0
@@ -326,7 +329,6 @@ def filter_main(args):
                 if g1 != "---" or g2 != "---": gene_flag = 1
 
             if within_gene_flag == 1:
-                chr_ucsc1 = grch2ucsc[sv_good_list[i][0]] if sv_good_list[i][0] in grch2ucsc else sv_good_list[i][0]
                 coding_info = utils.check_coding_info(chr_ucsc1, sv_good_list[i][1], sv_good_list[i][4], ref_coding_tb)
                 print_line = print_line + '\t' + "within_gene" + '\t' + coding_info                
             elif gene_flag == 1:
@@ -350,9 +352,12 @@ def filter_main(args):
                 print_line = '\t'.join(F[3:]) + '\t' + "mut"
 
                 if args.closest_exon == True:
-                    # chr_ucsc1 = grch2ucsc[sv_good_list[i][0]] if sv_good_list[i][0] in grch2ucsc else sv_good_list[i][0]
-                    # chr_ucsc2 = grch2ucsc[sv_good_list[i][3]] if sv_good_list[i][3] in grch2ucsc else sv_good_list[i][3]
                     dist_to_exon, target_exon = utils.distance_to_closest(chr_ucsc1, F[4], chr_ucsc2, F[7], ref_exon_tb)
+                    if len(target_exon) == 0: target_exon = ["---"]
+                    print_line = print_line  + '\t' + str(dist_to_exon) + '\t' + ';'.join(target_exon)
+
+                if args.closest_coding == True:
+                    dist_to_exon, target_exon = utils.distance_to_closest(chr_ucsc1, F[4], chr_ucsc2, F[7], ref_coding_tb, False)
                     if len(target_exon) == 0: target_exon = ["---"]
                     print_line = print_line  + '\t' + str(dist_to_exon) + '\t' + ';'.join(target_exon)
 

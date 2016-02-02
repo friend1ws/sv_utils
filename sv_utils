@@ -101,6 +101,9 @@ filter_parser.add_argument("annotation_dir", metavar = "annotation_dir", default
 filter_parser.add_argument("--closest_exon", default = False, action = "store_true",
                            help = "add the closest exon and distance to them")
 
+filter_parser.add_argument("--closest_coding", default = False, action = "store_true",
+                           help = "add the closest coding exon and distance to them")
+
 filter_parser.add_argument("--mutation_result", metavar = "genomon_mutation.result.txt", default = "", type = str,
                            help = "the path to the genomon mutation result file")
 
