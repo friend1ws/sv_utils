@@ -20,6 +20,7 @@ python setup.py install
 ```
 
 ## Commands
+For detailed description on each option, please consult the help for each command
 
 ### count
 count the number of each variatns (deletion, tandem_duplication, inversion and translocation) for each sample
