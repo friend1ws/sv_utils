@@ -406,7 +406,7 @@ def get_gene_annotation(chr1, pos1, chr2, pos2, gene_tb, exon_tb):
 
 def check_coding_info(chr, start, end, ref_coding_tb):
 
-    coding_score = {"coding": 4, "noncoding": 3, "3UTR": 2, "5UTR": 1, "intron": 0, "spliing": -1, "complex": -1}
+    coding_score = {"coding": 4, "noncoding": 3, "3UTR": 2, "5UTR": 1, "intron": 0, "splicing": -1, "complex": -1}
 
     ##########
     # check gene annotation for the side 1  
