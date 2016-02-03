@@ -66,36 +66,12 @@ def count_main(args):
 
 def gene_summary_main(args):
 
-
     # read cancer gene
     gene2info = {}
     with open(args.cancer_gene_list, 'r') as hin:
         for line in hin:
             F = line.rstrip('\n').split('\t')
             gene2info[F[0]] = '\t'.join(F[1:])
-
-
-    annotation_dir = args.annotation_dir
-    ref_junc_bed = annotation_dir + "/refJunc.bed.gz"
-    ens_junc_bed = annotation_dir + "/ensJunc.bed.gz"
-    ref_exon_bed = annotation_dir + "/refExon.bed.gz"
-    ens_exon_bed = annotation_dir + "/ensExon.bed.gz"
-    grch2ucsc_file = annotation_dir + "/grch2ucsc.txt"
-    simple_repeat_bed = annotation_dir + "/simpleRepeat.bed.gz"
-
-    ref_junc_tb = pysam.TabixFile(ref_junc_bed)
-    ens_junc_tb = pysam.TabixFile(ens_junc_bed)
-    ref_exon_tb = pysam.TabixFile(ref_exon_bed)
-    ens_exon_tb = pysam.TabixFile(ens_exon_bed)
-    control_tb = pysam.TabixFile(args.control) if args.control is not None else None
-    simple_repeat_tb = pysam.TabixFile(simple_repeat_bed) if args.remove_simple_repeat is not None else None
-
-    # relationship between CRCh and UCSC chromosome names
-    grch2ucsc = {}
-    with open(grch2ucsc_file, 'r') as hin:
-        for line in hin:
-            F = line.rstrip('\n').split('\t')
-            grch2ucsc[F[0]] = F[1]
 
     # make directory for output if necessary
     if os.path.dirname(args.output) != "" and not os.path.exists(os.path.dirname(args.output)):
@@ -116,31 +92,26 @@ def gene_summary_main(args):
 
             print >> sys.stderr, "reading: " + sample + ' ' + tumor_type
 
-            sv_good_list = utils.filter_sv_list(result_file, args.fisher_thres, args.tumor_freq_thres, args.normal_freq_thres,
-                                                args.normal_depth_thres, args.inversion_size_thres, args.max_size_thres,
-                                                args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb, 
-                                                simple_repeat_tb, grch2ucsc, control_tb, args.control_num_thres, False)
-
- 
-            if len(sv_good_list) > 0:
-                for i in range(0, len(sv_good_list)):
-                    var_type = sv_good_list[i][7]
-                    genes1 = sv_good_list[i][8].split(';') if sv_good_list[i][8] != "---" else []
-                    genes2 = sv_good_list[i][9].split(';') if sv_good_list[i][9] != "---" else []
+            with open(result_file, 'r') as hin:
+                for line in hin:
+                    F = line.rstrip('\n').split('\t')
+                    var_type = F[7]
+                    genes1 = F[8].split(';') if F[8] != "---" else []
+                    genes2 = F[9].split(';') if F[9] != "---" else []
 
                     # check in-frame or not
                     is_inframe = False
                     if var_type == "deletion":
-                        var_size = int(sv_good_list[i][4]) - int(sv_good_list[i][1]) - 1
-                        var_size = var_size - (0 if sv_good_list[i][6] == "---" else len(sv_good_list[i][6]))
+                        var_size = int(F[4]) - int(F[1]) - 1
+                        var_size = var_size - (0 if F[6] == "---" else len(F[6]))
                         if var_size % 3 == 0: is_inframe = True
                     elif var_type == "tandem_duplication":
-                        var_size = int(sv_good_list[i][4]) - int(sv_good_list[i][1]) + 1
-                        var_size = var_size + (0 if sv_good_list[i][6] == "---" else len(sv_good_list[i][6]))
+                        var_size = int(F[4]) - int(F[1]) + 1
+                        var_size = var_size + (0 if F[6] == "---" else len(F[6]))
                         if var_size % 3 == 0: is_inframe = True
 
                     for gene in list(set(genes1 + genes2)):
-                        if gene in gene2type_sample:
+                        if gene in gene2type_sample: 
                             gene2type_sample[gene] = gene2type_sample[gene] + [(tumor_type, sample, var_type, is_inframe)]
                         else:
                             gene2type_sample[gene] = [(tumor_type, sample, var_type, is_inframe)]
