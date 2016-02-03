@@ -9,37 +9,6 @@ parser.add_argument("--version", action = "version", version = "sv_utils-0.1.0")
 
 subparsers = parser.add_subparsers()
 
-parser.add_argument("--fisher_thres", default = 1.0, type = float,
-                   help = "remove if the - log(fisher p-value) is smaller than this value")
-
-parser.add_argument("--tumor_freq_thres", default = 0.07, type = float,
-                   help = "remove if the tumor allele frequency is small than this value")
-
-parser.add_argument("--normal_freq_thres", default = 0.05, type = int,
-                   help = "remove if the normal allele frequency is larger than this value")
-
-parser.add_argument("--normal_depth_thres", default = 10, type = float,
-                   help = "remove if the normal read depth is smaller than this value")
-
-parser.add_argument("--inversion_size_thres", default = 500, type = int,
-                   help = "remove if the size of inversion is smaller than this value")
-
-parser.add_argument("--max_size_thres", default = None, type = int,
-                   help = "remove if the size of variant is larger than this value")
-
-parser.add_argument("--within_exon", default = False, action = "store_true",
-                    help = "keep only variants within exon")
-
-parser.add_argument("--control", default = None, type = str,
-                    help = "the path to control data created by merge_control")
-
-parser.add_argument("--control_num_thres", default = 3, type = int,
-                    help = "remove if more than specified number of control sample are found")
-
-parser.add_argument("--remove_simple_repeat", default = False, action = "store_true",
-                    help = "remove variants with overlapping simple repeat annotation by UCSC")
-
-
 # subparsers = parser.add_subparsers()
 
 ##########
@@ -52,9 +21,6 @@ count.add_argument("result_list", metavar = "result_list.txt", default = None, t
 
 count.add_argument("output", metavar = "output.txt", default = None, type = str,
                     help = "the path to the output file")
-
-count.add_argument("annotation_dir", metavar = "annotation_dir", default = None, type = str,
-                   help = "the path to the database directory")
 
 count.add_argument("--inseq", default = False, action = "store_true",
                    help = "separete variant by existence of inserted sequences")
@@ -98,6 +64,36 @@ filter_parser.add_argument("output", metavar = "output.txt", default = None, typ
 filter_parser.add_argument("annotation_dir", metavar = "annotation_dir", default = None, type = str,
                            help = "the path to the database directory")
 
+filter_parser.add_argument("--fisher_thres", default = 1.0, type = float,
+                   help = "remove if the - log(fisher p-value) is smaller than this value")
+
+filter_parser.add_argument("--tumor_freq_thres", default = 0.07, type = float,
+                   help = "remove if the tumor allele frequency is small than this value")
+
+filter_parser.add_argument("--normal_freq_thres", default = 0.05, type = int,
+                   help = "remove if the normal allele frequency is larger than this value")
+
+filter_parser.add_argument("--normal_depth_thres", default = 10, type = float,
+                   help = "remove if the normal read depth is smaller than this value")
+
+filter_parser.add_argument("--inversion_size_thres", default = 500, type = int,
+                   help = "remove if the size of inversion is smaller than this value")
+
+filter_parser.add_argument("--max_size_thres", default = None, type = int,
+                   help = "remove if the size of variant is larger than this value")
+
+filter_parser.add_argument("--within_exon", default = False, action = "store_true",
+                    help = "keep only variants within exon")
+
+filter_parser.add_argument("--control", default = None, type = str,
+                    help = "the path to control data created by merge_control")
+
+filter_parser.add_argument("--control_num_thres", default = 3, type = int,
+                    help = "remove if more than specified number of control sample are found")
+
+filter_parser.add_argument("--remove_simple_repeat", default = False, action = "store_true",
+                    help = "remove variants with overlapping simple repeat annotation by UCSC")
+
 filter_parser.add_argument("--closest_exon", default = False, action = "store_true",
                            help = "add the closest exon and distance to them")
 
@@ -129,9 +125,6 @@ concentrate_parser.add_argument("result_list", metavar = "result_list.txt", defa
 concentrate_parser.add_argument("output", metavar = "output.txt", default = None, type = str,
                                 help = "the path to the output file")
 
-concentrate_parser.add_argument("annotation_dir", metavar = "annotation_dir", default = None, type = str,
-                                help = "the path to the database directory")
-
 concentrate_parser.add_argument("--set_count", metavar = "set_count", default = 2, type = int,
                                 help = "extract #variants is equal or more than this value within specified margin")
  
@@ -152,10 +145,6 @@ merge_control.add_argument("result_list", metavar = "result_list.txt", default =
 
 merge_control.add_argument("output_prefix", default = None, type = str,
                            help = "the prefix of the output file")
-
-merge_control.add_argument("annotation_dir", metavar = "annotation_dir", default = None, type = str,
-                                help = "the path to the database directory")
-
 
 merge_control.set_defaults(func = merge_control_main)
 

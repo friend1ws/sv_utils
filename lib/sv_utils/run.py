@@ -6,36 +6,6 @@ import utils
 
 def count_main(args):
 
-
-    annotation_dir = args.annotation_dir
-    ref_gene_bed = annotation_dir + "/refGene.bed.gz"
-    ens_gene_bed = annotation_dir + "/ensGene.bed.gz"
-    ref_junc_bed = annotation_dir + "/refJunc.bed.gz"
-    ens_junc_bed = annotation_dir + "/ensJunc.bed.gz"
-    ref_exon_bed = annotation_dir + "/refExon.bed.gz"
-    ens_exon_bed = annotation_dir + "/ensExon.bed.gz"
-    ref_coding_bed = annotation_dir + "/refCoding.bed.gz"
-    grch2ucsc_file = annotation_dir + "/grch2ucsc.txt"
-    simple_repeat_bed = annotation_dir + "/simpleRepeat.bed.gz"
-
-    ref_gene_tb = pysam.TabixFile(ref_gene_bed)
-    ens_gene_tb = pysam.TabixFile(ens_gene_bed)
-    ref_junc_tb = pysam.TabixFile(ref_junc_bed)
-    ens_junc_tb = pysam.TabixFile(ens_junc_bed)
-    ref_exon_tb = pysam.TabixFile(ref_exon_bed)
-    ens_exon_tb = pysam.TabixFile(ens_exon_bed)
-    ref_coding_tb = pysam.TabixFile(ref_coding_bed)
-    control_tb = pysam.TabixFile(args.control) if args.control is not None else None
-    simple_repeat_tb = pysam.TabixFile(simple_repeat_bed) if args.remove_simple_repeat is not None else None
-
-
-    # relationship between CRCh and UCSC chromosome names
-    grch2ucsc = {}
-    with open(grch2ucsc_file, 'r') as hin:
-        for line in hin:
-            F = line.rstrip('\n').split('\t')
-            grch2ucsc[F[0]] = F[1]
-
     # make directory for output if necessary
     if os.path.dirname(args.output) != "" and not os.path.exists(os.path.dirname(args.output)):
         os.makedirs(os.path.dirname(args.output))
@@ -55,21 +25,18 @@ def count_main(args):
             if not os.path.exists(result_file):
                 raise ValueError("file not exists: " + result_file)
 
-            sv_good_list = utils.filter_sv_list(result_file, args.fisher_thres, args.tumor_freq_thres, args.normal_freq_thres,
-                                                args.normal_depth_thres, args.inversion_size_thres, args.max_size_thres,
-                                                args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb,
-                                                simple_repeat_tb, grch2ucsc, control_tb, args.control_num_thres, False)
-            
             if args.inseq == True:
                 type2count = {"deletion_nonseq": 0, "deletion_inseq": 0, "tandem_duplication_nonseq": 0, "tandem_duplication_inseq": 0,
                                 "inversion_nonseq": 0, "inversion_inseq": 0, "translocation_nonseq": 0, "translocation_inseq": 0}
 
-                if len(sv_good_list) > 0:
-                    for i in range(0, len(sv_good_list)):
-                        if sv_good_list[i][6] != "---":
-                            type2count[sv_good_list[i][7] + "_inseq"] = type2count[sv_good_list[i][7] + "_inseq"] + 1
+                with open(result_file, 'r') as hin:
+                    for line in hin:
+                        F = line.rstrip('\n').split('\t')
+                        if F[6] != "---":
+                            type2count[F[7] + "_inseq"] = type2count[F[7] + "_inseq"] + 1
                         else:
-                            type2count[sv_good_list[i][7] + "_nonseq"] = type2count[sv_good_list[i][7] + "_nonseq"] + 1
+                            type2count[F[7] + "_nonseq"] = type2count[F[7] + "_nonseq"] + 1
+
 
                 total_nonseq = type2count["deletion_nonseq"] + type2count["tandem_duplication_nonseq"] + \
                                     type2count["inversion_nonseq"] + type2count["translocation_nonseq"]
@@ -85,9 +52,10 @@ def count_main(args):
             else:
                 type2count = {"deletion": 0, "tandem_duplication": 0, "inversion": 0, "translocation": 0}
 
-                if len(sv_good_list) > 0:
-                    for i in range(0, len(sv_good_list)):
-                        type2count[sv_good_list[i][7]] = type2count[sv_good_list[i][7]] + 1
+                with open(result_file, 'r') as hin:
+                    for line in hin:
+                        F = line.rstrip('\n').split('\t')
+                        type2count[F[7]] = type2count[F[7]] + 1
 
                 total = type2count["deletion"] + type2count["tandem_duplication"] + type2count["inversion"] + type2count["translocation"]
                 print >> hout, sample + '\t' + tumor_type + '\t' + str(type2count["deletion"]) + '\t' + str(type2count["tandem_duplication"]) + '\t' + \
@@ -389,26 +357,6 @@ def filter_main(args):
 
 def concentrate_main(args):
 
-    annotation_dir = args.annotation_dir
-    ref_junc_bed = annotation_dir + "/refJunc.bed.gz"
-    ens_junc_bed = annotation_dir + "/ensJunc.bed.gz"
-    ref_exon_bed = annotation_dir + "/refExon.bed.gz"
-    ens_exon_bed = annotation_dir + "/ensExon.bed.gz"
-    grch2ucsc_file = annotation_dir + "/grch2ucsc.txt"
-
-    ref_junc_tb = pysam.TabixFile(ref_junc_bed)
-    ens_junc_tb = pysam.TabixFile(ens_junc_bed)
-    ref_exon_tb = pysam.TabixFile(ref_exon_bed)
-    ens_exon_tb = pysam.TabixFile(ens_exon_bed)
-    control_tb = pysam.TabixFile(args.control) if args.control is not None else None
-
-    # relationship between CRCh and UCSC chromosome names
-    grch2ucsc = {}
-    with open(grch2ucsc_file, 'r') as hin:
-        for line in hin:
-            F = line.rstrip('\n').split('\t')
-            grch2ucsc[F[0]] = F[1]
-
     # make directory for output if necessary
     if os.path.dirname(args.output) != "" and not os.path.exists(os.path.dirname(args.output)):
         os.makedirs(os.path.dirname(args.output))
@@ -426,15 +374,11 @@ def concentrate_main(args):
             if not os.path.exists(result_file):
                 raise ValueError("file not exists: " + result_file)
 
-            sv_good_list = utils.filter_sv_list(result_file, args.fisher_thres, args.tumor_freq_thres, args.normal_freq_thres,
-                                                 args.normal_depth_thres, args.inversion_size_thres, args.max_size_thres,
-                                                 args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb, grch2ucsc, 
-                                                 control_tb, args.control_num_thres, False)
-
-            if len(sv_good_list) > 0:
-                for i in range(0, len(sv_good_list)):
-                    if sv_good_list[i][7] in ["deletion", "tandem_duplication"]:
-                        print >> hout, sample + '\t' + tumor_type + '\t' + '\t'.join(sv_good_list[i])
+            with open(result_file, 'r') as hin:
+                for line in hin:
+                    F = line.rstrip('\n').split('\t')
+                    if F[7] in ["deletion", "tandem_duplication"]:
+                        print >> hout, sample + '\t' + tumor_type + '\t' + '\t'.join(F)
 
     hout.close()
 
@@ -454,9 +398,6 @@ def concentrate_main(args):
     with open(args.output + ".tmp.sv_list.sort", 'r') as hin:
         for line in hin:
             F = line.rstrip('\n').split('\t')
-            if F[3] == "178098812":
-                pass
-
             temp_keys.append(F)
             if len(temp_keys) < count_thres: continue
 
@@ -492,28 +433,6 @@ def concentrate_main(args):
 
 def merge_control_main(args):
 
-    annotation_dir = args.annotation_dir
-    ref_junc_bed = annotation_dir + "/refJunc.bed.gz"
-    ens_junc_bed = annotation_dir + "/ensJunc.bed.gz"
-    ref_exon_bed = annotation_dir + "/refExon.bed.gz"
-    ens_exon_bed = annotation_dir + "/ensExon.bed.gz"
-    grch2ucsc_file = annotation_dir + "/grch2ucsc.txt"
-    simple_repeat_bed = annotation_dir + "/simpleRepeat.bed.gz"
-
-    ref_junc_tb = pysam.TabixFile(ref_junc_bed)
-    ens_junc_tb = pysam.TabixFile(ens_junc_bed)
-    ref_exon_tb = pysam.TabixFile(ref_exon_bed)
-    ens_exon_tb = pysam.TabixFile(ens_exon_bed)
-    control_tb = pysam.TabixFile(args.control) if args.control is not None else None
-    simple_repeat_tb = pysam.TabixFile(simple_repeat_bed) if args.remove_simple_repeat is not None else None
-
-    # relationship between CRCh and UCSC chromosome names
-    grch2ucsc = {}
-    with open(grch2ucsc_file, 'r') as hin:
-        for line in hin:
-            F = line.rstrip('\n').split('\t')
-            grch2ucsc[F[0]] = F[1]
-
     # make directory for output if necessary
     if os.path.dirname(args.output_prefix) != "" and not os.path.exists(os.path.dirname(args.output_prefix)):
         os.makedirs(os.path.dirname(args.output_prefix))
@@ -531,17 +450,11 @@ def merge_control_main(args):
             if not os.path.exists(result_file):
                 raise ValueError("file not exists: " + result_file)
 
-            sv_good_list = utils.filter_sv_list(result_file, args.fisher_thres, args.tumor_freq_thres, args.normal_freq_thres,
-                                                 args.normal_depth_thres, args.inversion_size_thres, args.max_size_thres,
-                                                 args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb,
-                                                 simple_repeat_tb, grch2ucsc, control_tb, args.control_num_thres, True)
-
-
-            for i in range(0, len(sv_good_list)):
-                print >> hout, sv_good_list[i][0] + '\t' + str(int(sv_good_list[i][1]) - 1) + '\t' + str(int(sv_good_list[i][1])) + '\t' + \
-                                sv_good_list[i][3] + '\t' + str(int(sv_good_list[i][4]) - 1) + '\t' + str(int(sv_good_list[i][4])) + '\t' + \
-                                sample + '\t' + sv_good_list[i][6] + '\t' + sv_good_list[i][2] + '\t' + sv_good_list[i][5]
- 
+            with open(result_file, 'r') as hin:
+                for line in hin:
+                    F = line.rstrip('\n').split('\t')
+                    print >> hout, F[0] + '\t' + str(int(F[1]) - 1) + '\t' + F[1] + '\t' + F[3] + '\t' + str(int(F[4]) - 1) + '\t' + F[4] + '\t' + \
+                                    sample + '\t' + F[6] + '\t' + F[2] + '\t' + F[5]
     hout.close()
 
     hout = open(args.output_prefix + ".bedpe", 'w')
