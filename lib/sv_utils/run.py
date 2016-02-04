@@ -445,7 +445,7 @@ def realign_main(args):
 
     from genomonsv import filterFunction
 
-    if args.tumor_bam == "None":
+    if args.tumor_bam is None:
         print >> sys.stderr, "tumor_bam file should be input"
         sys.exit(1)
 
@@ -453,7 +453,7 @@ def realign_main(args):
     if os.path.dirname(args.output) != "" and not os.path.exists(os.path.dirname(args.output)):
         os.makedirs(os.path.dirname(args.output))
 
-    matchedControlFlag = True if args.control_bam != "None" else False
+    matchedControlFlag = True if args.control_bam is not None else False
 
     # generate bedpe file
     hout = open(args.output + ".tmp1.bedpe", 'w')
