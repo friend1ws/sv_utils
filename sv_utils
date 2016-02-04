@@ -5,7 +5,7 @@ import argparse
 
 parser = argparse.ArgumentParser(prog = "sv_utils")
 
-parser.add_argument("--version", action = "version", version = "sv_utils-0.2.0")
+parser.add_argument("--version", action = "version", version = "sv_utils-0.3.0")
 
 subparsers = parser.add_subparsers()
 
@@ -148,7 +148,30 @@ merge_control.set_defaults(func = merge_control_main)
 
 ##########
 
+# realign
+realign_parser = subparsers.add_parser("realign", help = "realign sv candidate to input bam file for mainly validation purpose")
+
+realign_parser.add_argument("result_file", metavar = "genomonSV.result.txt", default = None, type = str,
+                            help = "the path to genomon SV result")
+    
+realign_parser.add_argument("output", metavar = "output.txt", default = None, type = str,
+                            help = "the path to the output file")
+
+realign_parser.add_argument("--reference", metavar = "reference.fa", default = None, type = str, required=True,
+                            help = "the path to the reference genomoe sequence")
+
+realign_parser.add_argument("--tumor_bam", metavar = "tumor.bam", default = None, type = str, required=True,
+                            help = "the path to the tumor bam file")
+
+realign_parser.add_argument("--control_bam", metavar = "control.bam", default = None, type = str,
+                            help = "the path to the control bam file (optional)")  
+       
+realign_parser.set_defaults(func = realign_main)
+
+###########
+
 args = parser.parse_args()
 
 args.func(args)
+
 

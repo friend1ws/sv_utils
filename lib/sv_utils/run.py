@@ -439,3 +439,76 @@ def merge_control_main(args):
     # remove intermediate file
     subprocess.call(["rm", "-rf", args.output_prefix + ".tmp.bedpe"])
 
+
+
+def realign_main(args):
+
+    from genomonsv import filterFunction
+
+    if args.tumor_bam == "None":
+        print >> sys.stderr, "tumor_bam file should be input"
+        sys.exit(1)
+
+    # make directory for output if necessary
+    if os.path.dirname(args.output) != "" and not os.path.exists(os.path.dirname(args.output)):
+        os.makedirs(os.path.dirname(args.output))
+
+    matchedControlFlag = True if args.control_bam != "None" else False
+
+    # generate bedpe file
+    hout = open(args.output + ".tmp1.bedpe", 'w')
+    i = 0
+    with open(args.result_file, 'r') as hin:
+        for line in hin:
+            F = line.rstrip('\n').split('\t')
+            print >> hout, '\t'.join([F[0], str(int(F[1]) - 1), F[1], F[3], str(int(F[4]) - 1), F[4], "genoemonSV_" + str(i), F[6], F[2], F[5]])
+            i = i + 1
+
+    hout.close()
+
+    # yaml input
+    param = {"max_depth": 5000, "search_length": 1000, "search_margin": 5, "reference_genome": args.reference,
+             "split_refernece_thres": 1000, "validate_sequence_length": 1000, "STD_thres": 500}
+
+    filterFunction.validateByRealignment(args.output + ".tmp1.bedpe",
+                    args.output + ".tmp2.bedpe",
+                    args.tumor_bam,
+                    args.control_bam,
+                    "blat -stepSize=5 -repMatch=2253",
+                    matchedControlFlag,
+                    param)
+
+    key2AF_info = {}
+    with open(args.output + ".tmp2.bedpe", 'r') as hin:
+        for line in hin:
+            F = line.rstrip('\n').split('\t')
+            key = '\t'.join(F[:7])
+
+            tumorAF = 0 
+            if float(F[7]) + float(F[8]) > 0: tumorAF = float(F[8]) / (float(F[7]) + float(F[8]))     
+            tumorAF = str(round(tumorAF, 4))
+
+            normalAF = "---"
+            if matchedControlFlag == True:
+                normalAF = 0
+                if float(F[9]) + float(F[10]) > 0: normalAF = float(F[10]) / (float(F[9]) + float(F[10]))
+                normalAF = str(round(normalAF, 4))
+
+            if matchedControlFlag == True:
+                key2AF_info[key] = '\t'.join([F[7], F[8], tumorAF, F[9], F[10], normalAF, F[11]])
+            else:
+                key2AF_info[key] = '\t'.join([F[7], F[8], tumorAF])
+
+
+    hout = open(args.output, 'w') 
+    with open(args.result_file, 'r') as hin:
+        for line in hin:
+            F = line.rstrip('\n').split('\t')
+            key = '\t'.join(F[:7])
+            print >> hout, '\t'.join(F) + '\t' + key2AF_info[key]
+
+    hout.close()
+
+    subprocess.call(["rm", "-rf", args.output + ".tmp1.bedpe"])
+    subprocess.call(["rm", "-rf", args.output + ".tmp2.bedpe"])
+
