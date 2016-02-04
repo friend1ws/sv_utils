@@ -65,3 +65,11 @@ gather, compress and index control variants
 ```
 sv_utils merge_control [-h] result_list.txt output_prefix
 ```
+### realign
+realign short reads around the structural variation candidates in the input file and check the allele frequencies
+```
+sv_utils realign [-h] --reference reference.fa --tumor_bam tumor.bam
+                        [--control_bam control.bam]
+                        genomonSV.result.txt output.txt
+```
+
