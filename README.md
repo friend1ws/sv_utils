@@ -8,7 +8,7 @@ utility scripts for processing and summarizing Genomon-SV results
 Python (>= 2.7), `genomonsv`  packages
 
 ### Software
-tabix, bgzip
+tabix, bgzip, blat (for realign)
 
 ## Install
 
