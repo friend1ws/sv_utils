@@ -5,7 +5,7 @@ utility scripts for processing and summarizing Genomon-SV results
 ## Dependency
 
 ### Python
-Python (>= 2.7), `genomonsv`  packages
+Python (>= 2.7), `genomonsv`, `pysam` packages
 
 ### Software
 tabix, bgzip, blat (for realign)
