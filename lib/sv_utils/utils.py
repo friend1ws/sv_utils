@@ -446,9 +446,9 @@ def check_coding_info(chr, start, end, ref_coding_tb):
                     temp_type = gene2info[gene]
         elif len(gene2info[gene].split(';')) == 2 and gene2info[gene].find("intron") != -1:
             if gene2info[gene].find("coding") != -1: temp_type = "coding_splicing"
-            elif gene2info[gene].find("noncoding") != -1: temp_type = "noncoding"
-            elif gene2info[gene].find("3UTR") != -1: temp_type = "3UTR"
-            elif gene2info[gene].find("5UTR") != -1: temp_type = "5UTR"
+            elif gene2info[gene].find("noncoding") != -1: temp_type = "noncoding_splicing"
+            elif gene2info[gene].find("3UTR") != -1: temp_type = "3UTR_splicing"
+            elif gene2info[gene].find("5UTR") != -1: temp_type = "5UTR_splicing"
             else: temp_type = "complex"
         else:
             temp_type = "complex"
