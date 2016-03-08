@@ -275,6 +275,10 @@ def filter_main(args):
             else:
                 print_line = print_line + '\t' + "intergenic" + '\t' + "---\t---"
 
+        if args.fusion_info is not None:
+            print_line = print_line + '\t' + utils.check_fusion_direction(chr_ucsc1, sv_good_list[i][1], sv_good_list[i][2],
+                                                                          chr_ucsc2, sv_good_list[i][4], sv_good_list[i][5], ref_gene_tb)
+
         print >> hout, print_line
 
 
@@ -317,6 +321,8 @@ def filter_main(args):
                     else:
                         print_line = print_line + '\t' + "intergenic" + '\t' + "---\t---"
 
+                if args.fusion_info is not None:
+                    print_line = print_line + '\t' + "---"
 
                 print >> hout, print_line
 

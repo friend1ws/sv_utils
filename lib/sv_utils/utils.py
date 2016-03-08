@@ -458,3 +458,59 @@ def check_coding_info(chr, start, end, ref_coding_tb):
 
 
 
+def check_fusion_direction(chr1, pos1, dir1, chr2, pos2, dir2, ref_gene_tb):
+
+    potential_upstream_gene1 = []
+    potential_downstream_gene1 = []
+    potential_upstream_gene2 = []
+    potential_downstream_gene2 = []
+
+    ##########
+    # check gene annotation for the side 1  
+    tabixErrorFlag = 0
+    try:
+        records = ref_gene_tb.fetch(chr1, int(pos1) - 1, int(pos1) + 1)
+    except Exception as inst:
+        print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
+        tabixErrorFlag = 1
+
+    if tabixErrorFlag == 0:
+        for record_line in records:
+            record = record_line.split('\t')
+            if int(pos1) + 1 <= int(record[2]) and int(pos1) - 1 >= int(record[1]) + 1:
+                if dir1 == record[5]: 
+                    potential_upstream_gene1.append(record[3])
+                else:
+                    potential_downstream_gene1.append(record[3])
+
+    ##########
+    # check gene annotation for the side 2
+    tabixErrorFlag = 0
+    try:
+        records = ref_gene_tb.fetch(chr2, int(pos2) - 1, int(pos2) + 1)
+    except Exception as inst:
+        print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
+        tabixErrorFlag = 1
+
+    if tabixErrorFlag == 0:
+        for record_line in records:
+            record = record_line.split('\t')
+            if int(pos2) + 1 <= int(record[2]) and int(pos2) - 1 >= int(record[1]) + 1:
+                if dir2 == record[5]: 
+                    potential_upstream_gene2.append(record[3])
+                else:
+                    potential_downstream_gene2.append(record[3])
+
+
+    fusion_comb = []
+    for u_gene in potential_upstream_gene1:
+        for d_gene in potential_downstream_gene2:
+            if u_gene != d_gene: fusion_comb.append(u_gene + ';' + d_gene)
+ 
+    for u_gene in potential_upstream_gene2:
+        for d_gene in potential_downstream_gene1:
+            if u_gene != d_gene: fusion_comb.append(u_gene + ';' + d_gene)
+
+
+    return ','.join(list(set(fusion_comb))) if len(fusion_comb) > 0 else "---"
+

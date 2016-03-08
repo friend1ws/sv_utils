@@ -110,6 +110,9 @@ filter_parser.add_argument("--re_annotation", default = False, action = "store_t
 filter_parser.add_argument("--coding_info", default = False, action = "store_true",
                            help = "get coding information")
 
+filter_parser.add_argument("--fusion_info", metavar = "fusion_info.txt", default = None, type = str,
+                           help = "the path to the fusion gene info file (gene1, gene2 and information for the 1st, 2nd and 3rd columns, respectively)")
+
 filter_parser.set_defaults(func = filter_main)
 ##########
 
