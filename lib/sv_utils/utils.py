@@ -458,7 +458,13 @@ def check_coding_info(chr, start, end, ref_coding_tb):
 
 
 
-def check_fusion_direction(chr1, pos1, dir1, chr2, pos2, dir2, ref_gene_tb):
+def check_fusion_direction(chr1, pos1, dir1, chr2, pos2, dir2, ref_gene_tb, fusion_info_file):
+
+    fusion_comb2info = {}
+    with open(fusion_info_file, 'r') as hin:
+        for line in hin:
+            F = line.rstrip('\n').split('\t')
+            fusion_comb2info[F[0] + '\t' + F[1]] = F[2]
 
     potential_upstream_gene1 = []
     potential_downstream_gene1 = []
@@ -512,5 +518,17 @@ def check_fusion_direction(chr1, pos1, dir1, chr2, pos2, dir2, ref_gene_tb):
             if u_gene != d_gene: fusion_comb.append(u_gene + ';' + d_gene)
 
 
-    return ','.join(list(set(fusion_comb))) if len(fusion_comb) > 0 else "---"
+    fusion_comb = list(set(fusion_comb))
+
+    fusion_infos = [] 
+    for comb in fusion_comb:
+        g1, g2 = sorted(comb.split(';'))
+        if g1 + '\t' + g2 in fusion_comb2info: 
+            for db in fusion_comb2info[g1 + '\t' + g2].split(';'):
+                fusion_infos.append(db)
+
+    fusion_info = ';'.join(sorted(list(set(fusion_infos)))) if len(fusion_infos) > 0 else "---"
+
+    return ','.join(fusion_comb) + '\t' + fusion_info if len(fusion_comb) > 0 else "---\t---"
+
 
