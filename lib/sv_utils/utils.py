@@ -458,6 +458,49 @@ def check_coding_info(chr, start, end, ref_coding_tb):
     return temp_type + '\t' + info_bars.lstrip(',') 
 
 
+def check_coding_info2(chr, start, end, ref_coding_tb):
+
+    coding_score = {"C": 11, "C;I": 10, "I;C": 10, "I;C;I": 9, "C;I;C": 8, "I;C;I;C": 8, "C;I;C;I": 8, "I;C;I;C;I": 7, "C;I;C;I;C": 6, "I;C;I;C;I;C": 6, "C;I;C;I;C;I": 6,
+                    "N": 5, "3": 4, "3;I": 3, "I;3": 3, "5": 2, "5;I": 1, "I;5": 1, "I": 0, "other": -1}
+
+    ##########
+    # check gene annotation for the side 1  
+    tabixErrorFlag = 0
+    try:
+        records = ref_coding_tb.fetch(chr, int(start) - 1, int(end) + 1)
+    except Exception as inst:
+        print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
+        tabixErrorFlag = 1
+
+    coding_info = {}
+    if tabixErrorFlag == 0:
+        for record_line in records:
+            record = record_line.split('\t')
+            if int(start) + 1 <= int(record[2]) and int(end) - 1 >= int(record[1]) + 1:
+                coding_info[','.join([record[3], record[0], record[1], record[2], record[5]])] = record[4][0].upper()
+
+
+    gene2info = {}
+    for key in sorted(coding_info):
+        key_elm = key.split(',')
+        gene = key_elm[0]
+        gene2info[gene] = coding_info[key] if gene not in gene2info else gene2info[gene] + ';' + coding_info[key]
+
+
+    info_bars = ""
+    temp_type = ""
+    for gene in sorted(gene2info):
+        info_bars = info_bars + ',' + gene + ';' + gene2info[gene]
+        if gene2info[gene] in coding_score:
+            if temp_type == "":
+                temp_type = gene2info[gene]
+            else:
+                if coding_score[gene2info[gene]] > coding_score[temp_type]: temp_type = gene2info[gene]
+        else:
+            if temp_type == "": temp_type == "other"
+
+    return temp_type + '\t' + info_bars.lstrip(',')
+
 
 def check_fusion_direction(chr1, pos1, dir1, chr2, pos2, dir2, ref_gene_tb, fusion_info_file):
 

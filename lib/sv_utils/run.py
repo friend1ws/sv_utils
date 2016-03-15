@@ -268,7 +268,7 @@ def filter_main(args):
                 if g1 != "---" or g2 != "---": gene_flag = 1
 
             if within_gene_flag == 1:
-                coding_info = utils.check_coding_info(chr_ucsc1, sv_good_list[i][1], sv_good_list[i][4], ref_coding_tb)
+                coding_info = utils.check_coding_info2(chr_ucsc1, sv_good_list[i][1], sv_good_list[i][4], ref_coding_tb)
                 print_line = print_line + '\t' + "within_gene" + '\t' + coding_info                
             elif gene_flag == 1:
                 print_line = print_line + '\t' + "across_gene" + '\t' + "---\t---" 
