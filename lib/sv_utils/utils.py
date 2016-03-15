@@ -407,8 +407,8 @@ def get_gene_annotation(chr1, pos1, chr2, pos2, gene_tb, exon_tb):
 def check_coding_info(chr, start, end, ref_coding_tb):
 
     # coding_score = {"coding": 4, "noncoding": 3, "3UTR": 2, "5UTR": 1, "intron": 0, "splicing": -1, "complex": -1}
-    coding_score = {"coding": 10, "coding_splicing": 9, "noncoding": 8, "noncoding_splicing": 7, "3UTR": 6, "3UTR_splicing": 5,
-                    "5UTR": 4, "5UTR_splicing": 3, "intron": 2, "complex": 1}
+    coding_score = {"coding": 11, "multi-coding": 10 , "coding_splicing": 9, "noncoding": 8, "noncoding_splicing": 7, 
+                    "3UTR": 6, "3UTR_splicing": 5, "5UTR": 4, "5UTR_splicing": 3, "intron": 2, "complex": 1}
 
     ##########
     # check gene annotation for the side 1  
@@ -450,6 +450,7 @@ def check_coding_info(chr, start, end, ref_coding_tb):
             elif gene2info[gene].find("3UTR") != -1: temp_type = "3UTR_splicing"
             elif gene2info[gene].find("5UTR") != -1: temp_type = "5UTR_splicing"
             else: temp_type = "complex"
+        # elif len(list(set(gene2info[gene].split(';')))) == 2
         else:
             temp_type = "complex"
           

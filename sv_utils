@@ -150,7 +150,6 @@ merge_control.add_argument("output_prefix", default = None, type = str,
 merge_control.set_defaults(func = merge_control_main)
 
 ##########
-
 # realign
 realign_parser = subparsers.add_parser("realign", help = "realign sv candidate to input bam file for mainly validation purpose")
 
@@ -172,6 +171,24 @@ realign_parser.add_argument("--control_bam", metavar = "control.bam", default = 
 realign_parser.set_defaults(func = realign_main)
 
 ###########
+# contig
+contig_parser = subparsers.add_parser("contig", help = "generate contig sequence for mainly PCR validation")
+
+contig_parser.add_argument("result_file", metavar = "genomonSV.result.txt", default = None, type = str,
+                            help = "the path to genomon SV result")
+
+contig_parser.add_argument("output", metavar = "output.txt", default = None, type = str,
+                            help = "the path to the output file")
+
+contig_parser.add_argument("--reference", metavar = "reference.fa", default = None, type = str, required=True,
+                            help = "the path to the reference genomoe sequence")
+
+contig_parser.add_argument("--length", default = 150, type = int,
+                           help = "size of each two sequence length from breakpoints")
+
+contig_parser.set_defaults(func = contig_main)
+
+##########
 
 args = parser.parse_args()
 

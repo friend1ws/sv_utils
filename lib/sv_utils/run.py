@@ -520,3 +520,35 @@ def realign_main(args):
     subprocess.call(["rm", "-rf", args.output + ".tmp1.bedpe"])
     subprocess.call(["rm", "-rf", args.output + ".tmp2.bedpe"])
 
+
+def contig_main(args):
+ 
+    from genomonsv import realignmentFunction
+
+    # make directory for output if necessary
+    if os.path.dirname(args.output) != "" and not os.path.exists(os.path.dirname(args.output)):
+        os.makedirs(os.path.dirname(args.output))
+
+    # yaml input
+    param = {"reference_genome": args.reference, "split_refernece_thres": 1000, "validate_sequence_length": args.length}
+
+    hout = open(args.output, 'w')
+    with open(args.result_file, 'r') as hin:
+        for line in hin:
+            F = line.rstrip('\n').split('\t')
+            chr1, pos1, dir1, chr2, pos2, dir2, junc_seq = F[0], F[1], F[2], F[3], F[4], F[5], F[6]
+            realignmentFunction.getRefAltForSV(args.output + ".contig.tmp.fa", param, chr1, pos1, dir1, chr2, pos2, dir2, junc_seq)
+
+            with open(args.output + ".contig.tmp.fa") as hin2:
+                lines2 = hin2.readlines()
+                for i in range(len(lines2)):
+                    lines2[i] = lines2[i].rstrip('\n')
+                    if lines2[i].startswith('>') and lines2[i].endswith("alt"):
+                        seq = lines2[i + 1]
+                        print >> hout, '\t'.join(F) + '\t' + seq
+              
+
+    hout.close()    
+    # subprocess.call(["rm", "-rf", args.output + ".contig.tmp.fa"])
+ 
+
