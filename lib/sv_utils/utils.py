@@ -488,16 +488,14 @@ def check_coding_info2(chr, start, end, ref_coding_tb):
 
 
     info_bars = ""
-    temp_type = ""
+    temp_type = "other"
     for gene in sorted(gene2info):
         info_bars = info_bars + ',' + gene + ';' + gene2info[gene]
         if gene2info[gene] in coding_score:
-            if temp_type == "":
+            if temp_type == "other":
                 temp_type = gene2info[gene]
             else:
                 if coding_score[gene2info[gene]] > coding_score[temp_type]: temp_type = gene2info[gene]
-        else:
-            if temp_type == "": temp_type == "other"
 
     return temp_type + '\t' + info_bars.lstrip(',')
 

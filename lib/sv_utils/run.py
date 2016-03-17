@@ -316,7 +316,7 @@ def filter_main(args):
 
                     if within_gene_flag == 1:
                         chr_ucsc1 = grch2ucsc[F[3]] if F[3] in grch2ucsc else F[3]
-                        coding_info = utils.check_coding_info(chr_ucsc1, F[4], F[7], ref_coding_tb)
+                        coding_info = utils.check_coding_info2(chr_ucsc1, F[4], F[7], ref_coding_tb)
                         print_line = print_line + '\t' + "within_gene" + '\t' + coding_info
                     elif gene_flag == 1:
                         print_line = print_line + '\t' + "across_gene" + '\t' + "---\t---"
@@ -524,19 +524,22 @@ def realign_main(args):
 def contig_main(args):
  
     from genomonsv import realignmentFunction
+    from primer3 import *
 
     # make directory for output if necessary
     if os.path.dirname(args.output) != "" and not os.path.exists(os.path.dirname(args.output)):
         os.makedirs(os.path.dirname(args.output))
 
     # yaml input
-    param = {"reference_genome": args.reference, "split_refernece_thres": 1000, "validate_sequence_length": args.length}
+    param = {"reference_genome": args.reference, "split_refernece_thres": 1000, "validate_sequence_length": 250}
 
     hout = open(args.output, 'w')
     with open(args.result_file, 'r') as hin:
         for line in hin:
             F = line.rstrip('\n').split('\t')
             chr1, pos1, dir1, chr2, pos2, dir2, junc_seq = F[0], F[1], F[2], F[3], F[4], F[5], F[6]
+            junc_seq_len = 0 if junc_seq == "---" else len(junc_seq)
+
             realignmentFunction.getRefAltForSV(args.output + ".contig.tmp.fa", param, chr1, pos1, dir1, chr2, pos2, dir2, junc_seq)
 
             with open(args.output + ".contig.tmp.fa") as hin2:
@@ -545,7 +548,24 @@ def contig_main(args):
                     lines2[i] = lines2[i].rstrip('\n')
                     if lines2[i].startswith('>') and lines2[i].endswith("alt"):
                         seq = lines2[i + 1]
-                        print >> hout, '\t'.join(F) + '\t' + seq
+
+                        primer = bindings.designPrimers(
+                            {
+                                'SEQUENCE_ID': 'MH1000',
+                                'SEQUENCE_TEMPLATE': seq,
+                                'SEQUENCE_TARGET': [225,50 + junc_seq_len],
+                                'SEQUENCE_INCLUDED_REGION': [10, len(seq) - 20]
+                            },
+                            {
+                                'PRIMER_PRODUCT_SIZE_RANGE': [[150,250],[100,300],[301,400],[401,500]],
+                            })
+
+                        primer_left_right = ["---"] * 5
+                        for i in range(5):
+                            if "PRIMER_LEFT_" + str(i) + "_SEQUENCE" in primer and "PRIMER_RIGHT_" + str(i) + "_SEQUENCE" in primer:
+                                primer_left_right[i] = primer["PRIMER_LEFT_" + str(i) + "_SEQUENCE"] + ";" + primer["PRIMER_RIGHT_" + str(i) + "_SEQUENCE"]
+
+                        print >> hout, '\t'.join(F) + '\t' + seq + '\t' + '\t'.join(primer_left_right)
               
 
     hout.close()    
