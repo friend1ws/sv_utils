@@ -547,7 +547,7 @@ def contig_main(args):
                 for i in range(len(lines2)):
                     lines2[i] = lines2[i].rstrip('\n')
                     if lines2[i].startswith('>') and lines2[i].endswith("alt"):
-                        seq = lines2[i + 1]
+                        seq = lines2[i + 1].rstrip('\n')
 
                         primer = bindings.designPrimers(
                             {
