@@ -5,7 +5,7 @@ utility scripts for processing and summarizing Genomon-SV results
 ## Dependency
 
 ### Python
-Python (>= 2.7), `genomonsv`, `pysam` packages
+Python (>= 2.7), `genomonsv`, `pysam`, [`primer3-py`](http://libnano.github.io/primer3-py/index.html) (for primer) packages
 
 ### Software
 tabix, bgzip, blat (for realign)
@@ -72,4 +72,12 @@ sv_utils realign [-h] --reference reference.fa --tumor_bam tumor.bam
                         [--control_bam control.bam]
                         genomonSV.result.txt output.txt
 ```
+
+### primer
+generate primer sequeces for mainly PRC validation
+```
+sv_utils primer [-h] --reference reference.fa
+                       genomonSV.result.txt output.txt
+```
+
 
