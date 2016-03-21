@@ -208,7 +208,7 @@ def filter_main(args):
     sv_good_list = utils.filter_sv_list(args.result_file, args.fisher_thres, args.tumor_freq_thres, args.normal_freq_thres,
                                         args.normal_depth_thres, args.inversion_size_thres, args.max_size_thres,
                                         args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb,
-                                        simple_repeat_tb, grch2ucsc, control_tb, args.control_num_thres, False)
+                                        simple_repeat_tb, grch2ucsc, control_tb, args.control_num_thres, args.no_control)
 
     mut_tb = None
     if args.mutation_result != "":

@@ -5,7 +5,7 @@ import my_seq
 
 def filter_sv_list(result_file, fisher_thres, tumor_freq_thres, normal_freq_thres, normal_depth_thres, 
                     inversion_size_thres, max_size_thres, within_exon, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb, 
-                    simple_repeat_tb, grch2ucsc, control_tb, control_num_thres, normal_mode = False):
+                    simple_repeat_tb, grch2ucsc, control_tb, control_num_thres, normal_mode):
 
     good_list = []
     with open(result_file, 'r') as hin:

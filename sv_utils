@@ -80,6 +80,9 @@ filter_parser.add_argument("--inversion_size_thres", default = 500, type = int,
 filter_parser.add_argument("--max_size_thres", default = None, type = int,
                    help = "remove if the size of variant is larger than this value")
 
+filter_parser.add_argument("--no_control", default = False, action = "store_true",
+                   help = "for the result without matched control")
+
 filter_parser.add_argument("--within_exon", default = False, action = "store_true",
                     help = "keep only variants within exon")
 
