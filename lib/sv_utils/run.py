@@ -2,7 +2,7 @@
 
 import sys, os, subprocess, gzip
 import pysam
-import utils
+import utils, my_seq
 
 def count_main(args):
 
@@ -571,4 +571,27 @@ def contig_main(args):
     hout.close()    
     # subprocess.call(["rm", "-rf", args.output + ".contig.tmp.fa"])
  
+
+def vcf_main(args):
+
+    # generate bedpe file
+    hout = open(args.output, 'w')
+    with open(args.result_file, 'r') as hin:
+        for line in hin:
+            F = line.rstrip('\n').split('\t')
+
+            if F[7] in ["inversion", "translocation"]: continue
+            if abs(int(F[1]) - int(F[4])) > int(args.max_size_thres): continue
+
+            if F[7] == "deletion":
+                ref_seq = my_seq.get_seq(args.reference, F[0], int(F[1]), int(F[4]) - 1)
+                alt_seq = ref_seq[0] if F[6] == "---" else ref_seq[0] + F[6]
+            elif F[7] == "tandem_duplication":
+                alt_seq = my_seq.get_seq(args.reference, F[0], int(F[1]) - 1, int(F[4]))
+                alt_seq = alt_seq if F[6] == "---" else alt_seq + F[6]
+                ref_seq = alt_seq[0]
+
+            print >> hout, '\t'.join([F[0], F[1], '.', ref_seq, alt_seq, '.', "PASS", '.']) 
+
+    hout.close()
 

@@ -191,6 +191,28 @@ contig_parser.add_argument("--reference", metavar = "reference.fa", default = No
 
 contig_parser.set_defaults(func = contig_main)
 
+
+##########
+# convert to vcf format
+format_parser = subparsers.add_parser("format", help = "convert to vcf format")
+
+format_parser.add_argument("result_file", metavar = "genomonSV.result.txt", default = None, type = str,
+                        help = "the path to genomon SV result")
+
+format_parser.add_argument("output", metavar = "output.txt", default = None, type = str,
+                        help = "the path to the output file")
+
+format_parser.add_argument("--reference", metavar = "reference.fa", default = None, type = str, required=True,
+                           help = "the path to the reference genomoe sequence")
+
+format_parser.add_argument('--format', choices=['vcf'], default = 'vcf',
+                    help = "the format of sv file. currently we only support vcfformat")
+
+format_parser.add_argument("--max_size_thres", default = 100, type = int,
+                        help = "remove if the size of variant is larger than this value")
+
+format_parser.set_defaults(func = vcf_main)
+
 ##########
 
 args = parser.parse_args()
