@@ -80,4 +80,11 @@ sv_utils primer [-h] --reference reference.fa
                        genomonSV.result.txt output.txt
 ```
 
+### format
+convert to vcf format for short deletions and tandem duplications
+```
+sv_utils format [-h] --reference reference.fa [--format {vcf}]
+                       [--max_size_thres MAX_SIZE_THRES]
+                       genomonSV.result.txt output.txt
+```
 
