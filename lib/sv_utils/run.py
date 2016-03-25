@@ -586,12 +586,14 @@ def vcf_main(args):
             if F[7] == "deletion":
                 ref_seq = my_seq.get_seq(args.reference, F[0], int(F[1]), int(F[4]) - 1)
                 alt_seq = ref_seq[0] if F[6] == "---" else ref_seq[0] + F[6]
+                pos = F[1]
             elif F[7] == "tandem_duplication":
                 alt_seq = my_seq.get_seq(args.reference, F[0], int(F[1]) - 1, int(F[4]))
                 alt_seq = alt_seq if F[6] == "---" else alt_seq + F[6]
                 ref_seq = alt_seq[0]
+                pos = str(int(F[1]) - 1)
 
-            print >> hout, '\t'.join([F[0], F[1], '.', ref_seq, alt_seq, '.', "PASS", '.']) 
+            print >> hout, '\t'.join([F[0], pos, '.', ref_seq, alt_seq, '.', "PASS", '.']) 
 
     hout.close()
 
