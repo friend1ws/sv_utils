@@ -175,21 +175,21 @@ realign_parser.set_defaults(func = realign_main)
 
 ###########
 # primer 
-contig_parser = subparsers.add_parser("primer", help = "generate primer sequence for mainly PCR validation")
+primer_parser = subparsers.add_parser("primer", help = "generate primer sequence for mainly PCR validation")
 
-contig_parser.add_argument("result_file", metavar = "genomonSV.result.txt", default = None, type = str,
+primer_parser.add_argument("result_file", metavar = "genomonSV.result.txt", default = None, type = str,
                             help = "the path to genomon SV result")
 
-contig_parser.add_argument("output", metavar = "output.txt", default = None, type = str,
+primer_parser.add_argument("output", metavar = "output.txt", default = None, type = str,
                             help = "the path to the output file")
 
-contig_parser.add_argument("--reference", metavar = "reference.fa", default = None, type = str, required=True,
+primer_parser.add_argument("--reference", metavar = "reference.fa", default = None, type = str, required=True,
                             help = "the path to the reference genomoe sequence")
 
 # contig_parser.add_argument("--length", default = 250, type = int,
 #                            help = "size of each two sequence length from breakpoints")
 
-contig_parser.set_defaults(func = contig_main)
+primer_parser.set_defaults(func = primer_main)
 
 
 ##########

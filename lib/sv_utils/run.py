@@ -525,10 +525,10 @@ def realign_main(args):
     subprocess.call(["rm", "-rf", args.output + ".tmp2.bedpe"])
 
 
-def contig_main(args):
+def primer_main(args):
  
     from genomonsv import realignmentFunction
-    from primer3 import *
+    from primer3 import bindings 
 
     # make directory for output if necessary
     if os.path.dirname(args.output) != "" and not os.path.exists(os.path.dirname(args.output)):
@@ -540,8 +540,17 @@ def contig_main(args):
     hout = open(args.output, 'w')
     with open(args.result_file, 'r') as hin:
         for line in hin:
+
+            if line.startswith("Chr_1" + '\t' + "Pos_1"): 
+                line = line.rstrip('\n')
+                header_info.read(line)
+                print >> hout, line + '\t' + "Primer1" + '\t' + "Primer2" + '\t' + "Primer3" + '\t' + "Primer4" + '\t' + "Primer5"
+                continue
+            
             F = line.rstrip('\n').split('\t')
-            chr1, pos1, dir1, chr2, pos2, dir2, junc_seq = F[0], F[1], F[2], F[3], F[4], F[5], F[6]
+            chr1, pos1, dir1, chr2, pos2, dir2, junc_seq = F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1], \
+                                                           F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2], F[header_info.inserted_seq]
+
             junc_seq_len = 0 if junc_seq == "---" else len(junc_seq)
 
             realignmentFunction.getRefAltForSV(args.output + ".contig.tmp.fa", param, chr1, pos1, dir1, chr2, pos2, dir2, junc_seq)
@@ -569,11 +578,11 @@ def contig_main(args):
                             if "PRIMER_LEFT_" + str(i) + "_SEQUENCE" in primer and "PRIMER_RIGHT_" + str(i) + "_SEQUENCE" in primer:
                                 primer_left_right[i] = primer["PRIMER_LEFT_" + str(i) + "_SEQUENCE"] + ";" + primer["PRIMER_RIGHT_" + str(i) + "_SEQUENCE"]
 
-                        print >> hout, '\t'.join(F) + '\t' + seq + '\t' + '\t'.join(primer_left_right)
+                        print >> hout, '\t'.join(F) + '\t' + '\t'.join(primer_left_right)
               
 
     hout.close()    
-    # subprocess.call(["rm", "-rf", args.output + ".contig.tmp.fa"])
+    subprocess.call(["rm", "-rf", args.output + ".contig.tmp.fa"])
  
 
 def vcf_main(args):
@@ -582,7 +591,10 @@ def vcf_main(args):
     hout = open(args.output, 'w')
     with open(args.result_file, 'r') as hin:
         for line in hin:
-            if line.startswith("Chr_1" + '\t' + "Pos_1"): header_info.read()
+            if line.startswith("Chr_1" + '\t' + "Pos_1"): 
+                header_info.read(line.rstrip('\n'))
+                continue
+
             F = line.rstrip('\n').split('\t')
 
             if F[header_info.variant_type] in ["inversion", "translocation"]: continue

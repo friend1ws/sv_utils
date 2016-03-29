@@ -32,7 +32,7 @@ class Header_info(object):
     def read(self, header):
     
         F = header.rstrip('\n').split('\t')
-        for i in len(F):
+        for i in range(len(F)):
             if F[i] == "Chr_1": self.chr_1 = i
             if F[i] == "Pos_1": self.pos_1 = i
             if F[i] == "Dir_1": self.dir_1 = i
@@ -45,15 +45,15 @@ class Header_info(object):
             if F[i] == "Gene_2": self.gene_2 = i
             if F[i] == "Exon_1": self.exon_1 = i
             if F[i] == "Exon_2": self.exon_2 = i
-            if F[i] == "#Tumor_Ref_Read_Pair": self.num_tumor_ref_read_pair = i
-            if F[i] == "#Tumor_Var_Read_Pair": self.num_tumor_var_read_pair = i
+            if F[i] == "Num_Tumor_Ref_Read_Pair": self.num_tumor_ref_read_pair = i
+            if F[i] == "Num_Tumor_Var_Read_Pair": self.num_tumor_var_read_pair = i
             if F[i] == "Tumor_VAF": self.tumor_vaf = i
-            if F[i] == "#Control_Ref_Read_Pair": self.num_control_ref_read_pair = i
-            if F[i] == "#Control_Var_Read_Pair": self.num_control_var_read_pair = i
+            if F[i] == "Num_Control_Ref_Read_Pair": self.num_control_ref_read_pair = i
+            if F[i] == "Num_Control_Var_Read_Pair": self.num_control_var_read_pair = i
             if F[i] == "Control_VAF": self.control_vaf = i
             if F[i] == "Minus_Log_Fisher_P_value": self.minus_log_fisher_p_value = i
             if F[i] == "Non-Matched_Control_Sample_With_Max_Junction": self.non_matched_control_sample_with_max_junction = i
-            if F[i] == "#Max_Non-Matched_Control_Junction": self.num_non_matched_control_junction = i
+            if F[i] == "Num_Max_Non-Matched_Control_Junction": self.num_non_matched_control_junction = i
             if F[i] == "Max_Over_Hang_1": self.max_over_hang_1 = i
             if F[i] == "Max_Over_Hang_2": self.max_over_hang_2 = i
 
