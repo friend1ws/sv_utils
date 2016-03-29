@@ -227,6 +227,15 @@ def filter_main(args):
         utils.make_mut_db(args.mutation_result, args.output + ".mutation", args.reference)
         mut_tb = pysam.TabixFile(args.output + ".mutation.bed.gz")
 
+    if sv_good_list[0][header_info.chr_1] == "Chr_1" and sv_good_list[0][header_info.pos_1] == "Pos_1":
+        print_header = '\t'.join(sv_good_list[i])
+        if args.mutation_result != "": print_header = print_header + '\t' + "Mutation_Detection"
+        if args.closest_exon == True: print_header = print_header + '\t' + "Dist_To_Exon" + '\t' + "Target_Exon"
+        if args.closest_coding == True: print_header = print_header + '\t' + "Dist_To_Coding" + '\t' + "Target_Coding"
+        if args.coding_info == True: print_header = print_header + '\t' + "Intra_or_Inter_Gene" + '\t' + "Coding_Class" + '\t' + "Detailed_Coding_Info"
+        if args.fusion_info is not None: print_header = print_header + '\t' + "Known_Gene_Fusion_Comb" + '\t' + "Known_Gene_Fusion_Source" 
+        print >> hout, print_header
+
     dup_list = {}
     for i in range(0, len(sv_good_list)):
         chr_ucsc1 = grch2ucsc[sv_good_list[i][header_info.chr_1]] if sv_good_list[i][header_info.chr_1] in grch2ucsc else sv_good_list[i][header_info.chr_1]
