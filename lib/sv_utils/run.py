@@ -3,6 +3,10 @@
 import sys, os, subprocess, gzip
 import pysam
 import utils, my_seq
+from header_info import *
+
+global header_info
+header_info = Header_info()
 
 def count_main(args):
 
@@ -578,22 +582,23 @@ def vcf_main(args):
     hout = open(args.output, 'w')
     with open(args.result_file, 'r') as hin:
         for line in hin:
+            if line.startswith("Chr_1" + '\t' + "Pos_1"): header_info.read()
             F = line.rstrip('\n').split('\t')
 
-            if F[7] in ["inversion", "translocation"]: continue
-            if abs(int(F[1]) - int(F[4])) > int(args.max_size_thres): continue
+            if F[header_info.variant_type] in ["inversion", "translocation"]: continue
+            if abs(int(F[header_info.pos_1]) - int(F[header_info.pos_2])) > int(args.max_size_thres): continue
 
-            if F[7] == "deletion":
-                ref_seq = my_seq.get_seq(args.reference, F[0], int(F[1]), int(F[4]) - 1)
-                alt_seq = ref_seq[0] if F[6] == "---" else ref_seq[0] + F[6]
+            if F[header_info.variant_type] == "deletion":
+                ref_seq = my_seq.get_seq(args.reference, F[header_info.chr_1], int(F[header_info.pos_1]), int(F[header_info.pos_2]) - 1)
+                alt_seq = ref_seq[0] if F[header_info.inserted_seq] == "---" else ref_seq[0] + F[header_info.inserted_seq] 
                 pos = F[1]
-            elif F[7] == "tandem_duplication":
-                alt_seq = my_seq.get_seq(args.reference, F[0], int(F[1]) - 1, int(F[4]))
-                alt_seq = alt_seq if F[6] == "---" else alt_seq + F[6]
+            elif F[header_info.variant_type] == "tandem_duplication":
+                alt_seq = my_seq.get_seq(args.reference, F[header_info.chr_1], int(F[header_info.pos_1]) - 1, int(F[header_info.pos_2]))
+                alt_seq = alt_seq if F[header_info.inserted_seq] == "---" else alt_seq + F[header_info.inserted_seq] 
                 ref_seq = alt_seq[0]
-                pos = str(int(F[1]) - 1)
+                pos = str(int(F[header_info.pos_1]) - 1)
 
-            print >> hout, '\t'.join([F[0], pos, '.', ref_seq, alt_seq, '.', "PASS", '.']) 
+            print >> hout, '\t'.join([F[header_info.chr_1], pos, '.', ref_seq, alt_seq, '.', "PASS", '.']) 
 
     hout.close()
 
