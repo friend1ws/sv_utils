@@ -35,11 +35,17 @@ def count_main(args):
 
                 with open(result_file, 'r') as hin:
                     for line in hin:
+                
+                        if line.startswith("Chr_1" + '\t' + "Pos_1"):
+                            line = line.rstrip('\n')
+                            header_info.read(line)
+                            continue
+
                         F = line.rstrip('\n').split('\t')
-                        if F[6] != "---":
-                            type2count[F[7] + "_inseq"] = type2count[F[7] + "_inseq"] + 1
+                        if F[header_info.inserted_seq] != "---":
+                            type2count[F[header_info.variant_type] + "_inseq"] = type2count[F[header_info.variant_type] + "_inseq"] + 1
                         else:
-                            type2count[F[7] + "_nonseq"] = type2count[F[7] + "_nonseq"] + 1
+                            type2count[F[header_info.variant_type] + "_nonseq"] = type2count[F[header_info.variant_type] + "_nonseq"] + 1
 
 
                 total_nonseq = type2count["deletion_nonseq"] + type2count["tandem_duplication_nonseq"] + \
@@ -59,7 +65,7 @@ def count_main(args):
                 with open(result_file, 'r') as hin:
                     for line in hin:
                         F = line.rstrip('\n').split('\t')
-                        type2count[F[7]] = type2count[F[7]] + 1
+                        type2count[F[header_info.variant_type]] = type2count[F[header_info.variant_type]] + 1
 
                 total = type2count["deletion"] + type2count["tandem_duplication"] + type2count["inversion"] + type2count["translocation"]
                 print >> hout, sample + '\t' + tumor_type + '\t' + str(type2count["deletion"]) + '\t' + str(type2count["tandem_duplication"]) + '\t' + \
@@ -98,20 +104,25 @@ def gene_summary_main(args):
 
             with open(result_file, 'r') as hin:
                 for line in hin:
+
+                    if line.startswith("Chr_1" + '\t' + "Pos_1"):
+                        header_info.read(line.rstrip('\n'))
+                        continue
+
                     F = line.rstrip('\n').split('\t')
-                    var_type = F[7]
-                    genes1 = F[8].split(';') if F[8] != "---" else []
-                    genes2 = F[9].split(';') if F[9] != "---" else []
+                    var_type = F[header_info.variant_type]
+                    genes1 = F[header_info.gene_1].split(';') if F[header_info.gene_1] != "---" else []
+                    genes2 = F[header_info.gene_2].split(';') if F[header_info.gene_2] != "---" else []
 
                     # check in-frame or not
                     is_inframe = False
                     if var_type == "deletion":
-                        var_size = int(F[4]) - int(F[1]) - 1
-                        var_size = var_size - (0 if F[6] == "---" else len(F[6]))
+                        var_size = int(F[header_info.pos_2]) - int(F[header_info.pos_1]) - 1
+                        var_size = var_size - (0 if F[header_info.inserted_seq] == "---" else len(F[header_info.inserted_seq]))
                         if var_size % 3 == 0: is_inframe = True
                     elif var_type == "tandem_duplication":
-                        var_size = int(F[4]) - int(F[1]) + 1
-                        var_size = var_size + (0 if F[6] == "---" else len(F[6]))
+                        var_size = int(F[header_info.pos_2]) - int(F[header_info.pos_1]) + 1
+                        var_size = var_size + (0 if F[header_info.inserted_seq] == "---" else len(F[header_info.inserted_seq]))
                         if var_size % 3 == 0: is_inframe = True
 
                     for gene in list(set(genes1 + genes2)):
@@ -359,6 +370,11 @@ def concentrate_main(args):
 
             with open(result_file, 'r') as hin:
                 for line in hin:
+                    if line.startswith("Chr_1" + '\t' + "Pos_1"):
+                        line = line.rstrip('\n')
+                        header_info.read(line)
+                        continue
+
                     F = line.rstrip('\n').split('\t')
                     if F[7] in ["deletion", "tandem_duplication"]:
                         print >> hout, sample + '\t' + tumor_type + '\t' + '\t'.join(F)
