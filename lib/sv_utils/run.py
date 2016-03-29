@@ -472,8 +472,16 @@ def realign_main(args):
     i = 0
     with open(args.result_file, 'r') as hin:
         for line in hin:
+            if line.startswith("Chr_1" + '\t' + "Pos_1"):
+                line = line.rstrip('\n')
+                header_info.read(line)
+                continue
+
             F = line.rstrip('\n').split('\t')
-            print >> hout, '\t'.join([F[0], str(int(F[1]) - 1), F[1], F[3], str(int(F[4]) - 1), F[4], "genoemonSV_" + str(i), F[6], F[2], F[5]])
+            print >> hout, '\t'.join([F[header_info.chr_1], str(int(F[header_info.pos_1]) - 1), F[header_info.pos_1], \
+                                      F[header_info.chr_2], str(int(F[header_info.pos_2]) - 1), F[header_info.pos_2], \
+                                      "genoemonSV_" + str(i), F[header_info.inserted_seq], F[header_info.dir_1], F[header_info.dir_2]] + \
+                                      ["---" for i in range(14)])
             i = i + 1
 
     hout.close()
@@ -515,6 +523,15 @@ def realign_main(args):
     hout = open(args.output, 'w') 
     with open(args.result_file, 'r') as hin:
         for line in hin:
+            if line.startswith("Chr_1" + '\t' + "Pos_1"):
+                line = line.rstrip('\n')
+                if matchedControlFlag == True:
+                    print >> hout, line + '\t' + "Num_Tumor_Ref_Read_Pair_re" + '\t' + "Num_Tumor_Var_Read_Pair_re" + '\t' + "Tumor_VAF_re" + '\t' + \
+                                                 "Num_Control_Ref_Read_Pair" + '\t'+ "Num_Control_Var_Read_Pair_re" + '\t' + "Control_VAF_re"
+                else:
+                    print >> hout, line + '\t' + "Num_Tumor_Ref_Read_Pair_re" + '\t' + "Num_Tumor_Var_Read_Pair_re" + '\t' + "Tumor_VAF_re"
+                continue
+
             F = line.rstrip('\n').split('\t')
             key = '\t'.join(F[:7])
             print >> hout, '\t'.join(F) + '\t' + key2AF_info[key]
