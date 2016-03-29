@@ -2,6 +2,7 @@
 
 import sys, subprocess
 import my_seq
+from header_info import *
 
 def filter_sv_list(result_file, fisher_thres, tumor_freq_thres, normal_freq_thres, normal_depth_thres, 
                     inversion_size_thres, max_size_thres, within_exon, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb, 
@@ -10,40 +11,49 @@ def filter_sv_list(result_file, fisher_thres, tumor_freq_thres, normal_freq_thre
     good_list = []
     with open(result_file, 'r') as hin:
         for line in hin:
+
+            if line.startswith("Chr_1" + '\t' + "Pos_1"):
+                header_info.read(line.rstrip('\n'))
+                F = line.rstrip('\n').split('\t')
+                good_list.append(F)
+                continue
+
             F = line.rstrip('\n').split('\t')
 
-            if F[0] == "MT" or F[3] == "MT": continue
-            if F[0] == "hs37d5" or F[3] == "hs37d5": continue
-            if F[0].startswith("GL0") or F[3].startswith("GL0"): continue
+            if F[header_info.chr_1] == "MT" or F[header_info.chr_2] == "MT": continue
+            if [header_info.chr_1] == "hs37d5" or F[header_info.chr_2] == "hs37d5": continue
+            if F[header_info.chr_1].startswith("GL0") or F[header_info.chr_2].startswith("GL0"): continue
 
-            if F[7] == "inversion" and abs(int(F[1]) - int(F[4])) < int(inversion_size_thres): continue
+            if F[header_info.variant_type] == "inversion" and abs(int(F[header_info.pos_1]) - int(F[header_info.pos_2])) < int(inversion_size_thres): continue
             if max_size_thres is not None:
-                if F[7] == "translocation": continue
-                if abs(int(F[1]) - int(F[4])) > int(max_size_thres): continue
-            if float(F[14]) < float(tumor_freq_thres): continue
+                if F[header_info.variant_type] == "translocation": continue
+                if abs(int(F[header_info.pos_1]) - int(F[header_info.pos_2])) > int(max_size_thres): continue
+            if float(F[header_info.tumor_vaf]) < float(tumor_freq_thres): continue
 
             if normal_mode == False:
-                if int(F[15]) + int(F[16]) < int(normal_depth_thres): continue
-                if float(F[17]) > float(normal_freq_thres): continue
-                if float(F[18]) < float(fisher_thres): continue
+                if int(F[header_info.num_control_ref_read_pair]) + int(F[header_info.num_control_var_read_pair]) < int(normal_depth_thres): continue
+                if float(F[header_info.control_vaf]) > float(normal_freq_thres): continue
+                if float(F[header_info.minus_log_fisher_p_value]) < float(fisher_thres): continue
 
             if within_exon:
-                if F[7] == "translocation": continue
-                chr_ucsc = grch2ucsc[F[0]] if F[0] in grch2ucsc else F[0]
-                if not in_exon_check(chr_ucsc, F[1], F[4], ref_exon_tb, ens_exon_tb): continue
+                if F[header_info.variant_type] == "translocation": continue
+                chr_ucsc = grch2ucsc[F[header_info.chr_1]] if F[header_info.chr_1] in grch2ucsc else F[header_info.chr_1] 
+                if not in_exon_check(chr_ucsc, F[header_info.pos_1], F[header_info.pos_2], ref_exon_tb, ens_exon_tb): continue
     
             if control_tb is not None:
-                if control_check(F[0], F[1], F[2], F[3], F[4], F[5], F[6], control_tb, control_num_thres): 
+                if control_check(F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1], \
+                                 F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2], \
+                                 F[header_info.inserted_seq], control_tb, control_num_thres): 
                     continue
 
-            if F[7] in ["deletion", "tandem_duplication"] and simple_repeat_tb is not None:
-                chr_ucsc = grch2ucsc[F[0]] if F[0] in grch2ucsc else F[0]
-                if simple_repeat_check(chr_ucsc, F[1], F[4], simple_repeat_tb):
+            if F[header_info.variant_type] in ["deletion", "tandem_duplication"] and simple_repeat_tb is not None:
+                chr_ucsc = grch2ucsc[F[header_info.chr_1]] if F[header_info.chr_1] in grch2ucsc else F[header_info.chr_1] 
+                if simple_repeat_check(chr_ucsc, F[header_info.pos_1], F[header_info.pos_2], simple_repeat_tb):
                     continue
 
-            if F[7] == "deletion":
-                chr_ucsc = grch2ucsc[F[0]] if F[0] in grch2ucsc else F[0]
-                if junction_check(chr_ucsc, F[1], F[4], ref_junc_tb, ens_junc_tb): continue
+            if F[header_info.variant_type] == "deletion":
+                chr_ucsc = grch2ucsc[F[header_info.chr_1]] if F[header_info.chr_1] in grch2ucsc else F[header_info.chr_1] 
+                if junction_check(chr_ucsc, F[header_info.pos_1], F[header_info.pos_2], ref_junc_tb, ens_junc_tb): continue
 
             good_list.append(F)
 

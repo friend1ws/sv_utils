@@ -57,3 +57,7 @@ class Header_info(object):
             if F[i] == "Max_Over_Hang_1": self.max_over_hang_1 = i
             if F[i] == "Max_Over_Hang_2": self.max_over_hang_2 = i
 
+
+global header_info
+header_info = Header_info()
+

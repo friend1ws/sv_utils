@@ -5,9 +5,6 @@ import pysam
 import utils, my_seq
 from header_info import *
 
-global header_info
-header_info = Header_info()
-
 def count_main(args):
 
     # make directory for output if necessary
@@ -232,22 +229,23 @@ def filter_main(args):
 
     dup_list = {}
     for i in range(0, len(sv_good_list)):
-        chr_ucsc1 = grch2ucsc[sv_good_list[i][0]] if sv_good_list[i][0] in grch2ucsc else sv_good_list[i][0]
-        chr_ucsc2 = grch2ucsc[sv_good_list[i][3]] if sv_good_list[i][3] in grch2ucsc else sv_good_list[i][3]
+        chr_ucsc1 = grch2ucsc[sv_good_list[i][header_info.chr_1]] if sv_good_list[i][header_info.chr_1] in grch2ucsc else sv_good_list[i][header_info.chr_1]
+        chr_ucsc2 = grch2ucsc[sv_good_list[i][header_info.chr_2]] if sv_good_list[i][header_info.chr_2] in grch2ucsc else sv_good_list[i][header_info.chr_2]
 
         if args.re_annotation == True:
-            sv_good_list[i][8], sv_good_list[i][9], sv_good_list[i][10], sv_good_list[i][11] = \
-                utils.get_gene_annotation(chr_ucsc1, sv_good_list[i][1], chr_ucsc2, sv_good_list[i][4], ref_gene_tb, ref_exon_tb)
+            sv_good_list[i][header_info.gene_1], sv_good_list[i][header_info.gene_2], sv_good_list[i][header_info.exon_1], sv_good_list[i][header_info.exon_2] = \
+                utils.get_gene_annotation(chr_ucsc1, sv_good_list[i][header_info.pos_1], chr_ucsc2, sv_good_list[i][header_info.pos_2], ref_gene_tb, ref_exon_tb)
 
         print_line = '\t'.join(sv_good_list[i])
 
         if args.mutation_result != "":
-            if sv_good_list[i][7] in ["deletion", "tandem_duplication"] and abs(int(sv_good_list[i][1]) - int(sv_good_list[i][4])) <= 100:
+            if sv_good_list[i][header_info.variant_type] in ["deletion", "tandem_duplication"] and \
+                abs(int(sv_good_list[i][header_info.pos_1]) - int(sv_good_list[i][header_info.pos_2])) <= 100:
 
                 # check exon annotation for the side 1
                 tabixErrorFlag = 0
                 try:
-                    records = mut_tb.fetch(sv_good_list[i][0], int(sv_good_list[i][1]) - 50, int(sv_good_list[i][4]) + 50)
+                    records = mut_tb.fetch(sv_good_list[i][header_info.chr_1], int(sv_good_list[i][header_info.pos_1]) - 50, int(sv_good_list[i][header_info.pos_2]) + 50)
                 except Exception as inst:
                     # print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
                     tabixErrorFlag = 1
@@ -256,7 +254,7 @@ def filter_main(args):
                 if tabixErrorFlag == 0:
                     for record_line in records:
                         record = record_line.split('\t')
-                        if int(record[7]) - int(record[4]) == int(sv_good_list[i][4]) - int(sv_good_list[i][1]) and record[10] == sv_good_list[i][7]:
+                        if int(record[7]) - int(record[4]) == int(sv_good_list[i][header_info.pos_2]) - int(sv_good_list[i][header_info.pos_1]) and record[10] == sv_good_list[i][7]:
                             duplicated_flag = 1
                             dup_list[record[0] + '\t' + record[1] + '\t' + record[2]] = 1
 
@@ -265,12 +263,12 @@ def filter_main(args):
                 print_line = print_line + '\t' + "sv"   
             
         if args.closest_exon == True:
-            dist_to_exon, target_exon = utils.distance_to_closest(chr_ucsc1, sv_good_list[i][1], chr_ucsc2, sv_good_list[i][4], ref_exon_tb)
+            dist_to_exon, target_exon = utils.distance_to_closest(chr_ucsc1, sv_good_list[i][header_info.pos_1], chr_ucsc2, sv_good_list[i][header_info.pos_2], ref_exon_tb)
             if len(target_exon) == 0: target_exon = ["---"]
             print_line = print_line  + '\t' + str(dist_to_exon) + '\t' + ';'.join(target_exon)
 
         if args.closest_coding == True:
-            dist_to_exon, target_exon = utils.distance_to_closest(chr_ucsc1, sv_good_list[i][1], chr_ucsc2, sv_good_list[i][4], ref_coding_tb, False)
+            dist_to_exon, target_exon = utils.distance_to_closest(chr_ucsc1, sv_good_list[i][header_info.pos_1], chr_ucsc2, sv_good_list[i][header_info.pos_2], ref_coding_tb, False)
             if len(target_exon) == 0: target_exon = ["---"]
             print_line = print_line  + '\t' + str(dist_to_exon) + '\t' + ';'.join(target_exon)
  
@@ -278,12 +276,12 @@ def filter_main(args):
             # within gene or accross gene ?
             gene_flag = 0
             within_gene_flag = 0
-            for (g1, g2) in zip(sv_good_list[i][8].split(';'), sv_good_list[i][9].split(';')):
+            for (g1, g2) in zip(sv_good_list[i][header_info.gene_1].split(';'), sv_good_list[i][header_info.gene_2].split(';')):
                 if g1 != "---" and g1 == g2: within_gene_flag = 1
                 if g1 != "---" or g2 != "---": gene_flag = 1
 
             if within_gene_flag == 1:
-                coding_info = utils.check_coding_info2(chr_ucsc1, sv_good_list[i][1], sv_good_list[i][4], ref_coding_tb)
+                coding_info = utils.check_coding_info2(chr_ucsc1, sv_good_list[i][header_info.pos_1], sv_good_list[i][header_info.pos_2], ref_coding_tb)
                 print_line = print_line + '\t' + "within_gene" + '\t' + coding_info                
             elif gene_flag == 1:
                 print_line = print_line + '\t' + "across_gene" + '\t' + "---\t---" 
@@ -291,8 +289,8 @@ def filter_main(args):
                 print_line = print_line + '\t' + "intergenic" + '\t' + "---\t---"
 
         if args.fusion_info is not None:
-            print_line = print_line + '\t' + utils.check_fusion_direction(chr_ucsc1, sv_good_list[i][1], sv_good_list[i][2],
-                                                                          chr_ucsc2, sv_good_list[i][4], sv_good_list[i][5],
+            print_line = print_line + '\t' + utils.check_fusion_direction(chr_ucsc1, sv_good_list[i][header_info.pos_1], sv_good_list[i][header_info.dir_1],
+                                                                          chr_ucsc2, sv_good_list[i][header_info.pos_2], sv_good_list[i][header_info.dir_2],
                                                                           ref_gene_tb, args.fusion_info)
 
 
@@ -451,9 +449,16 @@ def merge_control_main(args):
 
             with open(result_file, 'r') as hin:
                 for line in hin:
+                    if line.startswith("Chr_1" + '\t' + "Pos_1"):
+                        line = line.rstrip('\n')
+                        header_info.read(line)
+                        continue
+
                     F = line.rstrip('\n').split('\t')
-                    print >> hout, F[0] + '\t' + str(int(F[1]) - 1) + '\t' + F[1] + '\t' + F[3] + '\t' + str(int(F[4]) - 1) + '\t' + F[4] + '\t' + \
-                                    sample + '\t' + F[6] + '\t' + F[2] + '\t' + F[5]
+                    print >> hout, '\t'.join([F[header_info.chr_1], str(int(F[header_info.pos_1]) - 1), F[header_info.pos_1], \
+                                              F[header_info.chr_2], str(int(F[header_info.pos_2]) - 1), F[header_info.pos_2], \
+                                              sample, F[header_info.inserted_seq], F[header_info.dir_1], F[header_info.dir_2]])
+
     hout.close()
 
     hout = open(args.output_prefix + ".bedpe", 'w')
