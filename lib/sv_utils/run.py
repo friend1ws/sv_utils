@@ -201,7 +201,7 @@ def filter_main(args):
     ref_exon_tb = pysam.TabixFile(ref_exon_bed)
     ens_exon_tb = pysam.TabixFile(ens_exon_bed)
     ref_coding_tb = pysam.TabixFile(ref_coding_bed)
-    control_tb = pysam.TabixFile(args.control) if args.control is not None else None
+    control_tb = pysam.TabixFile(args.pooled_control) if args.pooled_control is not None else None
     simple_repeat_tb = pysam.TabixFile(simple_repeat_bed) if args.remove_simple_repeat is not None else None
 
     # make directory for output if necessary
@@ -217,27 +217,39 @@ def filter_main(args):
             F = line.rstrip('\n').split('\t')
             grch2ucsc[F[0]] = F[1]
 
-    sv_good_list = utils.filter_sv_list(args.result_file, args.fisher_thres, args.tumor_freq_thres, args.normal_freq_thres,
-                                        args.normal_depth_thres, args.inversion_size_thres, args.max_size_thres,
-                                        args.within_exon, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb,
-                                        simple_repeat_tb, grch2ucsc, control_tb, args.control_num_thres, args.no_control)
+    sv_good_list = utils.filter_sv_list(args, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb, 
+                                        simple_repeat_tb, grch2ucsc, control_tb)
 
     mut_tb = None
     if args.mutation_result != "":
         utils.make_mut_db(args.mutation_result, args.output + ".mutation", args.reference)
         mut_tb = pysam.TabixFile(args.output + ".mutation.bed.gz")
 
+    """
     if sv_good_list[0][header_info.chr_1] == "Chr_1" and sv_good_list[0][header_info.pos_1] == "Pos_1":
-        print_header = '\t'.join(sv_good_list[i])
+        print_header = '\t'.join(sv_good_list[0])
         if args.mutation_result != "": print_header = print_header + '\t' + "Mutation_Detection"
         if args.closest_exon == True: print_header = print_header + '\t' + "Dist_To_Exon" + '\t' + "Target_Exon"
         if args.closest_coding == True: print_header = print_header + '\t' + "Dist_To_Coding" + '\t' + "Target_Coding"
         if args.coding_info == True: print_header = print_header + '\t' + "Intra_or_Inter_Gene" + '\t' + "Coding_Class" + '\t' + "Detailed_Coding_Info"
         if args.fusion_info is not None: print_header = print_header + '\t' + "Known_Gene_Fusion_Comb" + '\t' + "Known_Gene_Fusion_Source" 
         print >> hout, print_header
+    """
 
     dup_list = {}
     for i in range(0, len(sv_good_list)):
+
+        # for header print
+        if i == 0 and sv_good_list[0][header_info.chr_1] == "Chr_1" and sv_good_list[0][header_info.pos_1] == "Pos_1":
+            print_header = '\t'.join(sv_good_list[0])
+            if args.mutation_result != "": print_header = print_header + '\t' + "Mutation_Detection"
+            if args.closest_exon == True: print_header = print_header + '\t' + "Dist_To_Exon" + '\t' + "Target_Exon"
+            if args.closest_coding == True: print_header = print_header + '\t' + "Dist_To_Coding" + '\t' + "Target_Coding"
+            if args.coding_info == True: print_header = print_header + '\t' + "Intra_or_Inter_Gene" + '\t' + "Coding_Class" + '\t' + "Detailed_Coding_Info"
+            if args.fusion_info is not None: print_header = print_header + '\t' + "Known_Gene_Fusion_Comb" + '\t' + "Known_Gene_Fusion_Source"
+            print >> hout, print_header
+            continue
+
         chr_ucsc1 = grch2ucsc[sv_good_list[i][header_info.chr_1]] if sv_good_list[i][header_info.chr_1] in grch2ucsc else sv_good_list[i][header_info.chr_1]
         chr_ucsc2 = grch2ucsc[sv_good_list[i][header_info.chr_2]] if sv_good_list[i][header_info.chr_2] in grch2ucsc else sv_good_list[i][header_info.chr_2]
 

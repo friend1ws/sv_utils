@@ -4,12 +4,11 @@ import sys, subprocess
 import my_seq
 from header_info import *
 
-def filter_sv_list(result_file, fisher_thres, tumor_freq_thres, normal_freq_thres, normal_depth_thres, 
-                    inversion_size_thres, max_size_thres, within_exon, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb, 
-                    simple_repeat_tb, grch2ucsc, control_tb, control_num_thres, normal_mode):
+def filter_sv_list(args, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb, 
+                    simple_repeat_tb, grch2ucsc, control_tb):
 
     good_list = []
-    with open(result_file, 'r') as hin:
+    with open(args.result_file, 'r') as hin:
         for line in hin:
 
             if line.startswith("Chr_1" + '\t' + "Pos_1"):
@@ -24,18 +23,28 @@ def filter_sv_list(result_file, fisher_thres, tumor_freq_thres, normal_freq_thre
             if [header_info.chr_1] == "hs37d5" or F[header_info.chr_2] == "hs37d5": continue
             if F[header_info.chr_1].startswith("GL0") or F[header_info.chr_2].startswith("GL0"): continue
 
-            if F[header_info.variant_type] == "inversion" and abs(int(F[header_info.pos_1]) - int(F[header_info.pos_2])) < int(inversion_size_thres): continue
-            if max_size_thres is not None:
+            if F[header_info.variant_type] == "inversion" and abs(int(F[header_info.pos_1]) - int(F[header_info.pos_2])) < int(args.inversion_size_thres): continue
+            if args.max_variant_size is not None:
                 if F[header_info.variant_type] == "translocation": continue
-                if abs(int(F[header_info.pos_1]) - int(F[header_info.pos_2])) > int(max_size_thres): continue
-            if float(F[header_info.tumor_vaf]) < float(tumor_freq_thres): continue
+                if abs(int(F[header_info.pos_1]) - int(F[header_info.pos_2])) > int(args.args.max_variant_size): continue
+            if float(F[header_info.tumor_vaf]) < float(args.min_tumor_allele_freq): continue
 
-            if normal_mode == False:
-                if int(F[header_info.num_control_ref_read_pair]) + int(F[header_info.num_control_var_read_pair]) < int(normal_depth_thres): continue
-                if float(F[header_info.control_vaf]) > float(normal_freq_thres): continue
-                if float(F[header_info.minus_log_fisher_p_value]) < float(fisher_thres): continue
+            if F[header_info.num_control_var_read_pair] != "---":
+                if int(F[header_info.num_control_var_read_pair]) > int(args.max_control_variant_read_pair): continue
 
-            if within_exon:
+            if F[header_info.num_control_ref_read_pair] != "---" and F[header_info.num_control_var_read_pair] != "---":    
+                if int(F[header_info.num_control_ref_read_pair]) + int(F[header_info.num_control_var_read_pair]) < int(args.control_depth_thres): continue
+
+            if F[header_info.control_vaf] != "---":
+                if float(F[header_info.control_vaf]) > float(args.max_control_allele_freq): continue
+
+            if F[header_info.minus_log_fisher_p_value] != "---":
+                if float(F[header_info.minus_log_fisher_p_value]) < float(args.max_minus_log_fisher_pvalue): continue
+
+            if int(F[header_info.max_over_hang_1]) < int(args.min_overhang_size) or int(F[header_info.max_over_hang_2]) < int(args.min_overhang_size): continue
+
+
+            if args.within_exon:
                 if F[header_info.variant_type] == "translocation": continue
                 chr_ucsc = grch2ucsc[F[header_info.chr_1]] if F[header_info.chr_1] in grch2ucsc else F[header_info.chr_1] 
                 if not in_exon_check(chr_ucsc, F[header_info.pos_1], F[header_info.pos_2], ref_exon_tb, ens_exon_tb): continue
@@ -43,7 +52,7 @@ def filter_sv_list(result_file, fisher_thres, tumor_freq_thres, normal_freq_thre
             if control_tb is not None:
                 if control_check(F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1], \
                                  F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2], \
-                                 F[header_info.inserted_seq], control_tb, control_num_thres): 
+                                 F[header_info.inserted_seq], control_tb, args.pooled_control_num_thres): 
                     continue
 
             if F[header_info.variant_type] in ["deletion", "tandem_duplication"] and simple_repeat_tb is not None:

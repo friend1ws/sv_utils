@@ -5,7 +5,7 @@ import argparse
 
 parser = argparse.ArgumentParser(prog = "sv_utils")
 
-parser.add_argument("--version", action = "version", version = "sv_utils-0.3.0")
+parser.add_argument("--version", action = "version", version = "sv_utils-0.3.0beta")
 
 subparsers = parser.add_subparsers()
 
@@ -62,59 +62,62 @@ filter_parser.add_argument("output", metavar = "output.txt", default = None, typ
 filter_parser.add_argument("annotation_dir", metavar = "annotation_dir", default = None, type = str,
                            help = "the path to the database directory")
 
-filter_parser.add_argument("--fisher_thres", default = 1.0, type = float,
-                   help = "remove if the - log(fisher p-value) is smaller than this value")
+filter_parser.add_argument("--max_minus_log_fisher_pvalue", default = 1.0, type = float,
+                   help = "remove if the - log(fisher p-value) is smaller than this value (default: %(default)s)")
 
-filter_parser.add_argument("--tumor_freq_thres", default = 0.07, type = float,
-                   help = "remove if the tumor allele frequency is small than this value")
+filter_parser.add_argument("--min_tumor_allele_freq", default = 0.07, type = float,
+                   help = "remove if the tumor allele frequency is small than this value (default: %(default)s)")
 
-filter_parser.add_argument("--normal_freq_thres", default = 0.05, type = int,
-                   help = "remove if the normal allele frequency is larger than this value")
+filter_parser.add_argument("--max_control_allele_freq", default = 0.05, type = int,
+                   help = "remove if the normal allele frequency is larger than this value (default: %(default)s)")
 
-filter_parser.add_argument("--normal_depth_thres", default = 10, type = float,
-                   help = "remove if the normal read depth is smaller than this value")
+filter_parser.add_argument("--max_control_variant_read_pair", default = 1, type = int,
+                   help = "remove if the number of variant read pairs in the matched control sample exceeds this value (default: %(default)s)")
+
+filter_parser.add_argument("--control_depth_thres", default = 10, type = float,
+                   help = "remove if the normal read depth is smaller than this value (default: %(default)s)")
+
+filter_parser.add_argument("--min_overhang_size", default = 50, type = int,
+                   help = "remove if either of overhang sizes for two breakpoints is below this value (default: %(default)s)")
 
 filter_parser.add_argument("--inversion_size_thres", default = 500, type = int,
-                   help = "remove if the size of inversion is smaller than this value")
+                   help = "remove if the size of inversion is smaller than this value (default: %(default)s)")
 
-filter_parser.add_argument("--max_size_thres", default = None, type = int,
-                   help = "remove if the size of variant is larger than this value")
-
-filter_parser.add_argument("--no_control", default = False, action = "store_true",
-                   help = "for the result without matched control")
+filter_parser.add_argument("--max_variant_size", default = None, type = int,
+                   help = "remove if the size of variant is larger than this value (default: %(default)s)")
 
 filter_parser.add_argument("--within_exon", default = False, action = "store_true",
-                    help = "keep only variants within exon")
+                    help = "keep only variants within exon (default: %(default)s)")
 
-filter_parser.add_argument("--control", default = None, type = str,
-                    help = "the path to control data created by merge_control")
+filter_parser.add_argument("--pooled_control_file", default = None, type = str,
+                    help = "the path to control data created by merge_control (default: %(default)s)")
 
-filter_parser.add_argument("--control_num_thres", default = 3, type = int,
-                    help = "remove if more than specified number of control sample are found")
+filter_parser.add_argument("--pooled_control_num_thres", default = 3, type = int,
+                    help = "remove if more than specified number of control sample are found (default: %(default)s)")
 
 filter_parser.add_argument("--remove_simple_repeat", default = False, action = "store_true",
-                    help = "remove variants with overlapping simple repeat annotation by UCSC")
+                    help = "remove variants with overlapping simple repeat annotation by UCSC (default: %(default)s)")
 
 filter_parser.add_argument("--closest_exon", default = False, action = "store_true",
-                           help = "add the closest exon and distance to them")
+                           help = "add the closest exon and distance to them (default: %(default)s)")
 
 filter_parser.add_argument("--closest_coding", default = False, action = "store_true",
-                           help = "add the closest coding exon and distance to them")
+                           help = "add the closest coding exon and distance to them (default: %(default)s)")
 
 filter_parser.add_argument("--mutation_result", metavar = "genomon_mutation.result.txt", default = "", type = str,
-                           help = "the path to the genomon mutation result file")
+                           help = "the path to the genomon mutation result file (default: %(default)s)")
 
 filter_parser.add_argument("--reference", metavar = "reference.fa", default = "", type = str,
-                           help = "the path to the reference genome sequence")
+                           help = "the path to the reference genome sequence (default: %(default)s)")
 
 filter_parser.add_argument("--re_annotation", default = False, action = "store_true",
-                           help = "gene annotaiton again")
+                           help = "gene annotaiton again (default: %(default)s)")
 
 filter_parser.add_argument("--coding_info", default = False, action = "store_true",
-                           help = "get coding information")
+                           help = "get coding information (default: %(default)s)")
 
 filter_parser.add_argument("--fusion_info", metavar = "fusion_info.txt", default = None, type = str,
-                           help = "the path to the fusion gene info file (gene1, gene2 and information for the 1st, 2nd and 3rd columns, respectively)")
+                           help = "the path to the fusion gene info file (gene1, gene2 and information for the 1st, 2nd and 3rd columns, respectively) (default: %(default)s)")
 
 filter_parser.set_defaults(func = filter_main)
 ##########
@@ -130,10 +133,10 @@ concentrate_parser.add_argument("output", metavar = "output.txt", default = None
                                 help = "the path to the output file")
 
 concentrate_parser.add_argument("--set_count", metavar = "set_count", default = 2, type = int,
-                                help = "extract #variants is equal or more than this value within specified margin")
+                                help = "extract #variants is equal or more than this value within specified margin (default: %(default)s)")
  
 concentrate_parser.add_argument("--set_margin", metavar = "set_margin", default = 500, type = int,
-                                help = "extract #variants is equal or more than the specified threshould within this value")
+                                help = "extract #variants is equal or more than the specified threshould within this value (default: %(default)s)")
 
 concentrate_parser.set_defaults(func = concentrate_main)
 
@@ -209,7 +212,7 @@ format_parser.add_argument('--format', choices=['vcf'], default = 'vcf',
                     help = "the format of sv file. currently we only support vcfformat")
 
 format_parser.add_argument("--max_size_thres", default = 100, type = int,
-                        help = "remove if the size of variant is larger than this value")
+                        help = "remove if the size of variant is larger than this value (default: %(default)s)")
 
 format_parser.set_defaults(func = vcf_main)
 
