@@ -201,7 +201,7 @@ def filter_main(args):
     ref_exon_tb = pysam.TabixFile(ref_exon_bed)
     ens_exon_tb = pysam.TabixFile(ens_exon_bed)
     ref_coding_tb = pysam.TabixFile(ref_coding_bed)
-    control_tb = pysam.TabixFile(args.pooled_control) if args.pooled_control is not None else None
+    control_tb = pysam.TabixFile(args.pooled_control_file) if args.pooled_control_file is not None else None
     simple_repeat_tb = pysam.TabixFile(simple_repeat_bed) if args.remove_simple_repeat is not None else None
 
     # make directory for output if necessary
