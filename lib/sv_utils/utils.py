@@ -11,6 +11,10 @@ def filter_sv_list(args, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb,
     with open(args.result_file, 'r') as hin:
         for line in hin:
 
+            if line.startswith("#"):
+                good_list.append(line.rstrip('\n'))
+                continue
+
             if line.startswith("Chr_1" + '\t' + "Pos_1"):
                 header_info.read(line.rstrip('\n'))
                 F = line.rstrip('\n').split('\t')

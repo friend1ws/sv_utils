@@ -239,9 +239,14 @@ def filter_main(args):
     dup_list = {}
     for i in range(0, len(sv_good_list)):
 
+        # for meta info print
+        if sv_good_list[i][0].startswith("#"):
+            print >> hout, sv_good_list[i]
+            continue
+ 
         # for header print
-        if i == 0 and sv_good_list[0][header_info.chr_1] == "Chr_1" and sv_good_list[0][header_info.pos_1] == "Pos_1":
-            print_header = '\t'.join(sv_good_list[0])
+        if sv_good_list[i][header_info.chr_1] == "Chr_1" and sv_good_list[i][header_info.pos_1] == "Pos_1":
+            print_header = '\t'.join(sv_good_list[i])
             if args.mutation_result != "": print_header = print_header + '\t' + "Mutation_Detection"
             if args.closest_exon == True: print_header = print_header + '\t' + "Dist_To_Exon" + '\t' + "Target_Exon"
             if args.closest_coding == True: print_header = print_header + '\t' + "Dist_To_Coding" + '\t' + "Target_Coding"
