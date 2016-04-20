@@ -265,14 +265,21 @@ def make_mut_db(input_file, output_file_prefix, reference):
 
     hout = open(output_file_prefix + ".bed", 'w')
     with open(input_file, 'r') as hin:
+
         ref_ind = -1
         alt_ind = -1
         tum_ref_ind = -1
         nor_ref_ind = -1
-        tum_var_ind = -1
-        nor_var_ind = -1 
+        tum_var_ind = -1 
+        nor_var_ind = -1
         fisher_ind = -1
-        header = hin.readline().rstrip('\n').split('\t')
+
+        header_line = "#"
+        while header_line.startswith("#"):
+            header_line = hin.readline().rstrip('\n')
+
+        header = header_line.split('\t')
+
         for i in range(0, len(header)):
             if header[i] == "Ref": ref_ind = i
             if header[i] == "Alt": alt_ind = i
@@ -280,7 +287,7 @@ def make_mut_db(input_file, output_file_prefix, reference):
             if header[i] == "variantPairNum_tumor": tum_var_ind = i
             if header[i] == "readPairNum_normal": nor_ref_ind = i
             if header[i] == "variantPairNum_normal": nor_var_ind = i
-            if header[i] == "P-value(fhsher_realignment)": fisher_ind = i
+            if header[i] == "P-value(fisher_realignment)": fisher_ind = i
 
         for line in hin:
             F = line.rstrip('\n').split('\t')
@@ -293,13 +300,13 @@ def make_mut_db(input_file, output_file_prefix, reference):
                                 str(round(float(F[nor_var_ind]) / (float(F[nor_ref_ind]) + float(F[nor_var_ind])), 3)) + '\t' + F[fisher_ind]
 
                 var_info = ""
+                gene_annotation = "---" + '\t' + "---" + '\t' + "---" + '\t' + "---"
+                other_info = "---" + '\t' + "0" + '\t' + "---" + '\t' + "---"
                 # deletion
                 if len(F[ref_ind]) >= 10:
                     var_info = F[0] + '\t' + str(int(F[1]) - 1) + '\t' + "+" + '\t' + \
                                    F[0] + '\t' + str(int(F[1]) + len(F[ref_ind])) + '\t' + "-" + '\t' + "---" + '\t' + "deletion"
-                    # gene_annotation = get_gene_annotation(F[0],  str(int(F[1]) - 1), F[0], str(int(F[1]) + len(F[ref_ind])), gene_tb, exon_tb)
-                    gene_annotation = "---" + '\t' + "---" + '\t' + "---" + '\t' + "---"
-                    print >> hout, bed_key + '\t' + var_info + '\t' + gene_annotation + '\t' + read_info
+                    print >> hout, bed_key + '\t' + var_info + '\t' + gene_annotation + '\t' + read_info + '\t' + other_info
  
                 # tandem_duplication
                 elif len(F[alt_ind]) >= 10:
@@ -308,16 +315,11 @@ def make_mut_db(input_file, output_file_prefix, reference):
                     flanking_seq_1_match = my_seq.exact_alignment(F[alt_ind], flanking_seq_1)
                     flanking_seq_2 = my_seq.get_seq(reference, F[0], int(F[1]) - len(F[alt_ind]) + 1, int(F[1])) 
                     flanking_seq_2_match = my_seq.exact_alignment(F[alt_ind], flanking_seq_2)
-                    # print '\t'.join(F[0:4])
-                    # print F[alt_ind] + '\t' + flanking_seq_1 + '\t' + str(flanking_seq_1_match)
-                    # print F[alt_ind] + '\t' + flanking_seq_2 + '\t' + str(flanking_seq_2_match)
     
                     if flanking_seq_1_match == len(F[alt_ind]) or flanking_seq_2_match == len(F[alt_ind]):
                         var_info = F[0] + '\t' +  str(int(F[1]) + 1) + '\t' + "-" + '\t' + \
                                        F[0] + '\t' + str(int(F[1]) + len(F[alt_ind])) + '\t' + "+" + '\t' + "---" + '\t' + "tandem_duplication"
-                        # gene_annotation = get_gene_annotation(F[0],  str(int(F[1]) + 1), F[0], str(int(F[1]) + len(F[alt_ind])), gene_tb, exon_tb)
-                        gene_annotation = "---" + '\t' + "---" + '\t' + "---" + '\t' + "---"
-                        print >> hout, bed_key + '\t' + var_info + '\t' + gene_annotation + '\t' + read_info
+                        print >> hout, bed_key + '\t' + var_info + '\t' + gene_annotation + '\t' + read_info + '\t' + other_info
  
     hout.close()
 
