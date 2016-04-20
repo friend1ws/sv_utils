@@ -32,7 +32,8 @@ def count_main(args):
 
                 with open(result_file, 'r') as hin:
                     for line in hin:
-                
+               
+                        if line.startswith("#"): continue 
                         if line.startswith("Chr_1" + '\t' + "Pos_1"):
                             line = line.rstrip('\n')
                             header_info.read(line)
