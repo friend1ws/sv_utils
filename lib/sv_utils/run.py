@@ -263,7 +263,7 @@ def filter_main(args):
             if args.closest_exon == True: print_header = print_header + '\t' + "Dist_To_Exon" + '\t' + "Target_Exon"
             if args.closest_coding == True: print_header = print_header + '\t' + "Dist_To_Coding" + '\t' + "Target_Coding"
             if args.coding_info == True: print_header = print_header + '\t' + "Intra_or_Inter_Gene" + '\t' + "Coding_Class" + '\t' + "Detailed_Coding_Info"
-            if args.fusion_info is not None: print_header = print_header + '\t' + "Known_Gene_Fusion_Comb" + '\t' + "Known_Gene_Fusion_Source"
+            if args.fusion_info is not None: print_header = print_header + '\t' + "Gene_Fusion_Comb" + '\t' + "Known_Gene_Fusion_Source"
             print >> hout, print_header
             continue
 
