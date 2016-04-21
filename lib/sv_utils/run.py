@@ -19,12 +19,15 @@ def count_main(args):
         print >> hout, '\t'.join(["sample", "type", "deletion", "tandem_duplication", "inversion", "translocation", "total"])
 
 
+    
     with open(args.result_list, 'r') as hin:
 
         for line in hin:
             sample, tumor_type, result_file = line.rstrip('\n').split('\t')
             if not os.path.exists(result_file):
                 raise ValueError("file not exists: " + result_file)
+
+            print >> sys.stderr, "reading: " + result_file
 
             if args.inseq == True:
                 type2count = {"deletion_nonseq": 0, "deletion_inseq": 0, "tandem_duplication_nonseq": 0, "tandem_duplication_inseq": 0,
@@ -62,6 +65,13 @@ def count_main(args):
 
                 with open(result_file, 'r') as hin:
                     for line in hin:
+
+                        if line.startswith("#"): continue
+                        if line.startswith("Chr_1" + '\t' + "Pos_1"):
+                            line = line.rstrip('\n')
+                            header_info.read(line)
+                            continue
+
                         F = line.rstrip('\n').split('\t')
                         type2count[F[header_info.variant_type]] = type2count[F[header_info.variant_type]] + 1
 
@@ -103,6 +113,7 @@ def gene_summary_main(args):
             with open(result_file, 'r') as hin:
                 for line in hin:
 
+                    if line.startswith('#'): continue
                     if line.startswith("Chr_1" + '\t' + "Pos_1"):
                         header_info.read(line.rstrip('\n'))
                         continue

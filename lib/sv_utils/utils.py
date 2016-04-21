@@ -293,6 +293,11 @@ def make_mut_db(input_file, output_file_prefix, reference):
             F = line.rstrip('\n').split('\t')
             if len(F[ref_ind]) >= 10 or len(F[alt_ind]) >= 10:
 
+                if F[nor_ref_ind] == "---": continue
+                if F[nor_var_ind] == "---": continue
+                if F[tum_ref_ind] == "---": continue
+                if F[tum_var_ind] == "---": continue
+
                 bed_key = F[0] + '\t' + str(int(F[1]) - 1) + '\t' + F[2]
                 read_info = F[tum_ref_ind] + '\t' + F[tum_var_ind] + '\t' + \
                                 str(round(float(F[tum_var_ind]) / (float(F[tum_ref_ind]) + float(F[tum_var_ind])), 3)) + '\t' + \
