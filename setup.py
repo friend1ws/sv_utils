@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name='sv_utils',
-      version='0.4.0beta2',
+      version='0.5.0beta',
       description='Python programs for analyzing GenomonSV results',
       author='Yuichi Shiraishi',
       author_email='friend1ws@gamil.com',

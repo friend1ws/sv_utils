@@ -317,9 +317,9 @@ def make_mut_db(input_file, output_file_prefix, reference):
                 elif len(F[alt_ind]) >= 10:
                     # tandem_duplication check
                     flanking_seq_1 = my_seq.get_seq(reference, F[0], int(F[1]) + 1, int(F[1]) + len(F[alt_ind]))
-                    flanking_seq_1_match = my_seq.exact_alignment(F[alt_ind], flanking_seq_1)
+                    flanking_seq_1_match, coord1 = my_seq.exact_alignment(F[alt_ind], flanking_seq_1)
                     flanking_seq_2 = my_seq.get_seq(reference, F[0], int(F[1]) - len(F[alt_ind]) + 1, int(F[1])) 
-                    flanking_seq_2_match = my_seq.exact_alignment(F[alt_ind], flanking_seq_2)
+                    flanking_seq_2_match, coord2 = my_seq.exact_alignment(F[alt_ind], flanking_seq_2)
     
                     if flanking_seq_1_match == len(F[alt_ind]) or flanking_seq_2_match == len(F[alt_ind]):
                         var_info = F[0] + '\t' +  str(int(F[1]) + 1) + '\t' + "-" + '\t' + \
@@ -602,5 +602,28 @@ def check_fusion_direction(chr1, pos1, dir1, chr2, pos2, dir2, ref_gene_tb, fusi
     fusion_info = ';'.join(sorted(list(set(fusion_infos)))) if len(fusion_infos) > 0 else "---"
 
     return ','.join(fusion_comb) + '\t' + fusion_info if len(fusion_comb) > 0 else "---\t---"
+
+
+
+def check_homology(chr1, pos1, dir1, chr2, pos2, dir2, reference, seq_size, min_match_size = 2, match_margin_ratio_thres = 0.5):
+
+    seq1_out = my_seq.get_seq(reference, chr1, int(pos1) + 1, int(pos1) + seq_size)
+    seq1_in = my_seq.reverse_complement(my_seq.get_seq(reference, chr1, int(pos1) - seq_size + 1, int(pos1)))
+    if dir1 == "-": seq1_out, seq1_in = seq1_in, seq1_out
+
+    seq2_out = my_seq.get_seq(reference, chr2, int(pos2) + 1, int(pos2) + seq_size)
+    seq2_in = my_seq.reverse_complement(my_seq.get_seq(reference, chr2, int(pos2) - seq_size + 1, int(pos2)))
+    if dir2 == "-": seq2_out, seq2_in = seq2_in, seq2_out
+
+    match1, coord1 = my_seq.exact_alignment(seq1_out, seq2_in)
+    match2, coord2 = my_seq.exact_alignment(seq2_out, seq1_in)
+
+    if max(coord1) > match_margin_ratio_thres * match1: match1 = 0
+    if max(coord2) > match_margin_ratio_thres * match2: match2 = 0
+    
+    match = max(match1, match2) if max(match1, match2) >= min_match_size else 0
+    return match
+
+
 
 

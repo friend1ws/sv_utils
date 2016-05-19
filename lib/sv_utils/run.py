@@ -690,3 +690,32 @@ def vcf_main(args):
 
     hout.close()
 
+
+def homology_main(args):
+
+    hout = open(args.output, 'w')
+    with open(args.result_file, 'r') as hin:
+        for line in hin:
+            if line.startswith("Chr_1" + '\t' + "Pos_1"):
+                header_info.read(line.rstrip('\n'))
+                print_header = line.rstrip('\n') + '\t' + "Homology_match"
+                print >> hout, print_header
+                continue
+
+            F = line.rstrip('\n').split('\t')
+
+            var_size = 500000
+            if F[header_info.variant_type] == "deletion":
+                var_size = int(F[header_info.pos_2]) - int(F[header_info.pos_1]) - 1
+            elif F[header_info.variant_type] == "tandem_duplication":
+                var_size = int(F[header_info.pos_2]) - int(F[header_info.pos_1]) + 1
+            
+            homology_match = utils.check_homology(F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1],
+                                                  F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2], 
+                                                  args.reference, min(var_size, 100))
+
+            print >> hout, '\t'.join(F) + '\t' + str(homology_match)
+ 
+    hout.close()
+
+ 

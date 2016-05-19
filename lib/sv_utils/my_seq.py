@@ -7,7 +7,7 @@ def exact_alignment(seq1, seq2):
     A = [[0]* len(seq2) for i in range(len(seq1))]
 
     best_score = 0
-    opt_coord = (0, 0)
+    opt_coord = [0, 0]
 
     for i in range(len(seq1)):
         for j in range(len(seq2)):
@@ -21,9 +21,12 @@ def exact_alignment(seq1, seq2):
 
             if A[i][j] > best_score:
                 best_score = A[i][j]
-                opt_coord = (i, j)
+                opt_coord = [i, j]
 
-    return best_score
+    opt_coord[0] = opt_coord[0] - best_score + 1
+    opt_coord[1] = opt_coord[1] - best_score + 1
+    return [best_score, opt_coord]
+
     """
     print '' + '\t' + '\t'.join(seq2)
     for i in range(len(seq1)):
@@ -44,4 +47,12 @@ def get_seq(reference, chr, start, end):
         seq = seq + item.rstrip('\n')
 
     return seq
+
+
+def reverse_complement(seq):
+    complement = {'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A',
+                  'W': 'W', 'S': 'S', 'M': 'K', 'K': 'M', 'R': 'Y', 'Y': 'R',
+                  'B': 'V', 'V': 'B', 'D': 'H', 'H': 'D', 'N': 'N'}
+
+    return("".join(complement.get(base, base) for base in reversed(seq)))
 

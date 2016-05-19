@@ -5,7 +5,7 @@ import argparse
 
 parser = argparse.ArgumentParser(prog = "sv_utils")
 
-parser.add_argument("--version", action = "version", version = "sv_utils-0.4.0beta2")
+parser.add_argument("--version", action = "version", version = "sv_utils-0.5.0beta")
 
 subparsers = parser.add_subparsers()
 
@@ -216,6 +216,22 @@ format_parser.add_argument("--max_size_thres", default = 100, type = int,
 
 format_parser.set_defaults(func = vcf_main)
 
+##########
+# get homology match size
+
+homology_parser = subparsers.add_parser("homology",
+                                        help = "get micro-homology size for each SV candidate")
+
+homology_parser.add_argument("result_file", metavar = "genomonSV.result.txt", default = None, type = str,
+                             help = "the path to genomon SV result")
+
+homology_parser.add_argument("output", metavar = "output.txt", default = None, type = str,
+                             help = "the path to the output file")
+
+homology_parser.add_argument("--reference", metavar = "reference.fa", default = "", type = str,
+                           help = "the path to the reference genome sequence (default: %(default)s)")
+
+homology_parser.set_defaults(func = homology_main)
 ##########
 
 args = parser.parse_args()
