@@ -37,7 +37,7 @@ def count_main(args):
                     for line in hin:
                
                         if line.startswith("#"): continue 
-                        if line.startswith("Chr_1" + '\t' + "Pos_1"):
+                        if utils.header_check(line.rstrip('\n')):
                             line = line.rstrip('\n')
                             header_info.read(line)
                             continue
@@ -114,7 +114,7 @@ def gene_summary_main(args):
                 for line in hin:
 
                     if line.startswith('#'): continue
-                    if line.startswith("Chr_1" + '\t' + "Pos_1"):
+                    if utils.header_check(line.rstrip('\n')):
                         header_info.read(line.rstrip('\n'))
                         continue
 
@@ -406,7 +406,7 @@ def concentrate_main(args):
 
             with open(result_file, 'r') as hin:
                 for line in hin:
-                    if line.startswith("Chr_1" + '\t' + "Pos_1"):
+                    if utils.header_check(line.rstrip('\n')):
                         line = line.rstrip('\n')
                         header_info.read(line)
                         continue
@@ -487,7 +487,7 @@ def merge_control_main(args):
 
             with open(result_file, 'r') as hin:
                 for line in hin:
-                    if line.startswith("Chr_1" + '\t' + "Pos_1"):
+                    if utils.header_check(line.rstrip('\n')):
                         line = line.rstrip('\n')
                         header_info.read(line)
                         continue
@@ -531,7 +531,7 @@ def realign_main(args):
     i = 0
     with open(args.result_file, 'r') as hin:
         for line in hin:
-            if line.startswith("Chr_1" + '\t' + "Pos_1"):
+            if utils.header_check(line.rstrip('\n')):
                 line = line.rstrip('\n')
                 header_info.read(line)
                 continue
@@ -582,7 +582,7 @@ def realign_main(args):
     hout = open(args.output, 'w') 
     with open(args.result_file, 'r') as hin:
         for line in hin:
-            if line.startswith("Chr_1" + '\t' + "Pos_1"):
+            if utils.header_check(line.rstrip('\n')):
                 line = line.rstrip('\n')
                 if matchedControlFlag == True:
                     print >> hout, line + '\t' + "Num_Tumor_Ref_Read_Pair_re" + '\t' + "Num_Tumor_Var_Read_Pair_re" + '\t' + "Tumor_VAF_re" + '\t' + \
@@ -616,8 +616,7 @@ def primer_main(args):
     hout = open(args.output, 'w')
     with open(args.result_file, 'r') as hin:
         for line in hin:
-
-            if line.startswith("Chr_1" + '\t' + "Pos_1"): 
+            if utils.header_check(line.rstrip('\n')):
                 line = line.rstrip('\n')
                 header_info.read(line)
                 print >> hout, line + '\t' + "Primer1" + '\t' + "Primer2" + '\t' + "Primer3" + '\t' + "Primer4" + '\t' + "Primer5"
@@ -667,7 +666,7 @@ def vcf_main(args):
     hout = open(args.output, 'w')
     with open(args.result_file, 'r') as hin:
         for line in hin:
-            if line.startswith("Chr_1" + '\t' + "Pos_1"): 
+            if utils.header_check(line.rstrip('\n')):
                 header_info.read(line.rstrip('\n'))
                 continue
 
@@ -696,7 +695,7 @@ def homology_main(args):
     hout = open(args.output, 'w')
     with open(args.result_file, 'r') as hin:
         for line in hin:
-            if line.startswith("Chr_1" + '\t' + "Pos_1"):
+            if utils.header_check(line.rstrip('\n')):
                 header_info.read(line.rstrip('\n'))
                 print_header = line.rstrip('\n') + '\t' + "Homology_match"
                 print >> hout, print_header
@@ -744,7 +743,7 @@ def nonB_DB_main(args):
     hout = open(args.output, 'w')
     with open(args.result_file, 'r') as hin:
         for line in hin:
-            if line.startswith("Chr_1" + '\t' + "Pos_1"):
+            if utils.header_check(line.rstrip('\n')):
                 header_info.read(line.rstrip('\n'))
                 print_header = line.rstrip('\n') + '\t' + '\t'.join([x + "_dist1" + '\t' + x + "_dist2" for x in all_nonB_DB_type])
                 print >> hout, print_header
