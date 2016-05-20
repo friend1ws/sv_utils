@@ -4,6 +4,13 @@ import sys, subprocess
 import my_seq
 from header_info import *
 
+def header_check(line):
+
+    if "Chr_1" + '\t' + "Pos_1" + '\t' + "Dir_1" + '\t' + "Chr_2" + '\t' + "Pos_2" + '\t' + "Dir_2" + '\t' + "Inserted_Seq" + '\t' + "Variant_Type" in line:
+        return True
+    else:
+        return False
+
 def filter_sv_list(args, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb, 
                     simple_repeat_tb, grch2ucsc, control_tb):
 
@@ -15,7 +22,7 @@ def filter_sv_list(args, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb,
                 good_list.append(line.rstrip('\n'))
                 continue
 
-            if line.startswith("Chr_1" + '\t' + "Pos_1"):
+            if utils.header_check(line.rstrip('\n')):
                 header_info.read(line.rstrip('\n'))
                 F = line.rstrip('\n').split('\t')
                 good_list.append(F)
