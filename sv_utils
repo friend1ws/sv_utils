@@ -234,6 +234,23 @@ homology_parser.add_argument("--reference", metavar = "reference.fa", default = 
 homology_parser.set_defaults(func = homology_main)
 ##########
 
+# get nonB_DB motif distance 
+
+nonB_DB_parser = subparsers.add_parser("nonB_DB",
+                                        help = "get nonB_DB distance for each SV candidate")
+
+nonB_DB_parser.add_argument("result_file", metavar = "genomonSV.result.txt", default = None, type = str,
+                             help = "the path to genomon SV result")
+
+nonB_DB_parser.add_argument("output", metavar = "output.txt", default = None, type = str,
+                             help = "the path to the output file")
+
+nonB_DB_parser.add_argument("annotation_dir", metavar = "annotation_dir", default = None, type = str,
+                            help = "the path to the database directory")
+
+nonB_DB_parser.set_defaults(func = nonB_DB_main)
+
+
 args = parser.parse_args()
 
 args.func(args)
