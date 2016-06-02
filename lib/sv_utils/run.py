@@ -531,6 +531,8 @@ def realign_main(args):
     i = 0
     with open(args.result_file, 'r') as hin:
         for line in hin:
+
+            if line.startswith("#"): continue
             if utils.header_check(line.rstrip('\n')):
                 line = line.rstrip('\n')
                 header_info.read(line)
@@ -546,16 +548,21 @@ def realign_main(args):
     hout.close()
 
     # yaml input
-    param = {"max_depth": 5000, "search_length": 1000, "search_margin": 5, "reference_genome": args.reference,
-             "split_refernece_thres": 1000, "validate_sequence_length": 1000, "STD_thres": 500}
+    # param = {"max_depth": 5000, "search_length": 1000, "search_margin": 5, "reference_genome": args.reference,
+    #          "split_refernece_thres": 1000, "validate_sequence_length": 1000, "STD_thres": 500}
 
     filterFunction.validateByRealignment(args.output + ".tmp1.bedpe",
                     args.output + ".tmp2.bedpe",
                     args.tumor_bam,
                     args.control_bam,
-                    "blat -stepSize=5 -repMatch=2253",
-                    matchedControlFlag,
-                    param)
+                    args.reference,
+                    "-stepSize=5 -repMatch=2253",
+                    500,
+                    5000,
+                    1000,
+                    5,
+                    1000,
+                    1000)
 
     key2AF_info = {}
     with open(args.output + ".tmp2.bedpe", 'r') as hin:
@@ -582,6 +589,8 @@ def realign_main(args):
     hout = open(args.output, 'w') 
     with open(args.result_file, 'r') as hin:
         for line in hin:
+            
+            if line.startswith("#"): continue
             if utils.header_check(line.rstrip('\n')):
                 line = line.rstrip('\n')
                 if matchedControlFlag == True:
@@ -616,6 +625,8 @@ def primer_main(args):
     hout = open(args.output, 'w')
     with open(args.result_file, 'r') as hin:
         for line in hin:
+    
+            if line.startswith("#"): continue
             if utils.header_check(line.rstrip('\n')):
                 line = line.rstrip('\n')
                 header_info.read(line)
@@ -628,7 +639,7 @@ def primer_main(args):
 
             junc_seq_len = 0 if junc_seq == "---" else len(junc_seq)
 
-            realignmentFunction.getRefAltForSV(args.output + ".contig.tmp.fa", param, chr1, pos1, dir1, chr2, pos2, dir2, junc_seq)
+            realignmentFunction.getRefAltForSV(args.output + ".contig.tmp.fa", chr1, pos1, dir1, chr2, pos2, dir2, junc_seq, args.reference, 1000, 250)
 
             with open(args.output + ".contig.tmp.fa") as hin2:
                 lines2 = hin2.readlines()
@@ -666,6 +677,8 @@ def vcf_main(args):
     hout = open(args.output, 'w')
     with open(args.result_file, 'r') as hin:
         for line in hin:
+    
+            if line.startswith("#"): continue
             if utils.header_check(line.rstrip('\n')):
                 header_info.read(line.rstrip('\n'))
                 continue
@@ -695,13 +708,20 @@ def homology_main(args):
     hout = open(args.output, 'w')
     with open(args.result_file, 'r') as hin:
         for line in hin:
+
+            if line.startswith("#"): continue
             if utils.header_check(line.rstrip('\n')):
                 header_info.read(line.rstrip('\n'))
-                print_header = line.rstrip('\n') + '\t' + "Homology_match"
+                print_header = line.rstrip('\n') + '\t' + "Homology_Match"
                 print >> hout, print_header
                 continue
 
             F = line.rstrip('\n').split('\t')
+
+            # for meta info print
+            if F[0].startswith("#"):
+                print >> hout, '\t'.join(F)
+                continue
 
             var_size = 500000
             if F[header_info.variant_type] == "deletion":
@@ -750,6 +770,11 @@ def nonB_DB_main(args):
                 continue
             
             F = line.rstrip('\n').split('\t')
+
+            # for meta info print
+            if F[0].startswith("#"):
+                print >> hout, '\t'.join(F)
+                continue
 
             chr_ucsc1 = grch2ucsc[F[header_info.chr_1]] if F[header_info.chr_1] in grch2ucsc else F[header_info.chr_1]
             chr_ucsc2 = grch2ucsc[F[header_info.chr_2]] if F[header_info.chr_2] in grch2ucsc else F[header_info.chr_2]

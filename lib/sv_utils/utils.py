@@ -22,7 +22,7 @@ def filter_sv_list(args, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb,
                 good_list.append(line.rstrip('\n'))
                 continue
 
-            if utils.header_check(line.rstrip('\n')):
+            if header_check(line.rstrip('\n')):
                 header_info.read(line.rstrip('\n'))
                 F = line.rstrip('\n').split('\t')
                 good_list.append(F)
