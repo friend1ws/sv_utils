@@ -88,3 +88,15 @@ sv_utils format [-h] --reference reference.fa [--format {vcf}]
                        genomonSV.result.txt output.txt
 ```
 
+### homology
+get micro-homology size for each SV candidate
+```
+sv_utils nonB_DB [-h] genomonSV.result.txt output.txt annotation_dir
+```
+
+### nonB_DB
+get nonB_DB distance for each SV candidate
+```
+sv_utils nonB_DB [-h] genomonSV.result.txt output.txt annotation_dir
+```
+
