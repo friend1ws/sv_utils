@@ -595,7 +595,8 @@ def realign_main(args):
                 line = line.rstrip('\n')
                 if matchedControlFlag == True:
                     print >> hout, line + '\t' + "Num_Tumor_Ref_Read_Pair_re" + '\t' + "Num_Tumor_Var_Read_Pair_re" + '\t' + "Tumor_VAF_re" + '\t' + \
-                                                 "Num_Control_Ref_Read_Pair" + '\t'+ "Num_Control_Var_Read_Pair_re" + '\t' + "Control_VAF_re"
+                                                 "Num_Control_Ref_Read_Pair_re" + '\t'+ "Num_Control_Var_Read_Pair_re" + '\t' + "Control_VAF_re" + '\t' + \
+                                                 "Minus_Log_Fisher_P_value_re" 
                 else:
                     print >> hout, line + '\t' + "Num_Tumor_Ref_Read_Pair_re" + '\t' + "Num_Tumor_Var_Read_Pair_re" + '\t' + "Tumor_VAF_re"
                 continue
