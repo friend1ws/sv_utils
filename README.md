@@ -74,7 +74,7 @@ sv_utils realign [-h] --reference reference.fa --tumor_bam tumor.bam
 ```
 
 ### primer
-generate primer sequeces for mainly PRC validation
+generate primer sequeces for mainly PCR validation
 ```
 sv_utils primer [-h] --reference reference.fa
                        genomonSV.result.txt output.txt
