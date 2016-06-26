@@ -237,16 +237,6 @@ def filter_main(args):
         utils.make_mut_db(args.mutation_result, args.output + ".mutation", args.reference)
         mut_tb = pysam.TabixFile(args.output + ".mutation.bed.gz")
 
-    """
-    if sv_good_list[0][header_info.chr_1] == "Chr_1" and sv_good_list[0][header_info.pos_1] == "Pos_1":
-        print_header = '\t'.join(sv_good_list[0])
-        if args.mutation_result != "": print_header = print_header + '\t' + "Mutation_Detection"
-        if args.closest_exon == True: print_header = print_header + '\t' + "Dist_To_Exon" + '\t' + "Target_Exon"
-        if args.closest_coding == True: print_header = print_header + '\t' + "Dist_To_Coding" + '\t' + "Target_Coding"
-        if args.coding_info == True: print_header = print_header + '\t' + "Intra_or_Inter_Gene" + '\t' + "Coding_Class" + '\t' + "Detailed_Coding_Info"
-        if args.fusion_info is not None: print_header = print_header + '\t' + "Known_Gene_Fusion_Comb" + '\t' + "Known_Gene_Fusion_Source" 
-        print >> hout, print_header
-    """
 
     dup_list = {}
     for i in range(0, len(sv_good_list)):
@@ -283,7 +273,7 @@ def filter_main(args):
                 # check exon annotation for the side 1
                 tabixErrorFlag = 0
                 try:
-                    records = mut_tb.fetch(sv_good_list[i][header_info.chr_1], int(sv_good_list[i][header_info.pos_1]) - 50, int(sv_good_list[i][header_info.pos_2]) + 50)
+                    records = mut_tb.fetch(sv_good_list[i][header_info.chr_1], int(sv_good_list[i][header_info.pos_1]) - 30, int(sv_good_list[i][header_info.pos_2]) + 30)
                 except Exception as inst:
                     # print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
                     tabixErrorFlag = 1
@@ -292,7 +282,12 @@ def filter_main(args):
                 if tabixErrorFlag == 0:
                     for record_line in records:
                         record = record_line.split('\t')
-                        if int(record[7]) - int(record[4]) == int(sv_good_list[i][header_info.pos_2]) - int(sv_good_list[i][header_info.pos_1]) and record[10] == sv_good_list[i][7]:
+                        mut_length = int(record[7]) - int(record[4]) - 1
+                        sv_length = int(sv_good_list[i][header_info.pos_2]) - int(sv_good_list[i][header_info.pos_1]) - 1
+
+                        if float(abs(mut_length - sv_length)) / sv_length < 0.2 and record[10] == sv_good_list[i][header_info.variant_type]:
+
+                        # if int(record[7]) - int(record[4]) == int(sv_good_list[i][header_info.pos_2]) - int(sv_good_list[i][header_info.pos_1]) and record[10] == sv_good_list[i][7]:
                             duplicated_flag = 1
                             dup_list[record[0] + '\t' + record[1] + '\t' + record[2]] = 1
 
