@@ -662,9 +662,13 @@ def primer_main(args):
 
                         primer_left_right = ["---"] * 5
                         for i in range(5):
-                            if "PRIMER_LEFT_" + str(i) + "_SEQUENCE" in primer and "PRIMER_RIGHT_" + str(i) + "_SEQUENCE" in primer:
-                                primer_left_right[i] = primer["PRIMER_LEFT_" + str(i) + "_SEQUENCE"] + ";" + primer["PRIMER_RIGHT_" + str(i) + "_SEQUENCE"]
-
+                            if "PRIMER_LEFT_" + str(i) + "_SEQUENCE" in primer and "PRIMER_RIGHT_" + str(i) + "_SEQUENCE" in primer and \
+                               "PRIMER_LEFT_" + str(i) + "_TM" in primer and "PRIMER_RIGHT_" + str(i) + "_TM" in primer and \
+                               "PRIMER_PAIR_" + str(i) + "_PRODUCT_SIZE" in primer:
+                                primer_left_right[i] = primer["PRIMER_LEFT_" + str(i) + "_SEQUENCE"] + ";" + primer["PRIMER_RIGHT_" + str(i) + "_SEQUENCE"] + ';' + \
+                                                       str(round(primer["PRIMER_LEFT_" + str(i) + "_TM"], 3)) + ";" + str(round(primer["PRIMER_RIGHT_" + str(i) + "_TM"], 3)) + ';' + \
+                                                       str(primer["PRIMER_PAIR_" + str(i) + "_PRODUCT_SIZE"])
+ 
                         print >> hout, '\t'.join(F) + '\t' + '\t'.join(primer_left_right)
               
 
