@@ -100,3 +100,8 @@ get nonB_DB distance for each SV candidate
 sv_utils nonB_DB [-h] genomonSV.result.txt output.txt annotation_dir
 ```
 
+### RSS
+check recombination signal sequence motif near breakpoints
+```
+sv_utils RSS [-h] --reference reference.fa genomonSV.result.txt output.txt
+```
