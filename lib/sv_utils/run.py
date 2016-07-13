@@ -482,6 +482,7 @@ def merge_control_main(args):
 
             with open(result_file, 'r') as hin:
                 for line in hin:
+                    if line.startswith("#"): continue
                     if utils.header_check(line.rstrip('\n')):
                         line = line.rstrip('\n')
                         header_info.read(line)
