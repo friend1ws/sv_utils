@@ -251,6 +251,25 @@ nonB_DB_parser.add_argument("annotation_dir", metavar = "annotation_dir", defaul
 nonB_DB_parser.set_defaults(func = nonB_DB_main)
 
 
+##########
+# check the RSS motif
+
+RSS_parser = subparsers.add_parser("RSS",
+                                   help = "check recombination signal sequence motif near breakpoints")
+
+RSS_parser.add_argument("result_file", metavar = "genomonSV.result.txt", default = None, type = str,
+                         help = "the path to genomon SV result")
+
+RSS_parser.add_argument("output", metavar = "output.txt", default = None, type = str,
+                         help = "the path to the output file")
+
+RSS_parser.add_argument("--reference", metavar = "reference.fa", default = None, type = str, required=True,
+                        help = "the path to the reference genomoe sequence")
+
+RSS_parser.set_defaults(func = RSS_main)
+
+###########
+
 args = parser.parse_args()
 
 args.func(args)

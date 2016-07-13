@@ -543,9 +543,6 @@ def realign_main(args):
 
     hout.close()
 
-    # yaml input
-    # param = {"max_depth": 5000, "search_length": 1000, "search_margin": 5, "reference_genome": args.reference,
-    #          "split_refernece_thres": 1000, "validate_sequence_length": 1000, "STD_thres": 500}
 
     filterFunction.validateByRealignment(args.output + ".tmp1.bedpe",
                     args.output + ".tmp2.bedpe",
@@ -616,7 +613,6 @@ def primer_main(args):
     if os.path.dirname(args.output) != "" and not os.path.exists(os.path.dirname(args.output)):
         os.makedirs(os.path.dirname(args.output))
 
-    # yaml input
     param = {"reference_genome": args.reference, "split_refernece_thres": 1000, "validate_sequence_length": 250}
 
     hout = open(args.output, 'w')
@@ -787,4 +783,42 @@ def nonB_DB_main(args):
                 print_dist_bar = print_dist_bar + '\t' + str(nonB_DB_dist1) + '\t' + str(nonB_DB_dist2)
 
             print >> hout, '\t'.join(F) + print_dist_bar
- 
+
+
+
+def RSS_main(args):
+
+    # make directory for output if necessary
+    if os.path.dirname(args.output) != "" and not os.path.exists(os.path.dirname(args.output)):
+        os.makedirs(os.path.dirname(args.output))
+
+    rss_pwm = my_seq.generate_rss_pwm()
+
+    hout = open(args.output, 'w')
+    with open(args.result_file, 'r') as hin:
+        for line in hin:
+
+            if line.startswith("#"): continue
+            if utils.header_check(line.rstrip('\n')):
+                line = line.rstrip('\n')
+                header_info.read(line)
+                print >> hout, line + '\t' + "RSS_score_1" + '\t' + "RSS_info_1" + '\t' + "RSS_score_2" + '\t' + "RSS_info_2"
+                continue
+
+            F = line.rstrip('\n').split('\t')
+            
+            seq1 = my_seq.get_seq(args.reference, F[header_info.chr_1], int(F[header_info.pos_1]) - 50, int(F[header_info.pos_1]) + 50)
+            seq2 = my_seq.get_seq(args.reference, F[header_info.chr_2], int(F[header_info.pos_2]) - 50, int(F[header_info.pos_2]) + 50)
+
+            rss_info_1 = my_seq.get_max_rss_score(seq1, rss_pwm[0], rss_pwm[1])
+            rss_info_2 = my_seq.get_max_rss_score(seq2, rss_pwm[0], rss_pwm[1])
+   
+            print >> hout, '\t'.join(F) + '\t' + \
+                            str(round(rss_info_1[0], 3)) + '\t' + \
+                            ';'.join([rss_info_1[1], rss_info_1[2], str(int(rss_info_1[3] - 50)), str(rss_info_1[4]), str(rss_info_1[5])]) + '\t' + \
+                            str(round(rss_info_2[0], 3)) + '\t' + \
+                            ';'.join([rss_info_2[1], rss_info_2[2], str(int(rss_info_2[3] - 50)), str(rss_info_2[4]), str(rss_info_2[5])])
+
+    hout.close()
+
+
