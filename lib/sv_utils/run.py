@@ -688,7 +688,7 @@ def vcf_main(args):
             if F[header_info.variant_type] == "deletion":
                 ref_seq = my_seq.get_seq(args.reference, F[header_info.chr_1], int(F[header_info.pos_1]), int(F[header_info.pos_2]) - 1)
                 alt_seq = ref_seq[0] if F[header_info.inserted_seq] == "---" else ref_seq[0] + F[header_info.inserted_seq] 
-                pos = F[1]
+                pos = F[header_info.pos_1]
             elif F[header_info.variant_type] == "tandem_duplication":
                 alt_seq = my_seq.get_seq(args.reference, F[header_info.chr_1], int(F[header_info.pos_1]) - 1, int(F[header_info.pos_2]))
                 alt_seq = alt_seq if F[header_info.inserted_seq] == "---" else alt_seq + F[header_info.inserted_seq] 
