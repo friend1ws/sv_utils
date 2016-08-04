@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-import sys, os, subprocess, gzip
+import sys, os, re, subprocess, gzip
 import pysam
 import utils, my_seq
 from header_info import *
@@ -818,6 +818,49 @@ def RSS_main(args):
                             ';'.join([rss_info_1[1], rss_info_1[2], str(int(rss_info_1[3] - 50)), str(rss_info_1[4]), str(rss_info_1[5])]) + '\t' + \
                             str(round(rss_info_2[0], 3)) + '\t' + \
                             ';'.join([rss_info_2[1], rss_info_2[2], str(int(rss_info_2[3] - 50)), str(rss_info_2[4]), str(rss_info_2[5])])
+
+    hout.close()
+
+
+
+def AID_main(args):
+
+    # make directory for output if necessary
+    if os.path.dirname(args.output) != "" and not os.path.exists(os.path.dirname(args.output)):
+        os.makedirs(os.path.dirname(args.output))
+
+    hout = open(args.output, 'w')
+    with open(args.result_file, 'r') as hin:
+        for line in hin:
+
+            if line.startswith("#"): continue
+            if utils.header_check(line.rstrip('\n')):
+                line = line.rstrip('\n')
+                header_info.read(line)
+                print >> hout, line + '\t' + "CG_motif_info_1" + '\t' + "CG_motif_info_2" + '\t' + "WGCW_motif_info_1" + '\t' + "WGCW_motif_info_2"
+                continue
+
+            F = line.rstrip('\n').split('\t')
+
+            seq1 = my_seq.get_seq(args.reference, F[header_info.chr_1], int(F[header_info.pos_1]) - args.check_size, int(F[header_info.pos_1]) + args.check_size)
+            seq2 = my_seq.get_seq(args.reference, F[header_info.chr_2], int(F[header_info.pos_2]) - args.check_size, int(F[header_info.pos_2]) + args.check_size)
+
+           
+            CG_starts_1 = [match.start() - 10 for match in re.finditer(r'CG', seq1)]
+            CG_starts_2 = [match.start() - 10 for match in re.finditer(r'CG', seq2)]
+            WGCW_starts_1 = [match.start() - 10 for match in re.finditer(r'[AT]GC[AT]', seq1)]
+            WGCW_starts_2 = [match.start() - 10 for match in re.finditer(r'[AT]GC[AT]', seq2)]
+
+            if len(CG_starts_1) == 0: CG_starts_1.append("---")
+            if len(CG_starts_2) == 0: CG_starts_2.append("---")
+            if len(WGCW_starts_1) == 0: WGCW_starts_1.append("---")
+            if len(WGCW_starts_2) == 0: WGCW_starts_2.append("---")
+
+            print >> hout, '\t'.join(F) + '\t' + \
+                            ','.join([str(x) for x in CG_starts_1]) + '\t' + \
+                            ','.join([str(x) for x in CG_starts_2]) + '\t' + \
+                            ','.join([str(x) for x in WGCW_starts_1]) + '\t' + \
+                            ','.join([str(x) for x in WGCW_starts_2]) 
 
     hout.close()
 

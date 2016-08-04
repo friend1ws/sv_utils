@@ -268,6 +268,27 @@ RSS_parser.add_argument("--reference", metavar = "reference.fa", default = None,
 
 RSS_parser.set_defaults(func = RSS_main)
 
+
+##########
+# check the AID motif
+
+AID_parser = subparsers.add_parser("AID",
+                                   help = "check AID motif (CG, WGCW) near breakpoints")
+
+AID_parser.add_argument("result_file", metavar = "genomonSV.result.txt", default = None, type = str,
+                         help = "the path to genomon SV result")
+
+AID_parser.add_argument("output", metavar = "output.txt", default = None, type = str,
+                         help = "the path to the output file")
+
+AID_parser.add_argument("--reference", metavar = "reference.fa", default = None, type = str, required=True,
+                        help = "the path to the reference genomoe sequence")
+
+AID_parser.add_argument("--check_size", default = 10, type = float,
+                        help = "check specified number of nucleotides both upstream and downstream from the breakpoints (default: %(default)s)")
+
+AID_parser.set_defaults(func = AID_main)
+
 ###########
 
 args = parser.parse_args()
