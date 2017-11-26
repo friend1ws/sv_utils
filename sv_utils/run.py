@@ -463,23 +463,28 @@ def concentrate_main(args):
 
 def merge_control_main(args):
 
-    # make directory for output if necessary
-    if os.path.dirname(args.output_prefix) != "" and not os.path.exists(os.path.dirname(args.output_prefix)):
-        os.makedirs(os.path.dirname(args.output_prefix))
+    import genomonsv.mergeFunction, genomonsv.utils
 
-    hout = open(args.output_prefix + ".tmp.bedpe", 'w')
+    # make directory for output if necessary
+    if os.path.dirname(args.output_file) != "" and not os.path.exists(os.path.dirname(args.output_file)):
+        os.makedirs(os.path.dirname(args.output_file))
+
+    hout = open(args.output_file + ".temp", 'w')
 
     tumor_type_list = {}
     gene2type_sample = {}
     with open(args.result_list, 'r') as hin:
         for line in hin:
 
-            sample, tumor_type, result_file = line.rstrip('\n').split('\t')
+            label, tumor_type, result_file = line.rstrip('\n').split('\t')
+            # label, result_file = line.rstrip('\n').split('\t')
             if tumor_type not in tumor_type_list: tumor_type_list[tumor_type] = 1
 
             if not os.path.exists(result_file):
                 raise ValueError("file not exists: " + result_file)
 
+
+            num = 1
             with open(result_file, 'r') as hin:
                 for line in hin:
                     if line.startswith("#"): continue
@@ -489,12 +494,18 @@ def merge_control_main(args):
                         continue
 
                     F = line.rstrip('\n').split('\t')
+                    inseqLen = len(F[header_info.inserted_seq]) if F[header_info.inserted_seq] != "---" else 0
+
                     print >> hout, '\t'.join([F[header_info.chr_1], str(int(F[header_info.pos_1]) - 1), F[header_info.pos_1], \
                                               F[header_info.chr_2], str(int(F[header_info.pos_2]) - 1), F[header_info.pos_2], \
-                                              sample, F[header_info.inserted_seq], F[header_info.dir_1], F[header_info.dir_2]])
+                                              "junction_" + str(num),  str(inseqLen), \
+                                              F[header_info.dir_1], F[header_info.dir_2], label, "1"])
+
+                    num = num + 1
 
     hout.close()
 
+    """
     hout = open(args.output_prefix + ".bedpe", 'w')
     subprocess.call(["sort", "-k1,1", "-k3,3n", "-k4,4", "-k6,6n", args.output_prefix + ".tmp.bedpe"], stdout = hout)
     hout.close()
@@ -505,6 +516,19 @@ def merge_control_main(args):
 
     # remove intermediate file
     subprocess.call(["rm", "-rf", args.output_prefix + ".tmp.bedpe"])
+    """
+
+    # utils.processingMessage("sorting the aggregated junction file")
+    genomonsv.utils.sortBedpe(args.output_file + ".temp", args.output_file + ".temp.sort")
+
+    # utils.processingMessage("merging the same junction in the aggregated junction file")
+    genomonsv.mergeFunction.organizeControl(args.output_file + ".temp.sort", args.output_file + ".temp.merged", 20)
+
+    # utils.processingMessage("sorting the merged junction file")
+    genomonsv.utils.sortBedpe(args.output_file + ".temp.merged", args.output_file + ".temp.merged.sort")
+
+    # utils.processingMessage("compressing the merged junction file")
+    genomonsv.utils.compress_index_bed(args.output_file + ".temp.merged.sort", args.output_file)
 
 
 
