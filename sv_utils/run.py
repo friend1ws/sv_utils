@@ -187,58 +187,22 @@ def gene_summary_main(args):
 
 def filter_main(args):
 
+    print args
 
-    if not os.path.exists(args.result_file):
-        raise ValueError("file not exists: " + args.result_file)
+    import filter
 
-    if args.mutation_result != "" and args.reference == "":
-        print >> sys.stderr, "input reference when using mutation_result"
-        sys.exit(1)
-
-    annotation_dir = args.annotation_dir
-    ref_gene_bed = annotation_dir + "/refGene.bed.gz"
-    ens_gene_bed = annotation_dir + "/ensGene.bed.gz"
-    ref_junc_bed = annotation_dir + "/refJunc.bed.gz"
-    ens_junc_bed = annotation_dir + "/ensJunc.bed.gz"
-    ref_exon_bed = annotation_dir + "/refExon.bed.gz"
-    ens_exon_bed = annotation_dir + "/ensExon.bed.gz"
-    ref_coding_bed = annotation_dir + "/refCoding.bed.gz"
-    grch2ucsc_file = annotation_dir + "/grch2ucsc.txt"
-    simple_repeat_bed = annotation_dir + "/simpleRepeat.bed.gz"
- 
-    ref_gene_tb = pysam.TabixFile(ref_gene_bed)
-    ens_gene_tb = pysam.TabixFile(ens_gene_bed)
-    ref_junc_tb = pysam.TabixFile(ref_junc_bed)
-    ens_junc_tb = pysam.TabixFile(ens_junc_bed)
-    ref_exon_tb = pysam.TabixFile(ref_exon_bed)
-    ens_exon_tb = pysam.TabixFile(ens_exon_bed)
-    ref_coding_tb = pysam.TabixFile(ref_coding_bed)
-    control_tb = pysam.TabixFile(args.pooled_control_file) if args.pooled_control_file is not None else None
-    simple_repeat_tb = pysam.TabixFile(simple_repeat_bed) if args.remove_simple_repeat is not None else None
+    if not os.path.exists(args.input_file):
+        raise ValueError("file not exists: " + args.input_file)
 
     # make directory for output if necessary
-    if os.path.dirname(args.output) != "" and not os.path.exists(os.path.dirname(args.output)):
-        os.makedirs(os.path.dirname(args.output))
+    if os.path.dirname(args.output_file) != "" and not os.path.exists(os.path.dirname(args.output_file)):
+        os.makedirs(os.path.dirname(args.output_file))
     
-    hout = open(args.output, 'w')
+    hout = open(args.output_file, 'w')
 
-    # relationship between CRCh and UCSC chromosome names
-    grch2ucsc = {}
-    with open(grch2ucsc_file, 'r') as hin:
-        for line in hin:
-            F = line.rstrip('\n').split('\t')
-            grch2ucsc[F[0]] = F[1]
+    sv_good_list = filter.filter_sv_list(args)
 
-    sv_good_list = utils.filter_sv_list(args, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb, 
-                                        simple_repeat_tb, grch2ucsc, control_tb)
-
-    mut_tb = None
-    if args.mutation_result != "":
-        utils.make_mut_db(args.mutation_result, args.output + ".mutation", args.reference)
-        mut_tb = pysam.TabixFile(args.output + ".mutation.bed.gz")
-
-
-    dup_list = {}
+    
     for i in range(0, len(sv_good_list)):
 
         # for meta info print
@@ -249,133 +213,76 @@ def filter_main(args):
         # for header print
         if sv_good_list[i][header_info.chr_1] == "Chr_1" and sv_good_list[i][header_info.pos_1] == "Pos_1":
             print_header = '\t'.join(sv_good_list[i])
-            if args.mutation_result != "": print_header = print_header + '\t' + "Mutation_Detection"
-            if args.closest_exon == True: print_header = print_header + '\t' + "Dist_To_Exon" + '\t' + "Target_Exon"
-            if args.closest_coding == True: print_header = print_header + '\t' + "Dist_To_Coding" + '\t' + "Target_Coding"
-            if args.coding_info == True: print_header = print_header + '\t' + "Intra_or_Inter_Gene" + '\t' + "Coding_Class" + '\t' + "Detailed_Coding_Info"
-            if args.fusion_info is not None: print_header = print_header + '\t' + "Gene_Fusion_Comb" + '\t' + "Known_Gene_Fusion_Source"
             print >> hout, print_header
             continue
 
-        chr_ucsc1 = grch2ucsc[sv_good_list[i][header_info.chr_1]] if sv_good_list[i][header_info.chr_1] in grch2ucsc else sv_good_list[i][header_info.chr_1]
-        chr_ucsc2 = grch2ucsc[sv_good_list[i][header_info.chr_2]] if sv_good_list[i][header_info.chr_2] in grch2ucsc else sv_good_list[i][header_info.chr_2]
-
-        if args.re_annotation == True:
-            sv_good_list[i][header_info.gene_1], sv_good_list[i][header_info.gene_2], sv_good_list[i][header_info.exon_1], sv_good_list[i][header_info.exon_2] = \
-                utils.get_gene_annotation(chr_ucsc1, sv_good_list[i][header_info.pos_1], chr_ucsc2, sv_good_list[i][header_info.pos_2], ref_gene_tb, ref_exon_tb)
-
         print_line = '\t'.join(sv_good_list[i])
-
-        if args.mutation_result != "":
-            if sv_good_list[i][header_info.variant_type] in ["deletion", "tandem_duplication"] and \
-                abs(int(sv_good_list[i][header_info.pos_1]) - int(sv_good_list[i][header_info.pos_2])) <= 100:
-
-                # check exon annotation for the side 1
-                tabixErrorFlag = 0
-                try:
-                    records = mut_tb.fetch(sv_good_list[i][header_info.chr_1], int(sv_good_list[i][header_info.pos_1]) - 30, int(sv_good_list[i][header_info.pos_2]) + 30)
-                except Exception as inst:
-                    # print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
-                    tabixErrorFlag = 1
-
-                duplicated_flag = 0
-                if tabixErrorFlag == 0:
-                    for record_line in records:
-                        record = record_line.split('\t')
-                        mut_length = int(record[7]) - int(record[4]) - 1
-                        sv_length = int(sv_good_list[i][header_info.pos_2]) - int(sv_good_list[i][header_info.pos_1]) - 1
-
-                        if float(abs(mut_length - sv_length)) / sv_length < 0.2 and record[10] == sv_good_list[i][header_info.variant_type]:
-
-                        # if int(record[7]) - int(record[4]) == int(sv_good_list[i][header_info.pos_2]) - int(sv_good_list[i][header_info.pos_1]) and record[10] == sv_good_list[i][7]:
-                            duplicated_flag = 1
-                            dup_list[record[0] + '\t' + record[1] + '\t' + record[2]] = 1
-
-                print_line = print_line + '\t' + "mut;sv" if duplicated_flag == 1 else print_line + '\t' + "sv"
-            else:
-                print_line = print_line + '\t' + "sv"   
-            
-        if args.closest_exon == True:
-            dist_to_exon, target_exon = utils.distance_to_closest(chr_ucsc1, sv_good_list[i][header_info.pos_1], chr_ucsc2, sv_good_list[i][header_info.pos_2], ref_exon_tb)
-            if len(target_exon) == 0: target_exon = ["---"]
-            print_line = print_line  + '\t' + str(dist_to_exon) + '\t' + ';'.join(target_exon)
-
-        if args.closest_coding == True:
-            dist_to_exon, target_exon = utils.distance_to_closest(chr_ucsc1, sv_good_list[i][header_info.pos_1], chr_ucsc2, sv_good_list[i][header_info.pos_2], ref_coding_tb, False)
-            if len(target_exon) == 0: target_exon = ["---"]
-            print_line = print_line  + '\t' + str(dist_to_exon) + '\t' + ';'.join(target_exon)
- 
-        if args.coding_info == True:
-            # within gene or accross gene ?
-            gene_flag = 0
-            within_gene_flag = 0
-            for (g1, g2) in zip(sv_good_list[i][header_info.gene_1].split(';'), sv_good_list[i][header_info.gene_2].split(';')):
-                if g1 != "---" and g1 == g2: within_gene_flag = 1
-                if g1 != "---" or g2 != "---": gene_flag = 1
-
-            if within_gene_flag == 1:
-                coding_info = utils.check_coding_info2(chr_ucsc1, sv_good_list[i][header_info.pos_1], sv_good_list[i][header_info.pos_2], ref_coding_tb)
-                print_line = print_line + '\t' + "within_gene" + '\t' + coding_info                
-            elif gene_flag == 1:
-                print_line = print_line + '\t' + "across_gene" + '\t' + "---\t---" 
-            else:
-                print_line = print_line + '\t' + "intergenic" + '\t' + "---\t---"
-
-        if args.fusion_info is not None:
-            print_line = print_line + '\t' + utils.check_fusion_direction(chr_ucsc1, sv_good_list[i][header_info.pos_1], sv_good_list[i][header_info.dir_1],
-                                                                          chr_ucsc2, sv_good_list[i][header_info.pos_2], sv_good_list[i][header_info.dir_2],
-                                                                          ref_gene_tb, args.fusion_info)
-
 
         print >> hout, print_line
 
 
-    if args.mutation_result != "":
-        with gzip.open(args.output + ".mutation.bed.gz") as hin:
-            for line in hin:
-                F = line.rstrip('\n').split('\t')
-                bed_key = F[0] + '\t' + F[1] + '\t' + F[2]
-                if bed_key in dup_list: continue
 
-                chr_ucsc1 = grch2ucsc[F[3]] if F[3] in grch2ucsc else F[3] 
-                chr_ucsc2 = grch2ucsc[F[6]] if F[6] in grch2ucsc else F[6] 
-                F[11], F[12], F[13], F[14] = utils.get_gene_annotation(chr_ucsc1, F[4], chr_ucsc2, F[7], ref_gene_tb, ref_exon_tb)
-                print_line = '\t'.join(F[3:]) + '\t' + "mut"
+def mutation_main(args):
 
-                if args.closest_exon == True:
-                    dist_to_exon, target_exon = utils.distance_to_closest(chr_ucsc1, F[4], chr_ucsc2, F[7], ref_exon_tb)
-                    if len(target_exon) == 0: target_exon = ["---"]
-                    print_line = print_line  + '\t' + str(dist_to_exon) + '\t' + ';'.join(target_exon)
+    import mutation
 
-                if args.closest_coding == True:
-                    dist_to_exon, target_exon = utils.distance_to_closest(chr_ucsc1, F[4], chr_ucsc2, F[7], ref_coding_tb, False)
-                    if len(target_exon) == 0: target_exon = ["---"]
-                    print_line = print_line  + '\t' + str(dist_to_exon) + '\t' + ';'.join(target_exon)
+    mutation.make_mut_db(args.mutation_result, args.output_file + ".mutation", args.reference)
+    mut_tb = pysam.TabixFile(args.output_file + ".mutation.bed.gz")
 
-                if args.coding_info == True:
-                    # within gene or accross gene ?
-                    gene_flag = 0
-                    within_gene_flag = 0
-                    for (g1, g2) in zip(F[11].split(';'), F[12].split(';')):
-                        if g1 != "---" and g1 == g2: within_gene_flag = 1
-                        if g1 != "---" or g2 != "---": gene_flag = 1
+    dup_list = {}
+    with open(args.input_file, 'r') as hin:
+        for line in hin:
 
-                    if within_gene_flag == 1:
-                        chr_ucsc1 = grch2ucsc[F[3]] if F[3] in grch2ucsc else F[3]
-                        coding_info = utils.check_coding_info2(chr_ucsc1, F[4], F[7], ref_coding_tb)
-                        print_line = print_line + '\t' + "within_gene" + '\t' + coding_info
-                    elif gene_flag == 1:
-                        print_line = print_line + '\t' + "across_gene" + '\t' + "---\t---"
-                    else:
-                        print_line = print_line + '\t' + "intergenic" + '\t' + "---\t---"
+            if line.startswith("#"):
+                print line.rstrip('\n')
+                continue
 
-                if args.fusion_info is not None:
-                    print_line = print_line + '\t' + "---\t---"
+            if header_check(line.rstrip('\n')):
+                header_info.read(line.rstrip('\n'))
+                print line.rstrip('\n') + '\t' + "Mutation_Detection"
+                continue
 
-                print >> hout, print_line
+            F = line.rstrip('\n').split('\t')
 
-        subprocess.call(["rm", "-rf", args.output + ".mutation.bed.gz"])
-        subprocess.call(["rm", "-rf", args.output + ".mutation.bed.gz.tbi"])
+            duplicated_flag = 0
+
+            if F[header_info.variant_type] in ["deletion", "tandem_duplication"] and \
+                abs(int(F[header_info.pos_1]) - int(F[header_info.pos_2])) <= 100:
+
+                # check exon annotation for the side 1
+                tabixErrorFlag = 0
+                try:
+                    records = mut_tb.fetch(F[header_info.chr_1], int(F[header_info.pos_1]) - 30, int(F[header_info.pos_2]) + 30)
+                except Exception as inst:
+                    # print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
+                    tabixErrorFlag = 1
+
+                if tabixErrorFlag == 0:
+                    for record_line in records:
+                        record = record_line.split('\t')
+                        mut_length = int(record[7]) - int(record[4]) - 1
+                        sv_length = int(F[header_info.pos_2]) - int(F[header_info.pos_1]) - 1
+
+                        if float(abs(mut_length - sv_length)) / sv_length < 0.2 and record[10] == F[header_info.variant_type]:
+
+                            duplicated_flag = 1
+                            dup_list[record[0] + '\t' + record[1] + '\t' + record[2]] = 1
+
+            if duplicated_flag == 1:
+                print >> hout, '\t'.join(F) + '\t' + "mut;sv"
+            else:
+                print >> hout, '\t'.join(F) + '\t' + "sv"
+
+
+    with gzip.open(args.output + ".mutation.bed.gz") as hin:
+        for line in hin:
+            F = line.rstrip('\n').split('\t')
+            bed_key = F[0] + '\t' + F[1] + '\t' + F[2]
+            if bed_key in dup_list: continue
+            print >> hout, '\t'.join(F) + "mut"
+
+    subprocess.call(["rm", "-rf", args.output_file + ".mutation.bed.gz"])
+    subprocess.call(["rm", "-rf", args.output_file + ".mutation.bed.gz.tbi"])
 
     hout.close()
 
@@ -459,6 +366,7 @@ def concentrate_main(args):
 
     subprocess.call(["rm", "-rf", args.output + ".tmp.sv_list"])
     subprocess.call(["rm", "-rf", args.output + ".tmp.sv_list.sort"])
+
 
 
 def merge_control_main(args):

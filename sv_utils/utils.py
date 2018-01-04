@@ -11,6 +11,7 @@ def header_check(line):
     else:
         return False
 
+"""
 def filter_sv_list(args, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb, 
                     simple_repeat_tb, grch2ucsc, control_tb):
 
@@ -199,7 +200,7 @@ def junction_check(chr, start, end, ref_junc_tb, ens_junc_tb, margin = 2):
 
     return junc_flag
  
-
+"""
 
 
 # get the closest exon and distances to them

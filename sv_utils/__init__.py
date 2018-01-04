@@ -6,7 +6,7 @@ import argparse
 def main():
 
     parser = argparse.ArgumentParser(prog = "sv_utils")
-    parser.add_argument("--version", action = "version", version = "sv_utils-0.5.0beta")
+    parser.add_argument("--version", action = "version", version = "sv_utils-0.5.0a1")
 
     subparsers = parser.add_subparsers()
 
@@ -54,14 +54,20 @@ def main():
     filter_parser = subparsers.add_parser("filter",
                                         help = "filter out variants outside specified conditions")
 
-    filter_parser.add_argument("result_file", metavar = "genomonSV.result.txt", default = None, type = str,
+    filter_parser.add_argument("input_file", metavar = "genomonSV.result.txt", default = None, type = str,
                         help = "the path to genomon SV result")
 
-    filter_parser.add_argument("output", metavar = "output.txt", default = None, type = str,
+    filter_parser.add_argument("output_file", metavar = "output.txt", default = None, type = str,
                         help = "the path to the output file")
 
-    filter_parser.add_argument("annotation_dir", metavar = "annotation_dir", default = None, type = str,
-                               help = "the path to the database directory")
+    filter_parser.add_argument("--genome_id", choices = ["hg19", "hg38", "mm10"], default = "hg19",
+                        help = "the genome id used for selecting UCSC-GRC chromosome name corresponding files (default: %(default)s)")
+
+    filter_parser.add_argument("--grc", default = False, action = 'store_true',
+                        help = "Use Genome Reference Consortium nomenclature rather than UCSC (default: %(default)s)")
+
+    # filter_parser.add_argument("annotation_dir", metavar = "annotation_dir", default = None, type = str,
+    #                            help = "the path to the database directory")
 
     filter_parser.add_argument("--max_minus_log_fisher_pvalue", default = 1.0, type = float,
                        help = "remove if the - log(fisher p-value) is smaller than this value (default: %(default)s)")
@@ -87,8 +93,8 @@ def main():
     filter_parser.add_argument("--max_variant_size", default = None, type = int,
                        help = "remove if the size of variant is larger than this value (default: %(default)s)")
 
-    filter_parser.add_argument("--within_exon", default = False, action = "store_true",
-                        help = "keep only variants within exon (default: %(default)s)")
+    # filter_parser.add_argument("--within_exon", default = False, action = "store_true",
+    #                     help = "keep only variants within exon (default: %(default)s)")
 
     filter_parser.add_argument("--pooled_control_file", default = None, type = str,
                         help = "the path to control data created by merge_control (default: %(default)s)")
@@ -99,30 +105,53 @@ def main():
     filter_parser.add_argument("--remove_simple_repeat", default = False, action = "store_true",
                         help = "remove variants with overlapping simple repeat annotation by UCSC (default: %(default)s)")
 
-    filter_parser.add_argument("--closest_exon", default = False, action = "store_true",
-                               help = "add the closest exon and distance to them (default: %(default)s)")
+    filter_parser.add_argument("--remove_rna_junction", default = False, action = "store_true",
+                        help = "remove putative rna splicing junction contamination (default: %(default)s)")
 
-    filter_parser.add_argument("--closest_coding", default = False, action = "store_true",
-                               help = "add the closest coding exon and distance to them (default: %(default)s)")
+    # filter_parser.add_argument("--closest_exon", default = False, action = "store_true",
+    #                            help = "add the closest exon and distance to them (default: %(default)s)")
 
-    filter_parser.add_argument("--mutation_result", metavar = "genomon_mutation.result.txt", default = "", type = str,
-                               help = "the path to the genomon mutation result file (default: %(default)s)")
+    # filter_parser.add_argument("--closest_coding", default = False, action = "store_true",
+    #                            help = "add the closest coding exon and distance to them (default: %(default)s)")
 
-    filter_parser.add_argument("--reference", metavar = "reference.fa", default = "", type = str,
-                               help = "the path to the reference genome sequence (default: %(default)s)")
+    # filter_parser.add_argument("--mutation_result", metavar = "genomon_mutation.result.txt", default = "", type = str,
+    #                            help = "the path to the genomon mutation result file (default: %(default)s)")
 
-    filter_parser.add_argument("--re_annotation", default = False, action = "store_true",
-                               help = "gene annotaiton again (default: %(default)s)")
+    # filter_parser.add_argument("--reference", metavar = "reference.fa", default = "", type = str,
+    #                            help = "the path to the reference genome sequence (default: %(default)s)")
 
-    filter_parser.add_argument("--coding_info", default = False, action = "store_true",
-                               help = "get coding information (default: %(default)s)")
+    # filter_parser.add_argument("--re_annotation", default = False, action = "store_true",
+    #                            help = "gene annotaiton again (default: %(default)s)")
 
-    filter_parser.add_argument("--fusion_info", metavar = "fusion_info.txt", default = None, type = str,
-                               help = "the path to the fusion gene info file (gene1, gene2 and information for the 1st, 2nd and 3rd columns, respectively) (default: %(default)s)")
+    # filter_parser.add_argument("--coding_info", default = False, action = "store_true",
+    #                            help = "get coding information (default: %(default)s)")
+
+    # filter_parser.add_argument("--fusion_info", metavar = "fusion_info.txt", default = None, type = str,
+    #                            help = "the path to the fusion gene info file (gene1, gene2 and information for the 1st, 2nd and 3rd columns, respectively) (default: %(default)s)")
 
     filter_parser.set_defaults(func = filter_main)
-    ##########
 
+
+    ##########
+    # mutation
+    mutation_parser = subparsers.add_parser("mutation",
+                                          help = "filter out variants outside specified conditions")
+
+    mutation_parser.add_argument("sv_result_file", metavar = "genomonSV.result.txt", default = None, type = str,
+                               help = "the path to genomon SV result")
+
+    mutation_parser.add_argument("mutation_result_file", metavar = "genomon_mutation.result.txt", default = "", type = str,
+                                 help = "the path to the genomon mutation result file (default: %(default)s)")
+
+    mutation_parser.add_argument("output_file", metavar = "output.txt", default = None, type = str,
+                               help = "the path to the output file")
+
+    mutation_parser.add_argument("reference", metavar = "reference.fa", default = "", type = str,
+                               help = "the path to the reference genome sequence (default: %(default)s)")
+
+    mutation_parser.set_defaults(func = mutation_main)
+
+    ##########
     # concentrate
     concentrate_parser = subparsers.add_parser("concentrate",
                                                help = "list up concentrated variants")
