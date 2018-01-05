@@ -6,6 +6,7 @@ before_script:
   - tar jxvf htslib-1.3.2.tar.bz2 
   - cd htslib-1.3.2 && make && export PATH=$PATH:$PWD && cd ..
   - pip install annot_utils
+  - pip install pysam
 
 script:
   - pip install . 
