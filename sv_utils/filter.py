@@ -23,9 +23,9 @@ def filter_sv_list(args):
         refseq_junc_tb = pysam.TabixFile(refseq_junc_info)
         gencode_junc_tb = pysam.TabixFile(gencode_junc_info)
 
-    if args.remove_simple_repeat is not None:
+    if args.simple_repeat_file is not None:
         simple_repeat_info = args.output_file + ".simple_repeat.bed.gz"
-        make_simple_repeat_info(args.remove_simple_repeat, simple_repeat_info, args.genome_id, args.grc)
+        make_simple_repeat_info(args.simple_repeat_file, simple_repeat_info, args.genome_id, args.grc)
         simple_repeat_tb = pysam.TabixFile(simple_repeat_info)
 
     control_tb = pysam.TabixFile(args.pooled_control_file) if args.pooled_control_file is not None else None
@@ -85,7 +85,7 @@ def filter_sv_list(args):
                                  F[header_info.inserted_seq], control_tb, args.pooled_control_num_thres): 
                     continue
 
-            if F[header_info.variant_type] in ["deletion", "tandem_duplication"] and args.remove_simple_repeat:
+            if F[header_info.variant_type] in ["deletion", "tandem_duplication"] and args.simple_repeat_file is not None:
                 # chr_ucsc = grch2ucsc[F[header_info.chr_1]] if F[header_info.chr_1] in grch2ucsc else F[header_info.chr_1] 
                 if simple_repeat_check(F[header_info.chr_1], F[header_info.pos_1], F[header_info.pos_2], simple_repeat_tb): continue
 
@@ -102,7 +102,7 @@ def filter_sv_list(args):
         subprocess.check_call(["rm", "-rf", gencode_junc_info])
         subprocess.check_call(["rm", "-rf", gencode_junc_info + ".tbi"])
 
-    if args.remove_simple_repeat:
+    if args.simple_repeat_file is not None:
         subprocess.check_call(["rm", "-rf", simple_repeat_info])
         subprocess.check_call(["rm", "-rf", simple_repeat_info + ".tbi"])
 

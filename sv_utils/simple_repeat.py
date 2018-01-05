@@ -3,7 +3,7 @@
 import sys, gzip, subprocess, pkg_resources 
 from annot_utils import chr_name
 
-def make_simple_repeat_info(simple_repeat_file, output_file, genome_id, is_grc):
+def make_simple_repeat_info(ucsc_simple_repeat_file, output_file, genome_id, is_grc):
 
     # create UCSC to GRC chr name corresponding table
     ucsc2grc = {} 
@@ -11,7 +11,7 @@ def make_simple_repeat_info(simple_repeat_file, output_file, genome_id, is_grc):
         ucsc2grc = chr_name.make_ucsc2grc(genome_id)
 
     hout = open(output_file + ".unsorted.tmp", 'w')
-    with gzip.open(simple_repeat_file, 'r') as hin:
+    with gzip.open(ucsc_simple_repeat_file, 'r') as hin:
 
         for line in hin:
 

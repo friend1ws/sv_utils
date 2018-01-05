@@ -102,8 +102,9 @@ def create_parser():
     filter_parser.add_argument("--pooled_control_num_thres", default = 3, type = int,
                         help = "remove if more than specified number of control sample are found (default: %(default)s)")
 
-    filter_parser.add_argument("--remove_simple_repeat", default = None, type = str,
-                        help = "remove variants with overlapping simple repeat annotation by UCSC (default: %(default)s)")
+    filter_parser.add_argument("--simple_repeat_file", default = None, type = str,
+                        help = "remove variants with overlapping simple repeat annotation. \
+                            Set the annotation file downloaded from UCSC (simpleRepeat.txt.gz) (default: %(default)s)")
 
     filter_parser.add_argument("--remove_rna_junction", default = False, action = "store_true",
                         help = "remove putative rna splicing junction contamination (default: %(default)s)")
