@@ -187,8 +187,6 @@ def gene_summary_main(args):
 
 def filter_main(args):
 
-    print args
-
     import filter
 
     if not os.path.exists(args.input_file):

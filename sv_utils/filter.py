@@ -2,9 +2,10 @@
 
 import sys, subprocess
 from utils import header_check
+from simple_repeat import make_simple_repeat_info
 from header_info import *
 from annot_utils.junction import *
-from annot_utils.simple_repeat import *
+# from annot_utils.simple_repeat import *
 import pysam
 
 # def filter_sv_list(args, ref_exon_tb, ens_exon_tb, ref_junc_tb, ens_junc_tb, 
@@ -22,9 +23,9 @@ def filter_sv_list(args):
         refseq_junc_tb = pysam.TabixFile(refseq_junc_info)
         gencode_junc_tb = pysam.TabixFile(gencode_junc_info)
 
-    if args.remove_simple_repeat:
+    if args.remove_simple_repeat is not None:
         simple_repeat_info = args.output_file + ".simple_repeat.bed.gz"
-        make_simple_repeat_info(simple_repeat_info, args.genome_id, args.grc)
+        make_simple_repeat_info(args.remove_simple_repeat, simple_repeat_info, args.genome_id, args.grc)
         simple_repeat_tb = pysam.TabixFile(simple_repeat_info)
 
     control_tb = pysam.TabixFile(args.pooled_control_file) if args.pooled_control_file is not None else None
