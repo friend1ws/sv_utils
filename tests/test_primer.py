@@ -4,7 +4,7 @@ import unittest
 import os, urllib2, tempfile, shutil, filecmp
 import sv_utils
 
-class TestFilter(unittest.TestCase):
+class TestPrimer(unittest.TestCase):
 
     def setUp(self):
         # prepare reference genome
