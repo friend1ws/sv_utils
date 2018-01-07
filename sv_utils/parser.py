@@ -109,25 +109,38 @@ def create_parser():
     filter_parser.add_argument("--remove_rna_junction", default = False, action = "store_true",
                         help = "remove putative rna splicing junction contamination (default: %(default)s)")
 
-    # filter_parser.add_argument("--closest_exon", default = False, action = "store_true",
-    #                            help = "add the closest exon and distance to them (default: %(default)s)")
-
-    # filter_parser.add_argument("--closest_coding", default = False, action = "store_true",
-    #                            help = "add the closest coding exon and distance to them (default: %(default)s)")
-
-    # filter_parser.add_argument("--reference", metavar = "reference.fa", default = "", type = str,
-    #                            help = "the path to the reference genome sequence (default: %(default)s)")
-
-    # filter_parser.add_argument("--re_annotation", default = False, action = "store_true",
-    #                            help = "gene annotaiton again (default: %(default)s)")
-
-    # filter_parser.add_argument("--coding_info", default = False, action = "store_true",
-    #                            help = "get coding information (default: %(default)s)")
-
-    # filter_parser.add_argument("--fusion_info", metavar = "fusion_info.txt", default = None, type = str,
-    #                            help = "the path to the fusion gene info file (gene1, gene2 and information for the 1st, 2nd and 3rd columns, respectively) (default: %(default)s)")
-
     filter_parser.set_defaults(func = filter_main)
+
+
+    ##########
+    # annotation
+    annotation_parser = subparsers.add_parser("annotation", help = "annotate structural variations")
+
+    annotation_parser.add_argument("sv_result_file", metavar = "genomonSV.result.txt", default = None, type = str,
+                               help = "the path to genomon SV result")
+
+    annotation_parser.add_argument("output_file", metavar = "output.txt", default = None, type = str,
+                               help = "the path to the output file")
+
+    annotation_parser.add_argument("--closest_exon", default = False, action = "store_true",
+                                   help = "add the closest exon and distance to them (default: %(default)s)")
+
+    annotation_parser.add_argument("--closest_coding", default = False, action = "store_true",
+                                   help = "add the closest coding exon and distance to them (default: %(default)s)")
+
+    annotation_parser.add_argument("--reference", metavar = "reference.fa", default = "", type = str,
+                                   help = "the path to the reference genome sequence (default: %(default)s)")
+
+    annotation_parser.add_argument("--re_annotation", default = False, action = "store_true",
+                                   help = "gene annotaiton again (default: %(default)s)")
+
+    annotation_parser.add_argument("--coding_info", default = False, action = "store_true",
+                                   help = "get coding information (default: %(default)s)")
+
+    annotation_parser.add_argument("--fusion_info", metavar = "fusion_info.txt", default = None, type = str,
+                                   help = "the path to the fusion gene info file (gene1, gene2 and information for the 1st, 2nd and 3rd columns, respectively) (default: %(default)s)")
+
+    annotation_parser.set_defaults(func = annotation_main)
 
 
     ##########
@@ -242,7 +255,7 @@ def create_parser():
     format_parser.add_argument("--max_size_thres", default = 100, type = int,
                             help = "remove if the size of variant is larger than this value (default: %(default)s)")
 
-    format_parser.set_defaults(func = vcf_main)
+    format_parser.set_defaults(func = format_main)
 
     ##########
     # get homology match size
