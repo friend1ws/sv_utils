@@ -548,6 +548,9 @@ def primer_main(args):
 
     param = {"reference_genome": args.reference, "split_refernece_thres": 1000, "validate_sequence_length": 250}
 
+    possible_chr = [str(x) for x in range(1, 23)] + ['X', 'Y'] + \
+                   ["chr" + str(x) for x in range(1, 23)] + ['chrX', 'chrY']
+
     hout = open(args.output, 'w')
     with open(args.result_file, 'r') as hin:
         for line in hin:
@@ -563,6 +566,11 @@ def primer_main(args):
             chr1, pos1, dir1, chr2, pos2, dir2, junc_seq = F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1], \
                                                            F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2], F[header_info.inserted_seq]
 
+            if chr1 not in possible_chr or chr2 not in possible_chr:
+                print >> sys.stderr, "Skip a SV incolving atypical chromosomes: %s,%s,%s,%s,%s,%s" % \
+                            (chr1, pos1, dir1, chr2, pos2, dir2)
+                continue
+            
             junc_seq_len = 0 if junc_seq == "---" else len(junc_seq)
 
             realignmentFunction.getRefAltForSV(args.output + ".contig.tmp.fa", chr1, pos1, dir1, chr2, pos2, dir2, junc_seq, args.reference, 1000, 250)
