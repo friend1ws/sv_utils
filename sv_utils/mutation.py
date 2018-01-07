@@ -1,5 +1,9 @@
 #! /usr/bin/env python
 
+import subprocess
+import my_seq
+
+
 def make_mut_db(input_file, output_file_prefix, reference):
 
     hout = open(output_file_prefix + ".bed", 'w')

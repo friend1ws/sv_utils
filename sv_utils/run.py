@@ -4,6 +4,7 @@ import sys, os, re, subprocess, gzip
 import pysam
 import utils, my_seq
 from header_info import *
+from utils import header_check
 
 def count_main(args):
 
@@ -224,20 +225,22 @@ def mutation_main(args):
 
     import mutation
 
-    mutation.make_mut_db(args.mutation_result, args.output_file + ".mutation", args.reference)
+    mutation.make_mut_db(args.mutation_result_file, args.output_file + ".mutation", args.reference)
     mut_tb = pysam.TabixFile(args.output_file + ".mutation.bed.gz")
 
+    hout = open(args.output_file, 'w')
+
     dup_list = {}
-    with open(args.input_file, 'r') as hin:
+    with open(args.sv_result_file, 'r') as hin:
         for line in hin:
 
             if line.startswith("#"):
-                print line.rstrip('\n')
+                print >> hout, line.rstrip('\n')
                 continue
 
             if header_check(line.rstrip('\n')):
                 header_info.read(line.rstrip('\n'))
-                print line.rstrip('\n') + '\t' + "Mutation_Detection"
+                print >> hout, line.rstrip('\n') + '\t' + "Mutation_Detection"
                 continue
 
             F = line.rstrip('\n').split('\t')
@@ -272,7 +275,7 @@ def mutation_main(args):
                 print >> hout, '\t'.join(F) + '\t' + "sv"
 
 
-    with gzip.open(args.output + ".mutation.bed.gz") as hin:
+    with gzip.open(args.output_file + ".mutation.bed.gz") as hin:
         for line in hin:
             F = line.rstrip('\n').split('\t')
             bed_key = F[0] + '\t' + F[1] + '\t' + F[2]
