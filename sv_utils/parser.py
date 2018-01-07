@@ -115,9 +115,6 @@ def create_parser():
     # filter_parser.add_argument("--closest_coding", default = False, action = "store_true",
     #                            help = "add the closest coding exon and distance to them (default: %(default)s)")
 
-    # filter_parser.add_argument("--mutation_result", metavar = "genomon_mutation.result.txt", default = "", type = str,
-    #                            help = "the path to the genomon mutation result file (default: %(default)s)")
-
     # filter_parser.add_argument("--reference", metavar = "reference.fa", default = "", type = str,
     #                            help = "the path to the reference genome sequence (default: %(default)s)")
 
@@ -141,14 +138,14 @@ def create_parser():
     mutation_parser.add_argument("sv_result_file", metavar = "genomonSV.result.txt", default = None, type = str,
                                help = "the path to genomon SV result")
 
-    mutation_parser.add_argument("mutation_result_file", metavar = "genomon_mutation.result.txt", default = "", type = str,
-                                 help = "the path to the genomon mutation result file (default: %(default)s)")
+    mutation_parser.add_argument("mutation_result_file", metavar = "genomon_mutation.result.txt", default = None, type = str,
+                                 help = "the path to the genomon mutation result file")
 
     mutation_parser.add_argument("output_file", metavar = "output.txt", default = None, type = str,
                                help = "the path to the output file")
 
-    mutation_parser.add_argument("reference", metavar = "reference.fa", default = "", type = str,
-                               help = "the path to the reference genome sequence (default: %(default)s)")
+    mutation_parser.add_argument("--reference", metavar = "reference.fa", default = None, type = str, required=True,
+                               help = "the path to the reference genome sequence")
 
     mutation_parser.set_defaults(func = mutation_main)
 
