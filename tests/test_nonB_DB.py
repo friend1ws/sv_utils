@@ -4,7 +4,7 @@ import unittest
 import os, subprocess, tempfile, shutil, filecmp
 import sv_utils
 
-class TestMutation(unittest.TestCase):
+class TestNonB_DB(unittest.TestCase):
 
     def setUp(self):
         # prepare reference genome

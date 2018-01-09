@@ -27,7 +27,7 @@ setup(
         'Topic :: Scientific/Engineering :: Bio-Informatics'
     ],
 
-    packages = find_packages(exclude = ['resource', 'fusion_db', 'cancer_gene']),
+    packages = find_packages(exclude = ['fusion_db', 'nonB_DB']),
     package_data={'sv_utils': ['data/*']},
 
     install_requires = [],

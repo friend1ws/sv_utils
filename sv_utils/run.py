@@ -632,9 +632,6 @@ def primer_main(args):
 
     param = {"reference_genome": args.reference, "split_refernece_thres": 1000, "validate_sequence_length": 250}
 
-    possible_chr = [str(x) for x in range(1, 23)] + ['X', 'Y'] + \
-                   ["chr" + str(x) for x in range(1, 23)] + ['chrX', 'chrY']
-
     hout = open(args.output, 'w')
     with open(args.result_file, 'r') as hin:
         for line in hin:
@@ -650,7 +647,7 @@ def primer_main(args):
             chr1, pos1, dir1, chr2, pos2, dir2, junc_seq = F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1], \
                                                            F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2], F[header_info.inserted_seq]
 
-            if chr1 not in possible_chr or chr2 not in possible_chr:
+            if utils.check_atypical_chromosomes(chr1, chr2):
                 print >> sys.stderr, "Skip a SV incolving atypical chromosomes: %s,%s,%s,%s,%s,%s" % \
                             (chr1, pos1, dir1, chr2, pos2, dir2)
                 continue
@@ -728,8 +725,6 @@ def format_main(args):
 def homology_main(args):
 
     import homology
-    possible_chr = [str(x) for x in range(1, 23)] + ['X', 'Y'] + \
-                     ["chr" + str(x) for x in range(1, 23)] + ['chrX', 'chrY']
 
     hout = open(args.output, 'w')
     with open(args.result_file, 'r') as hin:
@@ -749,7 +744,7 @@ def homology_main(args):
                 print >> hout, '\t'.join(F)
                 continue
 
-            if F[header_info.chr_1] not in possible_chr or F[header_info.chr_2] not in possible_chr:
+            if utils.check_atypical_chromosomes(F[header_info.chr_1], F[header_info.chr_2]):
                 print >> sys.stderr, "Skip a SV incolving atypical chromosomes: %s,%s,%s,%s,%s,%s" % \
                    (F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1], \
                     F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2])
@@ -774,12 +769,6 @@ def nonB_DB_main(args):
    
     import nonB_DB
 
-    possible_chr = [str(x) for x in range(1, 23)] + ['X', 'Y'] + \
-                     ["chr" + str(x) for x in range(1, 23)] + ['chrX', 'chrY']
-
-    all_nonB_DB_type = ["A_Phased_Repeat", "Direct_Repeat", "G_Quadruplex_Motif", "Inverted_Repeat", 
-                       "Mirror_Repeat", "Short_Tandem_Repeat", "Z_DNA_Motif"]
-
     if not os.path.exists(args.result_file):
         raise ValueError("file not exists: " + args.result_file)
 
@@ -803,7 +792,7 @@ def nonB_DB_main(args):
                 print >> hout, '\t'.join(F)
                 continue
 
-            if F[header_info.chr_1] not in possible_chr or F[header_info.chr_2] not in possible_chr:
+            if utils.check_atypical_chromosomes(F[header_info.chr_1], F[header_info.chr_2]):
                 print >> sys.stderr, "Skip a SV incolving atypical chromosomes: %s,%s,%s,%s,%s,%s" % \
                   (F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1], \
                   F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2])
