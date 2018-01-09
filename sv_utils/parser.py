@@ -307,6 +307,9 @@ def create_parser():
     RSS_parser.add_argument("--reference", metavar = "reference.fa", default = None, type = str, required=True,
                             help = "the path to the reference genomoe sequence")
 
+    RSS_parser.add_argument("--check_size", default = 50, type = float,
+                            help = "check specified number of nucleotides both upstream and downstream from the breakpoints (default: %(default)s)")
+
     RSS_parser.set_defaults(func = RSS_main)
 
 
