@@ -769,6 +769,9 @@ def nonB_DB_main(args):
    
     import nonB_DB
 
+    all_nonB_DB_type = ["A_Phased_Repeat", "Direct_Repeat", "G_Quadruplex_Motif", "Inverted_Repeat", 
+                         "Mirror_Repeat", "Short_Tandem_Repeat", "Z_DNA_Motif"]
+
     if not os.path.exists(args.result_file):
         raise ValueError("file not exists: " + args.result_file)
 
