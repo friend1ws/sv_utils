@@ -11,7 +11,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name = 'sv_utils',
-    version = '0.5.0a1',
+    version = '0.5.0b1',
     description='Python programs for analyzing GenomonSV results',
     url = 'https://github.com/friend1ws/sv_utils',
     author = 'Yuichi Shiraishi',
@@ -19,7 +19,7 @@ setup(
     license = 'GPLv3',
 
     classifiers = [
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Operating System :: Unix',
