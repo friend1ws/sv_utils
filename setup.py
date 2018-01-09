@@ -28,6 +28,8 @@ setup(
     ],
 
     packages = find_packages(exclude = ['resource', 'fusion_db', 'cancer_gene']),
+    package_data={'sv_utils': ['data/*']},
+
     install_requires = [],
     entry_points = {'console_scripts': ['sv_utils = sv_utils:main']}
 

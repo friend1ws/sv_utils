@@ -220,6 +220,90 @@ def filter_main(args):
         print >> hout, print_line
 
 
+def annotation_main(args):
+
+    import annot_utils
+    import annotation
+
+    # prepare refseq annotation files
+    ref_gene_info = args.output_file + ".refseq.gene.bed.gz"
+    ref_exon_info = args.output_file + ".refseq.exon.bed.gz"
+    ref_coding_info = args.output_file + ".refseq.coding.bed.gz"
+    annot_utils.gene.make_gene_info(ref_gene_info, "refseq", args.genome_id, args.grc, False)
+    annot_utils.exon.make_exon_info(ref_exon_info, "refseq", args.genome_id, args.grc, False)
+    annot_utils.coding.make_coding_info(ref_coding_info, "refseq", args.genome_id, args.grc, False)
+    ref_gene_tb = pysam.TabixFile(ref_gene_info)
+    ref_exon_tb = pysam.TabixFile(ref_exon_info)
+    ref_coding_tb = pysam.TabixFile(ref_coding_info)
+
+    hout = open(args.output_file, 'w')
+
+    dup_list = {}
+    with open(args.sv_result_file, 'r') as hin:
+        for line in hin:
+
+            if line.startswith("#"):
+                print >> hout, line.rstrip('\n')
+                continue
+
+            if header_check(line.rstrip('\n')):
+                header_info.read(line.rstrip('\n'))
+                print_header = line.rstrip('\n')
+                if args.closest_exon == True: print_header = print_header + '\t' + "Dist_To_Exon" + '\t' + "Target_Exon"
+                if args.closest_coding == True: print_header = print_header + '\t' + "Dist_To_Coding" + '\t' + "Target_Coding"
+                if args.coding_info == True: print_header = print_header + '\t' + "Intra_or_Inter_Gene" + '\t' + "Coding_Class" + '\t' + "Detailed_Coding_Info"
+                if args.fusion_info is not None: print_header = print_header + '\t' + "Known_Gene_Fusion_Comb" + '\t' + "Known_Gene_Fusion_Source"
+                print >> hout, print_header
+                continue
+
+            F = line.rstrip('\n').split('\t')
+            print_line = '\t'.join(F)
+
+            if args.re_gene_annotation == True:
+                F[header_info.gene_1], F[header_info.gene_2], F[header_info.exon_1], F[header_info.exon_2] = \
+                    annotation.get_gene_annotation(F[header_info.chr_1], F[header_info.pos_1], F[header_info.chr_2], F[header_info.pos_2], ref_gene_tb, ref_exon_tb)
+
+            if args.closest_exon == True:
+                dist_to_exon, target_exon = annotation.distance_to_closest(F[header_info.chr_1], F[header_info.pos_1], F[header_info.chr_2], F[header_info.pos_2], ref_exon_tb)
+                if len(target_exon) == 0: target_exon = ["---"]
+                print_line = print_line  + '\t' + str(dist_to_exon) + '\t' + ';'.join(target_exon)
+
+            if args.closest_coding == True:
+                dist_to_exon, target_exon = annotation.distance_to_closest(F[header_info.chr_1], F[header_info.pos_1], F[header_info.chr_2], F[header_info.pos_2], ref_coding_tb, False)
+                if len(target_exon) == 0: target_exon = ["---"]
+                print_line = print_line  + '\t' + str(dist_to_exon) + '\t' + ';'.join(target_exon)
+
+            if args.coding_info == True:
+                # within gene or accross gene ?
+                gene_flag = 0
+                within_gene_flag = 0
+                for (g1, g2) in zip(F[header_info.gene_1].split(';'), F[header_info.gene_2].split(';')):
+                    if g1 != "---" and g1 == g2: within_gene_flag = 1
+                    if g1 != "---" or g2 != "---": gene_flag = 1
+
+                if within_gene_flag == 1:
+                    coding_info = annotation.check_coding_info2(F[header_info.chr_1], F[header_info.pos_1], F[header_info.pos_2], ref_coding_tb)
+                    print_line = print_line + '\t' + "within_gene" + '\t' + coding_info                
+                elif gene_flag == 1:
+                    print_line = print_line + '\t' + "across_gene" + '\t' + "---\t---" 
+                else:
+                    print_line = print_line + '\t' + "intergenic" + '\t' + "---\t---"
+
+
+            if args.fusion_info == True:
+                fusion_info = annotation.check_fusion_direction(F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1], 
+                                                                F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2], ref_gene_tb)
+                print_line = print_line + '\t' + fusion_info
+
+            print >> hout, print_line
+
+    subprocess.check_call(["rm", "-rf", ref_gene_info])
+    subprocess.check_call(["rm", "-rf", ref_exon_info])
+    subprocess.check_call(["rm", "-rf", ref_coding_info])
+    subprocess.check_call(["rm", "-rf", ref_gene_info + ".tbi"])
+    subprocess.check_call(["rm", "-rf", ref_exon_info + ".tbi"])
+    subprocess.check_call(["rm", "-rf", ref_coding_info + ".tbi"])
+
 
 def mutation_main(args):
 
@@ -282,8 +366,8 @@ def mutation_main(args):
             if bed_key in dup_list: continue
             print >> hout, '\t'.join(F) + "mut"
 
-    subprocess.call(["rm", "-rf", args.output_file + ".mutation.bed.gz"])
-    subprocess.call(["rm", "-rf", args.output_file + ".mutation.bed.gz.tbi"])
+    subprocess.check_call(["rm", "-rf", args.output_file + ".mutation.bed.gz"])
+    subprocess.check_call(["rm", "-rf", args.output_file + ".mutation.bed.gz.tbi"])
 
     hout.close()
 
@@ -321,7 +405,7 @@ def concentrate_main(args):
     hout.close()
 
     hout = open(args.output + ".tmp.sv_list.sort", 'w')
-    subprocess.call(["sort", "-k3,3", "-k4,4n", "-k6,6", "-k7,7n", args.output + ".tmp.sv_list"], stdout = hout)
+    subprocess.check_call(["sort", "-k3,3", "-k4,4n", "-k6,6", "-k7,7n", args.output + ".tmp.sv_list"], stdout = hout)
     hout.close()
 
 
@@ -365,8 +449,8 @@ def concentrate_main(args):
 
     hout.close()
 
-    subprocess.call(["rm", "-rf", args.output + ".tmp.sv_list"])
-    subprocess.call(["rm", "-rf", args.output + ".tmp.sv_list.sort"])
+    subprocess.check_call(["rm", "-rf", args.output + ".tmp.sv_list"])
+    subprocess.check_call(["rm", "-rf", args.output + ".tmp.sv_list.sort"])
 
 
 
@@ -416,15 +500,15 @@ def merge_control_main(args):
 
     """
     hout = open(args.output_prefix + ".bedpe", 'w')
-    subprocess.call(["sort", "-k1,1", "-k3,3n", "-k4,4", "-k6,6n", args.output_prefix + ".tmp.bedpe"], stdout = hout)
+    subprocess.check_call(["sort", "-k1,1", "-k3,3n", "-k4,4", "-k6,6n", args.output_prefix + ".tmp.bedpe"], stdout = hout)
     hout.close()
 
     # compress and index
-    subprocess.call(["bgzip", "-f", args.output_prefix + ".bedpe"])
-    subprocess.call(["tabix", "-p", "bed", args.output_prefix + ".bedpe.gz"])
+    subprocess.check_call(["bgzip", "-f", args.output_prefix + ".bedpe"])
+    subprocess.check_call(["tabix", "-p", "bed", args.output_prefix + ".bedpe.gz"])
 
     # remove intermediate file
-    subprocess.call(["rm", "-rf", args.output_prefix + ".tmp.bedpe"])
+    subprocess.check_call(["rm", "-rf", args.output_prefix + ".tmp.bedpe"])
     """
 
     # utils.processingMessage("sorting the aggregated junction file")
@@ -533,8 +617,8 @@ def realign_main(args):
 
     hout.close()
 
-    subprocess.call(["rm", "-rf", args.output + ".tmp1.bedpe"])
-    subprocess.call(["rm", "-rf", args.output + ".tmp2.bedpe"])
+    subprocess.check_call(["rm", "-rf", args.output + ".tmp1.bedpe"])
+    subprocess.check_call(["rm", "-rf", args.output + ".tmp2.bedpe"])
 
 
 def primer_main(args):
@@ -606,10 +690,10 @@ def primer_main(args):
               
 
     hout.close()    
-    subprocess.call(["rm", "-rf", args.output + ".contig.tmp.fa"])
+    subprocess.check_call(["rm", "-rf", args.output + ".contig.tmp.fa"])
  
 
-def vcf_main(args):
+def format_main(args):
 
     # generate bedpe file
     hout = open(args.output, 'w')
