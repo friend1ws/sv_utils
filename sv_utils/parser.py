@@ -125,9 +125,6 @@ def create_parser():
     annotation_parser.add_argument("--grc", default = False, action = 'store_true',
                         help = "Use Genome Reference Consortium nomenclature rather than UCSC (default: %(default)s)")
 
-    annotation_parser.add_argument("--reference", metavar = "reference.fa", default = "", type = str,
-                                   help = "the path to the reference genome sequence (default: %(default)s)")
-
     annotation_parser.add_argument("--re_gene_annotation", default = False, action = "store_true",
                                    help = "gene annotaiton again (default: %(default)s)")
 
