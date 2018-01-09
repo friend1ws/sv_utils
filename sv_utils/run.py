@@ -727,6 +727,10 @@ def format_main(args):
 
 def homology_main(args):
 
+    import homology
+    possible_chr = [str(x) for x in range(1, 23)] + ['X', 'Y'] + \
+                     ["chr" + str(x) for x in range(1, 23)] + ['chrX', 'chrY']
+
     hout = open(args.output, 'w')
     with open(args.result_file, 'r') as hin:
         for line in hin:
@@ -745,15 +749,21 @@ def homology_main(args):
                 print >> hout, '\t'.join(F)
                 continue
 
+            if F[header_info.chr_1] not in possible_chr or F[header_info.chr_2] not in possible_chr:
+                print >> sys.stderr, "Skip a SV incolving atypical chromosomes: %s,%s,%s,%s,%s,%s" % \
+                   (F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1], \
+                    F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2])
+                continue
+
             var_size = 500000
             if F[header_info.variant_type] == "deletion":
                 var_size = int(F[header_info.pos_2]) - int(F[header_info.pos_1]) - 1
             elif F[header_info.variant_type] == "tandem_duplication":
                 var_size = int(F[header_info.pos_2]) - int(F[header_info.pos_1]) + 1
             
-            homology_match = utils.check_homology(F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1],
-                                                  F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2], 
-                                                  args.reference, min(var_size, 100))
+            homology_match = homology.check_homology(F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1],
+                                                     F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2], 
+                                                     args.reference, min(var_size, 100))
 
             print >> hout, '\t'.join(F) + '\t' + str(homology_match)
  
@@ -761,6 +771,11 @@ def homology_main(args):
 
 
 def nonB_DB_main(args):
+   
+    import nonB_DB
+
+    possible_chr = [str(x) for x in range(1, 23)] + ['X', 'Y'] + \
+                     ["chr" + str(x) for x in range(1, 23)] + ['chrX', 'chrY']
 
     all_nonB_DB_type = ["A_Phased_Repeat", "Direct_Repeat", "G_Quadruplex_Motif", "Inverted_Repeat", 
                        "Mirror_Repeat", "Short_Tandem_Repeat", "Z_DNA_Motif"]
@@ -768,18 +783,8 @@ def nonB_DB_main(args):
     if not os.path.exists(args.result_file):
         raise ValueError("file not exists: " + args.result_file)
 
-    annotation_dir = args.annotation_dir
-    nonB_DB_bed = annotation_dir + "/nonB_DB.bed.gz"
+    nonB_DB_bed = args.nonB_DB
     nonB_DB_tb = pysam.TabixFile(nonB_DB_bed)
-
-    grch2ucsc_file = annotation_dir + "/grch2ucsc.txt"
-
-    # relationship between CRCh and UCSC chromosome names
-    grch2ucsc = {}
-    with open(grch2ucsc_file, 'r') as hin:
-        for line in hin:
-            F = line.rstrip('\n').split('\t')
-            grch2ucsc[F[0]] = F[1]
 
 
     hout = open(args.output, 'w')
@@ -798,13 +803,19 @@ def nonB_DB_main(args):
                 print >> hout, '\t'.join(F)
                 continue
 
-            chr_ucsc1 = grch2ucsc[F[header_info.chr_1]] if F[header_info.chr_1] in grch2ucsc else F[header_info.chr_1]
-            chr_ucsc2 = grch2ucsc[F[header_info.chr_2]] if F[header_info.chr_2] in grch2ucsc else F[header_info.chr_2]
+            if F[header_info.chr_1] not in possible_chr or F[header_info.chr_2] not in possible_chr:
+                print >> sys.stderr, "Skip a SV incolving atypical chromosomes: %s,%s,%s,%s,%s,%s" % \
+                  (F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1], \
+                  F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2])
+                continue
+
+            chr_ucsc1 = F[header_info.chr_1] if F[header_info.chr_1].startswith("chr") else "chr" + F[header_info.chr_1]
+            chr_ucsc2 = F[header_info.chr_2] if F[header_info.chr_2].startswith("chr") else "chr" + F[header_info.chr_2]
 
             print_dist_bar = ''
             for nonB_DB_type in all_nonB_DB_type:
-                nonB_DB_dist1 = utils.nonB_DB_dist_check(chr_ucsc1, int(F[header_info.pos_1]), F[header_info.dir_1], nonB_DB_tb, nonB_DB_type)
-                nonB_DB_dist2 = utils.nonB_DB_dist_check(chr_ucsc2, int(F[header_info.pos_2]), F[header_info.dir_2], nonB_DB_tb, nonB_DB_type)
+                nonB_DB_dist1 = nonB_DB.nonB_DB_dist_check(chr_ucsc1, int(F[header_info.pos_1]), F[header_info.dir_1], nonB_DB_tb, nonB_DB_type)
+                nonB_DB_dist2 = nonB_DB.nonB_DB_dist_check(chr_ucsc2, int(F[header_info.pos_2]), F[header_info.dir_2], nonB_DB_tb, nonB_DB_type)
                 print_dist_bar = print_dist_bar + '\t' + str(nonB_DB_dist1) + '\t' + str(nonB_DB_dist2)
 
             print >> hout, '\t'.join(F) + print_dist_bar

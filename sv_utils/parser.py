@@ -286,8 +286,8 @@ def create_parser():
     nonB_DB_parser.add_argument("output", metavar = "output.txt", default = None, type = str,
                                  help = "the path to the output file")
 
-    nonB_DB_parser.add_argument("annotation_dir", metavar = "annotation_dir", default = None, type = str,
-                                help = "the path to the database directory")
+    nonB_DB_parser.add_argument("--nonB_DB", metavar = "nonB_DB.bed.gz", default = None, type = str, required=True,
+                                help = "the path to the nonB structure database")
 
     nonB_DB_parser.set_defaults(func = nonB_DB_main)
 
