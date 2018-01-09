@@ -1,10 +1,5 @@
 #! /bin/bash
 
-# create corresponding table for GRCh name and UCSC name
-rm -rf GCF_000001405.13.assembly.txt
-wget ftp://ftp.ncbi.nlm.nih.gov/genomes/ASSEMBLY_REPORTS/All/GCF_000001405.13.assembly.txt
-python make_ucsc_grch.py GCF_000001405.13.assembly.txt > grch2ucsc.txt
-
 rm -rf human_hg19.tsv.tar.gz
 
 wget https://isp.ncifcrf.gov/isp/nonb_dwnld/human_hg19/human_hg19.tsv.tar.gz
