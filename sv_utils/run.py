@@ -831,9 +831,15 @@ def RSS_main(args):
                 continue
 
             F = line.rstrip('\n').split('\t')
+
+            if utils.check_atypical_chromosomes(F[header_info.chr_1], F[header_info.chr_2]):
+                print >> sys.stderr, "Skip a SV incolving atypical chromosomes: %s,%s,%s,%s,%s,%s" % \
+                   (F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1], \
+                    F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2])
+                continue
             
-            seq1 = my_seq.get_seq(args.reference, F[header_info.chr_1], int(F[header_info.pos_1]) - 50, int(F[header_info.pos_1]) + 50)
-            seq2 = my_seq.get_seq(args.reference, F[header_info.chr_2], int(F[header_info.pos_2]) - 50, int(F[header_info.pos_2]) + 50)
+            seq1 = my_seq.get_seq(args.reference, F[header_info.chr_1], int(F[header_info.pos_1]) - args.check_size, int(F[header_info.pos_1]) + args.check_size)
+            seq2 = my_seq.get_seq(args.reference, F[header_info.chr_2], int(F[header_info.pos_2]) - args.check_size, int(F[header_info.pos_2]) + args.check_size)
 
             rss_info_1 = my_seq.get_max_rss_score(seq1, rss_pwm[0], rss_pwm[1])
             rss_info_2 = my_seq.get_max_rss_score(seq2, rss_pwm[0], rss_pwm[1])
@@ -866,6 +872,12 @@ def AID_main(args):
                 continue
 
             F = line.rstrip('\n').split('\t')
+
+            if utils.check_atypical_chromosomes(F[header_info.chr_1], F[header_info.chr_2]):
+                print >> sys.stderr, "Skip a SV incolving atypical chromosomes: %s,%s,%s,%s,%s,%s" % \
+                   (F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1], \
+                    F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2])
+                continue
 
             seq1 = my_seq.get_seq(args.reference, F[header_info.chr_1], int(F[header_info.pos_1]) - args.check_size, int(F[header_info.pos_1]) + args.check_size)
             seq2 = my_seq.get_seq(args.reference, F[header_info.chr_2], int(F[header_info.pos_2]) - args.check_size, int(F[header_info.pos_2]) + args.check_size)
