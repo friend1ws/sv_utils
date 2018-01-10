@@ -393,13 +393,15 @@ def concentrate_main(args):
 
             with open(result_file, 'r') as hin:
                 for line in hin:
+
+                    if line.startswith("#"): continue
                     if utils.header_check(line.rstrip('\n')):
                         line = line.rstrip('\n')
                         header_info.read(line)
                         continue
 
                     F = line.rstrip('\n').split('\t')
-                    if F[7] in ["deletion", "tandem_duplication"]:
+                    if F[header_info.variant_type] in ["deletion", "tandem_duplication"]:
                         print >> hout, sample + '\t' + tumor_type + '\t' + '\t'.join(F)
 
     hout.close()
