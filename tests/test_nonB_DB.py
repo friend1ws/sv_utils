@@ -11,11 +11,13 @@ class TestNonB_DB(unittest.TestCase):
         cur_dir = os.path.dirname(os.path.abspath(__file__))
         pwd_dir = os.getcwd()
 
-        if not os.path.exists(cur_dir + "/nonB_DB"):
-            os.mkdir(cur_dir + "/nonB_DB")
+        if not os.path.exists(cur_dir + "/resource"):
+            os.mkdir(cur_dir + "/resource")
 
-        if not os.path.exists(cur_dir + "/nonB_DB/nonB_DB.bed.gz") or not os.path.exists(cur_dir + "/nonB_DB/nonB_DB.bed.gz.tbi"):
-            os.chdir(cur_dir + "/nonB_DB")
+        if not os.path.exists(cur_dir + "/resource/nonB_DB/nonB_DB.bed.gz"):
+            os.chdir(cur_dir + "/resource")
+            subprocess.check_call(["git", "clone", "https://github.com/friend1ws/nonB_DB.git"])
+            os.chdir("nonB_DB")
             subprocess.check_call(["bash", "prepNonBDB.sh"])
             os.chdir(pwd_dir)
 

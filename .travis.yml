@@ -15,6 +15,5 @@ before_script:
 
 script:
   - pip install . 
-# - python setup.py test
-  - python tests/test_annotation.py
+  - python setup.py test
 
