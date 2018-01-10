@@ -37,11 +37,8 @@ def create_parser():
     gene_summary.add_argument("output", metavar = "output.txt", default = None, type = str,
                               help = "the path to the output file")
 
-    gene_summary.add_argument("annotation_dir", metavar = "annotation_dir", default = None, type = str,
-                              help = "the path to the database directory")
-
-    gene_summary.add_argument("cancer_gene_list", metavar = "cancer_gene_list", default = None, type = str,
-                             help = "the path to the cancer list file")
+    gene_summary.add_argument("--cancer_gene_list", metavar = "cancer_gene_list", default = None, type = str, required=True,
+                              help = "the path to the cancer list file")
 
     gene_summary.add_argument("--inframe_info", default = False, action = "store_true",
                              help = "add inframe information")

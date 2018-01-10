@@ -87,8 +87,11 @@ def gene_summary_main(args):
 
     # read cancer gene
     gene2info = {}
+    cancer_gene_header = ""
     with open(args.cancer_gene_list, 'r') as hin:
+        cancer_gene_header = hin.readline().rstrip('\n').lstrip("Gene\t")
         for line in hin:
+            
             F = line.rstrip('\n').split('\t')
             gene2info[F[0]] = '\t'.join(F[1:])
 
@@ -144,11 +147,12 @@ def gene_summary_main(args):
 
     if args.inframe_info == True:
         print >> hout, '\t'.join(["gene", "all_type_total", "all_type_each", "all_type_total_inframe", "all_type_each_inframe"] + \
-                    reduce(lambda x, y: x + y, [[x + "_total", x + "_each", x + "_total_inframe", x + "_each_inframe"] for x in sorted(tumor_type_list.keys())]) + \
-                    ["Lawrence et al", "CGC", "kinbase", "Ye et al"])
+                    reduce(lambda x, y: x + y, [[x + "_total", x + "_each", x + "_total_inframe", x + "_each_inframe"] for x in sorted(tumor_type_list.keys())])) + \
+                    '\t' + cancer_gene_header
     else:
         print >> hout, '\t'.join(["gene", "all_type_total", "all_type_each"] + \
-                    reduce(lambda x, y: x + y, [[x + "_total", x + "_each"] for x in sorted(tumor_type_list.keys())]) + ["Lawrence et al", "CGC", "kinbase", "Ye et al"])
+                    reduce(lambda x, y: x + y, [[x + "_total", x + "_each"] for x in sorted(tumor_type_list.keys())])) + \
+                    '\t' + cancer_gene_header
 
     for gene in sorted(gene2type_sample):
         tumor_sample_var = list(set(gene2type_sample[gene]))
