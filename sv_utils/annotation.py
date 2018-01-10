@@ -243,9 +243,9 @@ def check_coding_info2(chr, start, end, ref_coding_tb):
     return temp_type + '\t' + info_bars.lstrip(',')
 
 
-def check_fusion_direction(chr1, pos1, dir1, chr2, pos2, dir2, ref_gene_tb):
+def check_fusion_direction(chr1, pos1, dir1, chr2, pos2, dir2, ref_gene_tb, known_fusion_info_file):
 
-    known_fusion_info_file = pkg_resources.resource_filename("sv_utils", "data/fusion_db.txt")
+    # known_fusion_info_file = pkg_resources.resource_filename("sv_utils", "data/fusion_db.txt")
 
     known_fusion_comb2info = {}
     with open(known_fusion_info_file, 'r') as hin:
