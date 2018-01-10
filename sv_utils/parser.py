@@ -194,7 +194,7 @@ def create_parser():
     merge_control.add_argument("output_file", metavar = "merge_control.bedpe.gz", default = None, type = str,
                                help = "the path of the output file")
 
-    merge_control.set_defaults(func = merge_control_main2)
+    merge_control.set_defaults(func = merge_control_main)
 
     ##########
     # realign

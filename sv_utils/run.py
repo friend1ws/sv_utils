@@ -454,7 +454,7 @@ def concentrate_main(args):
 
 
 
-def merge_control_main2(args):
+def merge_control_main(args):
 
     import genomonsv.mergeFunction, genomonsv.utils
 
@@ -519,7 +519,7 @@ def merge_control_main2(args):
 
 
 
-def merge_control_main(args):
+def merge_control_main_bk(args):
 
     # make directory for output if necessary
     if os.path.dirname(args.output_prefix) != "" and not os.path.exists(os.path.dirname(args.output_prefix)):
