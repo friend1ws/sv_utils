@@ -16,6 +16,8 @@ class TestAnnotation(unittest.TestCase):
             os.chdir(cur_dir + "/resource")
             subprocess.check_call(["git", "clone", "https://github.com/friend1ws/fusion_db.git"])
             os.chdir("fusion_db")
+            print os.getcwd()
+            print ' '.join(["bash", "prep_fusion_db.sh"])
             subprocess.check_call(["bash", "prep_fusion_db.sh"])
             os.chdir(pwd_dir)
 
