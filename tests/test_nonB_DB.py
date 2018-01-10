@@ -9,13 +9,15 @@ class TestNonB_DB(unittest.TestCase):
     def setUp(self):
         # prepare reference genome
         cur_dir = os.path.dirname(os.path.abspath(__file__))
+        pwd_dir = os.getcwd()
+
         if not os.path.exists(cur_dir + "/nonB_DB"):
             os.mkdir(cur_dir + "/nonB_DB")
 
         if not os.path.exists(cur_dir + "/nonB_DB/nonB_DB.bed.gz") or not os.path.exists(cur_dir + "/nonB_DB/nonB_DB.bed.gz.tbi"):
             os.chdir(cur_dir + "/nonB_DB")
             subprocess.check_call(["bash", "prepNonBDB.sh"])
-            os.chdir(cur_dir)
+            os.chdir(pwd_dir)
 
         self.parser = sv_utils.parser.create_parser()
 

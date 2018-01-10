@@ -12,7 +12,7 @@ class TestAID(unittest.TestCase):
         cur_dir = os.path.dirname(os.path.abspath(__file__))
 
         check_reference_genome("https://storage.googleapis.com/genomon_rna_gce/db/GRCh37/GRCh37.fa", \
-                               cur_dir + "/reference_genome/GRCh37.fa")
+                               cur_dir + "/resource/reference_genome/GRCh37.fa")
 
         self.parser = sv_utils.parser.create_parser()
 
@@ -24,7 +24,7 @@ class TestAID(unittest.TestCase):
 
         input_file = cur_dir + "/data/CCLE-253J-DNA-08.genomonSV.result.txt"
         output_file = tmp_dir + "/CCLE-253J-DNA-08.genomonSV.result.AID.txt"
-        ref_genome = cur_dir + "/reference_genome/GRCh37.fa"
+        ref_genome = cur_dir + "/resource/reference_genome/GRCh37.fa"
         answer_file = cur_dir + "/data/AID/CCLE-253J-DNA-08.genomonSV.result.AID.txt"
  
         args = self.parser.parse_args(["AID", input_file, output_file, "--reference", ref_genome])

@@ -10,13 +10,14 @@ class TestGeneSummary(unittest.TestCase):
 
         # download cancer_gene_db
         cur_dir = os.path.dirname(os.path.abspath(__file__))
-    
-        if not os.path.exists(cur_dir + "/cancer_gene_db/CancerGeneSummary/CancerGeneSummary.proc.txt"):
-            os.chdir(cur_dir)
+        pwd_dir = os.getcwd()
+ 
+        if not os.path.exists(cur_dir + "/resource/cancer_gene_db/CancerGeneSummary/CancerGeneSummary.proc.txt"):
+            os.chdir(cur_dir + "/resource")
             subprocess.check_call(["git", "clone", "https://github.com/friend1ws/cancer_gene_db.git"])
             os.chdir("cancer_gene_db")
             subprocess.check_call(["bash", "prep_all.sh"])
-            os.chdir(cur_dir)
+            os.chdir(pwd_dir)
 
         self.parser = sv_utils.parser.create_parser()
 
@@ -38,7 +39,7 @@ class TestGeneSummary(unittest.TestCase):
                 print >> hout, "%s\t%s\t%s" % (sample, sample2type[sample], sv_file) 
 
         result_lsit_file = tmp_dir + "/CCLE.genomonSV.reulst_list.txt"
-        cancer_gene_list = cur_dir + "/cancer_gene_db/CancerGeneSummary/CancerGeneSummary.proc.txt"
+        cancer_gene_list = cur_dir + "/resource/cancer_gene_db/CancerGeneSummary/CancerGeneSummary.proc.txt"
         output_file = tmp_dir + "/gene_summary_sv_list.txt"
         answer_file = cur_dir + "/data/gene_summary/gene_summary_sv_list.txt"
 
