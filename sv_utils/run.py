@@ -256,7 +256,7 @@ def annotation_main(args):
                 if args.closest_exon == True: print_header = print_header + '\t' + "Dist_To_Exon" + '\t' + "Target_Exon"
                 if args.closest_coding == True: print_header = print_header + '\t' + "Dist_To_Coding" + '\t' + "Target_Coding"
                 if args.coding_info == True: print_header = print_header + '\t' + "Intra_or_Inter_Gene" + '\t' + "Coding_Class" + '\t' + "Detailed_Coding_Info"
-                if args.fusion_info is not None: print_header = print_header + '\t' + "Known_Gene_Fusion_Comb" + '\t' + "Known_Gene_Fusion_Source"
+                if args.fusion_list is not None: print_header = print_header + '\t' + "Known_Gene_Fusion_Comb" + '\t' + "Known_Gene_Fusion_Source"
                 print >> hout, print_header
                 continue
 
@@ -294,9 +294,10 @@ def annotation_main(args):
                     print_line = print_line + '\t' + "intergenic" + '\t' + "---\t---"
 
 
-            if args.fusion_info == True:
+            if args.fusion_list is not None:
                 fusion_info = annotation.check_fusion_direction(F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1], 
-                                                                F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2], ref_gene_tb)
+                                                                F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2], 
+                                                                ref_gene_tb, args.fusion_list)
                 print_line = print_line + '\t' + fusion_info
 
             print >> hout, print_line

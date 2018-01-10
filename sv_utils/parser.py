@@ -134,7 +134,7 @@ def create_parser():
     annotation_parser.add_argument("--coding_info", default = False, action = "store_true",
                                    help = "get coding information (default: %(default)s)")
 
-    annotation_parser.add_argument("--fusion_info", default = False, action = "store_true",
+    annotation_parser.add_argument("--fusion_list", default = None, type = str,
                                    help = "add known fusion information (default: %(default)s)")
 
     annotation_parser.set_defaults(func = annotation_main)
