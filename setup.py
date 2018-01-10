@@ -27,7 +27,7 @@ setup(
         'Topic :: Scientific/Engineering :: Bio-Informatics'
     ],
 
-    packages = find_packages(exclude = ['fusion_db', 'nonB_DB']),
+    packages = find_packages(exclude = ['tests']),
     package_data={'sv_utils': ['data/*']},
 
     install_requires = [],
