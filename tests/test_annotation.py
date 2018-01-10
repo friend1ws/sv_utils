@@ -12,7 +12,7 @@ class TestAnnotation(unittest.TestCase):
         cur_dir = os.path.dirname(os.path.abspath(__file__))
         pwd_dir = os.getcwd()
 
-        if not os.path.exists(cur_dir + "/resource")
+        if not os.path.exists(cur_dir + "/resource"):
             os.makedirs(cur_dir + "/resource")
 
         if not os.path.exists(cur_dir + "/resource/fusion_db/fusion_db.txt"):
