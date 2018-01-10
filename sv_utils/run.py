@@ -454,7 +454,7 @@ def concentrate_main(args):
 
 
 
-def merge_control_main(args):
+def merge_control_main2(args):
 
     import genomonsv.mergeFunction, genomonsv.utils
 
@@ -498,19 +498,6 @@ def merge_control_main(args):
 
     hout.close()
 
-    """
-    hout = open(args.output_prefix + ".bedpe", 'w')
-    subprocess.check_call(["sort", "-k1,1", "-k3,3n", "-k4,4", "-k6,6n", args.output_prefix + ".tmp.bedpe"], stdout = hout)
-    hout.close()
-
-    # compress and index
-    subprocess.check_call(["bgzip", "-f", args.output_prefix + ".bedpe"])
-    subprocess.check_call(["tabix", "-p", "bed", args.output_prefix + ".bedpe.gz"])
-
-    # remove intermediate file
-    subprocess.check_call(["rm", "-rf", args.output_prefix + ".tmp.bedpe"])
-    """
-
     # utils.processingMessage("sorting the aggregated junction file")
     genomonsv.utils.sortBedpe(args.output_file + ".temp", args.output_file + ".temp.sort")
 
@@ -523,6 +510,61 @@ def merge_control_main(args):
     # utils.processingMessage("compressing the merged junction file")
     genomonsv.utils.compress_index_bed(args.output_file + ".temp.merged.sort", args.output_file)
 
+
+    # remove intermediate files
+    subprocess.check_call(["rm", "-rf", args.output_file + ".temp"])
+    subprocess.check_call(["rm", "-rf", args.output_file + ".temp.sort"])
+    subprocess.check_call(["rm", "-rf", args.output_file + ".temp.merged"])
+    subprocess.check_call(["rm", "-rf", args.output_file + ".temp.merged.sort"])
+
+
+
+def merge_control_main(args):
+
+    # make directory for output if necessary
+    if os.path.dirname(args.output_prefix) != "" and not os.path.exists(os.path.dirname(args.output_prefix)):
+        os.makedirs(os.path.dirname(args.output_prefix))
+
+    hout = open(args.output_prefix + ".tmp.bedpe", 'w')
+
+    tumor_type_list = {}
+    gene2type_sample = {}
+    with open(args.result_list, 'r') as hin:
+        for line in hin:
+
+            sample, tumor_type, result_file = line.rstrip('\n').split('\t')
+            if tumor_type not in tumor_type_list: tumor_type_list[tumor_type] = 1
+
+            if not os.path.exists(result_file):
+                raise ValueError("file not exists: " + result_file)
+
+            with open(result_file, 'r') as hin:
+                for line in hin:
+    
+                    if line.startswith("#"): continue
+                    if line.startswith("Chr_1" + '\t' + "Pos_1"):
+                        line = line.rstrip('\n')
+                        header_info.read(line)
+                        continue
+
+                    F = line.rstrip('\n').split('\t')
+
+                    print >> hout, '\t'.join([F[header_info.chr_1], str(int(F[header_info.pos_1]) - 1), F[header_info.pos_1], \
+                                              F[header_info.chr_2], str(int(F[header_info.pos_2]) - 1), F[header_info.pos_2], \
+                                              sample, F[header_info.inserted_seq], F[header_info.dir_1], F[header_info.dir_2]])
+
+    hout.close()
+
+    hout = open(args.output_prefix + ".bedpe", 'w')
+    subprocess.call(["sort", "-k1,1", "-k3,3n", "-k4,4", "-k6,6n", args.output_prefix + ".tmp.bedpe"], stdout = hout)
+    hout.close()
+
+    # compress and index
+    subprocess.call(["bgzip", "-f", args.output_prefix + ".bedpe"])
+    subprocess.call(["tabix", "-p", "bed", args.output_prefix + ".bedpe.gz"])
+
+    # remove intermediate file
+    subprocess.call(["rm", "-rf", args.output_prefix + ".tmp.bedpe"])
 
 
 def realign_main(args):

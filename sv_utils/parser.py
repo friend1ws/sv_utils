@@ -191,10 +191,10 @@ def create_parser():
     merge_control.add_argument("result_list", metavar = "result_list.txt", default = None, type = str,
                                help = "1st column: sample IDs, 2nd column: tumor type, 3rd column: genomon SV result path")
 
-    merge_control.add_argument("output_file", default = None, type = str,
-                               help = "the prefix of the output file")
+    merge_control.add_argument("output_file", metavar = "merge_control.bedpe.gz", default = None, type = str,
+                               help = "the path of the output file")
 
-    merge_control.set_defaults(func = merge_control_main)
+    merge_control.set_defaults(func = merge_control_main2)
 
     ##########
     # realign
