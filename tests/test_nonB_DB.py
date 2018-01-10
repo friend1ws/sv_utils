@@ -31,7 +31,7 @@ class TestNonB_DB(unittest.TestCase):
 
         input_file = cur_dir + "/data/CCLE-253J-DNA-08.genomonSV.result.txt"
         output_file = tmp_dir + "/CCLE-253J-DNA-08.genomonSV.result.nonB_DB.txt"
-        nonB_DB = cur_dir + "/nonB_DB/nonB_DB.bed.gz"
+        nonB_DB = cur_dir + "/resource/nonB_DB/nonB_DB.bed.gz"
         answer_file = cur_dir + "/data/nonB_DB/CCLE-253J-DNA-08.genomonSV.result.nonB_DB.txt"
  
         args = self.parser.parse_args(["nonB_DB", input_file, output_file, "--nonB_DB", nonB_DB])
