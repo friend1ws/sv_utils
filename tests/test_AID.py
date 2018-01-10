@@ -3,21 +3,17 @@
 import unittest
 import os, urllib2, tempfile, shutil, filecmp
 import sv_utils
+from check_reference_genome import *
 
 class TestAID(unittest.TestCase):
 
     def setUp(self):
         # prepare reference genome
         cur_dir = os.path.dirname(os.path.abspath(__file__))
-        if not os.path.exists(cur_dir + "/reference_genome"):
-            os.mkdir(cur_dir + "/reference_genome")
 
-        if not os.path.exists(cur_dir + "/reference_genome/GRCh37.fa"):
-            ufile = urllib2.urlopen('https://storage.googleapis.com/genomon_rna_gce/db/GRCh37/GRCh37.fa')
-            with open(cur_dir + "/reference_genome/GRCh37.fa",'w') as hout:
-                for x in ufile:
-                    hout.write(x)
-       
+        check_reference_genome("https://storage.googleapis.com/genomon_rna_gce/db/GRCh37/GRCh37.fa", \
+                               cur_dir + "/reference_genome/GRCh37.fa")
+
         self.parser = sv_utils.parser.create_parser()
 
  
