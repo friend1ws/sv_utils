@@ -1,0 +1,4 @@
+sample	type	deletion	tandem_duplication	inversion	translocation	total
+CCLE-253J-DNA-08	BLCA	28	12	2	1	43
+CCLE-JMSU-1-DNA-08	BLCA	20	8	1	3	32
+CCLE-K-562-DNA-08	LCLL	28	8	2	7	45
