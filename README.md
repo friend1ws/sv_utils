@@ -25,21 +25,22 @@ pip install .
 For detailed description on each option, please consult the help for each command
 
 ### count
-count the number of each variatns (deletion, tandem_duplication, inversion and translocation) for each sample
+Summarize the frequency of each variant type (deletion, tandem_duplication, inversion and translocation) for each sample
 ```
 sv_utils count [-h] [--inseq] result_list.txt output.txt
 ```
 
 ### gene_summary
-summarize the number of variants for each gene for each cancer type
+Summarize the frequency of each variant type (deletion, tandem_duplication, inversion, translocation) for each cancer gene
 ```
-sv_utils gene_summary [-h] [--inframe_info]
-                             result_list.txt output.txt annotation_dir
-                             cancer_gene_lis
+gene_summary [-h] --cancer_gene_list cancer_gene_list
+                             [--inframe_info]
+                             result_list.txt output.txt
 ```
+For the **--cancer_gene_list** argument, the `CancerGeneSummary/CancerGeneSummary.proc.txt` in the [`cancer_gene_db`](https://github.com/friend1ws/cancer_gene_db) repository or its variation could be used.
 
 ### filter
-process and filter GenomonSV results
+Filter out GenomonSV results outside specified conditions
 ```
 sv_utils filter [-h] [--genome_id {hg19,hg38,mm10}] [--grc]
                        [--max_minus_log_fisher_pvalue MAX_MINUS_LOG_FISHER_PVALUE]
@@ -66,22 +67,32 @@ sv_utils annotation [-h] [--genome_id {hg19,hg38,mm10}] [--grc]
                            [--fusion_list FUSION_LIST]
                            genomonSV.result.txt output.txt
 ```
+For the **--fusion_list** argument, the `fusion_db.txt` file in the [`fusion_db`](https://github.com/friend1ws/fusion_db) repository cound be used.
+
+### mutation
+Add somatic SNVs and short indels to the GenomonSV results
+```
+sv_utils mutation [-h] --reference reference.fa
+                         genomonSV.result.txt genomon_mutation.result.txt
+                         output.txt
+```
 
 ### concentrate
-obtain a list of concentrated variants
+List up concentrated structural variations
 ```
 sv_utils concentrate [-h] [--set_count set_count]
                             [--set_margin set_margin]
                             result_list.txt output.txt
 ```
-### merge_control
-gather, compress and index control variants
 
+### merge_control
+Merge, compress and index the lists of GenomonSV results
 ```
-sv_utils merge_control [-h] result_list.txt output_prefix
+sv_utils merge_control [-h] result_list.txt merge_control.bedpe.gz
 ```
+
 ### realign
-realign short reads around the structural variation candidates in the input file and check the allele frequencies
+Realign short reads around the structural variation candidates for mainly validation purpose
 ```
 sv_utils realign [-h] --reference reference.fa --tumor_bam tumor.bam
                         [--control_bam control.bam]
@@ -89,7 +100,7 @@ sv_utils realign [-h] --reference reference.fa --tumor_bam tumor.bam
 ```
 
 ### primer
-generate primer sequeces for mainly PCR validation
+Generate primer sequence for mainly PCR validation
 ```
 sv_utils primer [-h] --reference reference.fa
                        genomonSV.result.txt output.txt
@@ -103,20 +114,25 @@ sv_utils format [-h] --reference reference.fa [--format {vcf}]
                        genomonSV.result.txt output.txt
 ```
 
-### homology
-get micro-homology size for each SV candidate
-```
-sv_utils nonB_DB [-h] genomonSV.result.txt output.txt annotation_dir
-```
 
 ### nonB_DB
-get nonB_DB distance for each SV candidate
+Get distance to nonB_DB annotated region for each SV candidate
 ```
-sv_utils nonB_DB [-h] genomonSV.result.txt output.txt annotation_dir
+sv_utils nonB_DB [-h] --nonB_DB nonB_DB.bed.gz
+                        genomonSV.result.txt output.txt
 ```
+For the **--nonB_DB** argument, the `nonB_DB.bed.gz` in the [`nonB_DB`](https://github.com/friend1ws/nonB_DB) repository could be used.
 
 ### RSS
-check recombination signal sequence motif near breakpoints
+Check recombination signal sequence motif near breakpoints
 ```
-sv_utils RSS [-h] --reference reference.fa genomonSV.result.txt output.txt
+sv_utils RSS [-h] --reference reference.fa [--check_size CHECK_SIZE]
+                    genomonSV.result.txt output.txt
+```
+
+### AID
+Check AID motif (CG, WGCW) near breakpoints
+```
+sv_utils AID [-h] --reference reference.fa [--check_size CHECK_SIZE]
+                    genomonSV.result.txt output.txt
 ```
