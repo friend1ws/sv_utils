@@ -23,6 +23,10 @@ class TestNonB_DB(unittest.TestCase):
 
         self.parser = sv_utils.parser.create_parser()
 
+
+    def tearDown(self):
+        cur_dir = os.path.dirname(os.path.abspath(__file__))
+        shutil.rmtree(cur_dir + "/resource/nonB_DB/")
  
     def test1(self):
 

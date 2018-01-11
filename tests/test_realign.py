@@ -14,14 +14,19 @@ class TestRSS(unittest.TestCase):
                        cur_dir + "/resource/reference_genome/GRCh37.fa")
 
         check_download("https://storage.googleapis.com/friend1ws_package_data/sv_utils/CCLE-253J-DNA-08.markdup.bam", \
-                       cur_dir + "/resource/realign_bam//CCLE-253J-DNA-08.markdup.bam")
+                       cur_dir + "/resource/realign_bam/CCLE-253J-DNA-08.markdup.bam")
 
         check_download("https://storage.googleapis.com/friend1ws_package_data/sv_utils/CCLE-253J-DNA-08.markdup.bam.bai", \
-                       cur_dir + "/resource/realign_bam//CCLE-253J-DNA-08.markdup.bam.bai")
+                       cur_dir + "/resource/realign_bam/CCLE-253J-DNA-08.markdup.bam.bai")
  
         self.parser = sv_utils.parser.create_parser()
 
+
+    def tearDown(self):
+       cur_dir = os.path.dirname(os.path.abspath(__file__))
+       shutil.rmtree(cur_dir + "/resource/realign_bam")
  
+
     def test1(self):
 
         cur_dir = os.path.dirname(os.path.abspath(__file__))
