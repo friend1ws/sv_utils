@@ -587,6 +587,7 @@ def realign_main(args):
         os.makedirs(os.path.dirname(args.output))
 
     matchedControlFlag = True if args.control_bam is not None else False
+    if args.control_bam is None: args.control_bam = ""
 
     # generate bedpe file
     hout = open(args.output + ".tmp1.bedpe", 'w')
@@ -601,6 +602,13 @@ def realign_main(args):
                 continue
 
             F = line.rstrip('\n').split('\t')
+
+            if utils.check_atypical_chromosomes(F[header_info.chr_1], F[header_info.chr_2]):
+                print >> sys.stderr, "Skip a SV incolving atypical chromosomes: %s,%s,%s,%s,%s,%s" % \
+                   (F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1], \
+                    F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2])
+                continue
+
             print >> hout, '\t'.join([F[header_info.chr_1], str(int(F[header_info.pos_1]) - 1), F[header_info.pos_1], \
                                       F[header_info.chr_2], str(int(F[header_info.pos_2]) - 1), F[header_info.pos_2], \
                                       "genoemonSV_" + str(i), F[header_info.inserted_seq], F[header_info.dir_1], F[header_info.dir_2]] + \
@@ -608,7 +616,6 @@ def realign_main(args):
             i = i + 1
 
     hout.close()
-
 
     filterFunction.validateByRealignment(args.output + ".tmp1.bedpe",
                     args.output + ".tmp2.bedpe",
@@ -622,6 +629,7 @@ def realign_main(args):
                     5,
                     1000,
                     1000)
+
 
     key2AF_info = {}
     with open(args.output + ".tmp2.bedpe", 'r') as hin:
@@ -662,6 +670,8 @@ def realign_main(args):
 
             F = line.rstrip('\n').split('\t')
             key = '\t'.join(F[:7])
+            if key not in key2AF_info: continue
+
             print >> hout, '\t'.join(F) + '\t' + key2AF_info[key]
 
     hout.close()

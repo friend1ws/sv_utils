@@ -3,7 +3,7 @@
 import unittest
 import os, urllib2, tempfile, shutil, filecmp
 import sv_utils
-from check_reference_genome import *
+from check_download import *
 
 class TestAID(unittest.TestCase):
 
@@ -11,8 +11,8 @@ class TestAID(unittest.TestCase):
         # prepare reference genome
         cur_dir = os.path.dirname(os.path.abspath(__file__))
 
-        check_reference_genome("https://storage.googleapis.com/genomon_rna_gce/db/GRCh37/GRCh37.fa", \
-                               cur_dir + "/resource/reference_genome/GRCh37.fa")
+        check_download("https://storage.googleapis.com/friend1ws_package_data/common/GRCh37.fa", \
+                       cur_dir + "/resource/reference_genome/GRCh37.fa")
 
         self.parser = sv_utils.parser.create_parser()
 

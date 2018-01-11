@@ -12,6 +12,12 @@ class TestRSS(unittest.TestCase):
         cur_dir = os.path.dirname(os.path.abspath(__file__))
         check_download("https://storage.googleapis.com/friend1ws_package_data/common/GRCh37.fa", \
                        cur_dir + "/resource/reference_genome/GRCh37.fa")
+
+        check_download("https://storage.googleapis.com/friend1ws_package_data/sv_utils/CCLE-253J-DNA-08.markdup.bam", \
+                       cur_dir + "/resource/realign_bam//CCLE-253J-DNA-08.markdup.bam")
+
+        check_download("https://storage.googleapis.com/friend1ws_package_data/sv_utils/CCLE-253J-DNA-08.markdup.bam.bai", \
+                       cur_dir + "/resource/realign_bam//CCLE-253J-DNA-08.markdup.bam.bai")
  
         self.parser = sv_utils.parser.create_parser()
 
@@ -22,11 +28,13 @@ class TestRSS(unittest.TestCase):
         tmp_dir = tempfile.mkdtemp()
 
         input_file = cur_dir + "/data/CCLE-253J-DNA-08.genomonSV.result.txt"
-        output_file = tmp_dir + "/CCLE-253J-DNA-08.genomonSV.result.RSS.txt"
+        output_file = tmp_dir + "/CCLE-253J-DNA-08.genomonSV.result.realign.txt"
+        tumor_bam_file = cur_dir + "/resource/realign_bam/CCLE-253J-DNA-08.markdup.bam"
         ref_genome = cur_dir + "/resource/reference_genome/GRCh37.fa"
-        answer_file = cur_dir + "/data/RSS/CCLE-253J-DNA-08.genomonSV.result.RSS.txt"
- 
-        args = self.parser.parse_args(["RSS", input_file, output_file, "--reference", ref_genome])
+        answer_file = cur_dir + "/data/realign/CCLE-253J-DNA-08.genomonSV.result.realign.txt"
+
+        args = self.parser.parse_args(["realign", "--reference", ref_genome, "--tumor_bam", tumor_bam_file,
+                                       input_file, output_file])
         args.func(args)
 
         self.assertTrue(filecmp.cmp(output_file, answer_file, shallow=False))
