@@ -11,11 +11,12 @@ before_script:
   - pip install pysam
   - pip install primer3-py
   - pip install xlrd
+  - pip install scipy
   - wget https://github.com/Genomon-Project/GenomonSV/archive/v0.4.2rc.tar.gz
   - tar zxvf v0.4.2rc.tar.gz
   - cd GenomonSV-0.4.2rc && python setup.py build install && cd ..
 
 script:
   - pip install . 
-  - python setup.py test
-
+#   - python setup.py test
+  - python tests/test_realign.py 

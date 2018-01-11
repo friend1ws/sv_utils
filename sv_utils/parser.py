@@ -13,7 +13,7 @@ def create_parser():
     ##########
     # count_summary 
     count = subparsers.add_parser("count",
-                                  help = "summarize the frequency of each variant type (deletion, tandem_duplication, inversion, translocation) for each sample")
+                                  help = "Summarize the frequency of each variant type (deletion, tandem_duplication, inversion, translocation) for each sample")
 
     count.add_argument("result_list", metavar = "result_list.txt", default = None, type = str,
                         help = "1st column: sample IDs, 2nd column: tumor type, 3rd column: genomon SV result path")
@@ -29,7 +29,7 @@ def create_parser():
     ##########
     # gene_summary_summary 
     gene_summary = subparsers.add_parser("gene_summary",
-                                         help = "summarize the frequency of each variant type (deletion, tandem_duplication, inversion, translocation) for each sample")
+                                         help = "Summarize the frequency of each variant type (deletion, tandem_duplication, inversion, translocation) for each cancer gene")
 
     gene_summary.add_argument("result_list", metavar = "result_list.txt", default = None, type = str,
                               help = "1st column: sample IDs, 2nd column: tumor type, 3rd column: genomon SV result path")
@@ -49,7 +49,7 @@ def create_parser():
     ##########
     # filter
     filter_parser = subparsers.add_parser("filter",
-                                        help = "filter out variants outside specified conditions")
+                                        help = "Filter out GenomonSV results outside specified conditions")
 
     filter_parser.add_argument("input_file", metavar = "genomonSV.result.txt", default = None, type = str,
                         help = "the path to genomon SV result")
@@ -143,7 +143,7 @@ def create_parser():
     ##########
     # mutation
     mutation_parser = subparsers.add_parser("mutation",
-                                          help = "filter out variants outside specified conditions")
+                                          help = "Add somatic SNVs and short indels to the GenomonSV results")
 
     mutation_parser.add_argument("sv_result_file", metavar = "genomonSV.result.txt", default = None, type = str,
                                help = "the path to genomon SV result")
@@ -162,7 +162,7 @@ def create_parser():
     ##########
     # concentrate
     concentrate_parser = subparsers.add_parser("concentrate",
-                                               help = "list up concentrated variants")
+                                               help = "List up concentrated structural variations")
 
     concentrate_parser.add_argument("result_list", metavar = "result_list.txt", default = None, type = str,
                                     help = "1st column: sample IDs, 2nd column: tumor type, 3rd column: genomon SV result path")
@@ -183,7 +183,7 @@ def create_parser():
 
     # merge control
     merge_control = subparsers.add_parser("merge_control",
-                                          help = "merge, compress and index the SV list")
+                                          help = "Merge, compress and index the lists of GenomonSV results")
 
     merge_control.add_argument("result_list", metavar = "result_list.txt", default = None, type = str,
                                help = "1st column: sample IDs, 2nd column: tumor type, 3rd column: genomon SV result path")
@@ -195,7 +195,7 @@ def create_parser():
 
     ##########
     # realign
-    realign_parser = subparsers.add_parser("realign", help = "realign sv candidate to input bam file for mainly validation purpose")
+    realign_parser = subparsers.add_parser("realign", help = "Realign short reads around the structural variation candidates for mainly validation purpose")
 
     realign_parser.add_argument("result_file", metavar = "genomonSV.result.txt", default = None, type = str,
                                 help = "the path to genomon SV result")
@@ -216,7 +216,7 @@ def create_parser():
 
     ###########
     # primer 
-    primer_parser = subparsers.add_parser("primer", help = "generate primer sequence for mainly PCR validation")
+    primer_parser = subparsers.add_parser("primer", help = "Generate primer sequence for mainly PCR validation")
 
     primer_parser.add_argument("result_file", metavar = "genomonSV.result.txt", default = None, type = str,
                                 help = "the path to genomon SV result")
@@ -235,7 +235,7 @@ def create_parser():
 
     ##########
     # convert to vcf format
-    format_parser = subparsers.add_parser("format", help = "convert to vcf format")
+    format_parser = subparsers.add_parser("format", help = "Convert to vcf format for short deletions and tandem duplications")
 
     format_parser.add_argument("result_file", metavar = "genomonSV.result.txt", default = None, type = str,
                             help = "the path to genomon SV result")
@@ -257,6 +257,7 @@ def create_parser():
     ##########
     # get homology match size
 
+    """
     homology_parser = subparsers.add_parser("homology",
                                             help = "get micro-homology size for each SV candidate")
 
@@ -270,12 +271,13 @@ def create_parser():
                                help = "the path to the reference genome sequence (default: %(default)s)")
 
     homology_parser.set_defaults(func = homology_main)
+    """
     ##########
 
     # get nonB_DB motif distance 
 
     nonB_DB_parser = subparsers.add_parser("nonB_DB",
-                                            help = "get nonB_DB distance for each SV candidate")
+                                            help = "Get distance to nonB_DB annotated region for each SV candidate")
 
     nonB_DB_parser.add_argument("result_file", metavar = "genomonSV.result.txt", default = None, type = str,
                                  help = "the path to genomon SV result")
@@ -293,7 +295,7 @@ def create_parser():
     # check the RSS motif
 
     RSS_parser = subparsers.add_parser("RSS",
-                                       help = "check recombination signal sequence motif near breakpoints")
+                                       help = "Check recombination signal sequence motif near breakpoints")
 
     RSS_parser.add_argument("result_file", metavar = "genomonSV.result.txt", default = None, type = str,
                              help = "the path to genomon SV result")
@@ -314,7 +316,7 @@ def create_parser():
     # check the AID motif
 
     AID_parser = subparsers.add_parser("AID",
-                                       help = "check AID motif (CG, WGCW) near breakpoints")
+                                       help = "Check AID motif (CG, WGCW) near breakpoints")
 
     AID_parser.add_argument("result_file", metavar = "genomonSV.result.txt", default = None, type = str,
                              help = "the path to genomon SV result")
