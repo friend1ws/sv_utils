@@ -5,6 +5,8 @@ before_script:
   - wget https://github.com/samtools/htslib/releases/download/1.3.2/htslib-1.3.2.tar.bz2
   - tar jxvf htslib-1.3.2.tar.bz2 
   - cd htslib-1.3.2 && make && export PATH=$PATH:$PWD && cd ..
+  - wget http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/blat
+  - mv blat /usr/local/bin && chmod a+x /usr/local/bin/blat
   - pip install annot_utils
   - pip install pysam
   - pip install primer3-py
