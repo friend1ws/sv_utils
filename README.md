@@ -8,7 +8,7 @@ utility scripts for processing and summarizing Genomon-SV results
 ## Dependency
 
 ### Python
-Python (>= 2.7), `genomonsv`, `pysam`, [`primer3-py`](http://libnano.github.io/primer3-py/index.html) (for primer) packages
+Python (>= 2.7), [`genomonsv`](https://github.com/Genomon-Project/GenomonSV) (for merge_control, realign and primer), `pysam`, [`primer3-py`](http://libnano.github.io/primer3-py/index.html) (for primer) packages
 
 ### Software
 tabix, bgzip, blat (for realign)
@@ -18,8 +18,7 @@ tabix, bgzip, blat (for realign)
 ```
 git clone https://github.com/friend1ws/sv_utils.git
 cd sv_utils
-python setup.py build
-python setup.py install
+pip install .
 ```
 
 ## Commands
@@ -30,24 +29,7 @@ count the number of each variatns (deletion, tandem_duplication, inversion and t
 ```
 sv_utils count [-h] [--inseq] result_list.txt output.txt
 ```
-### filter
-process and filter GenomonSV results
-```
-sv_utils filter [-h] [--fisher_thres FISHER_THRES]
-                       [--tumor_freq_thres TUMOR_FREQ_THRES]
-                       [--normal_freq_thres NORMAL_FREQ_THRES]
-                       [--normal_depth_thres NORMAL_DEPTH_THRES]
-                       [--inversion_size_thres INVERSION_SIZE_THRES]
-                       [--max_size_thres MAX_SIZE_THRES] [--within_exon]
-                       [--control CONTROL]
-                       [--control_num_thres CONTROL_NUM_THRES]
-                       [--remove_simple_repeat] [--closest_exon]
-                       [--closest_coding]
-                       [--mutation_result genomon_mutation.result.txt]
-                       [--reference reference.fa] [--re_annotation]
-                       [--coding_info]
-                       genomonSV.result.txt output.txt annotation_dir
-```
+
 ### gene_summary
 summarize the number of variants for each gene for each cancer type
 ```
@@ -55,6 +37,36 @@ sv_utils gene_summary [-h] [--inframe_info]
                              result_list.txt output.txt annotation_dir
                              cancer_gene_lis
 ```
+
+### filter
+process and filter GenomonSV results
+```
+sv_utils filter [-h] [--genome_id {hg19,hg38,mm10}] [--grc]
+                       [--max_minus_log_fisher_pvalue MAX_MINUS_LOG_FISHER_PVALUE]
+                       [--min_tumor_allele_freq MIN_TUMOR_ALLELE_FREQ]
+                       [--max_control_allele_freq MAX_CONTROL_ALLELE_FREQ]
+                       [--max_control_variant_read_pair MAX_CONTROL_VARIANT_READ_PAIR]
+                       [--control_depth_thres CONTROL_DEPTH_THRES]
+                       [--min_overhang_size MIN_OVERHANG_SIZE]
+                       [--inversion_size_thres INVERSION_SIZE_THRES]
+                       [--max_variant_size MAX_VARIANT_SIZE]
+                       [--pooled_control_file POOLED_CONTROL_FILE]
+                       [--pooled_control_num_thres POOLED_CONTROL_NUM_THRES]
+                       [--simple_repeat_file SIMPLE_REPEAT_FILE]
+                       [--remove_rna_junction]
+                       genomonSV.result.txt output.txt
+```
+
+### annotation
+Annotate GenomonSV results
+```
+sv_utils annotation [-h] [--genome_id {hg19,hg38,mm10}] [--grc]
+                           [--re_gene_annotation] [--closest_exon]
+                           [--closest_coding] [--coding_info]
+                           [--fusion_list FUSION_LIST]
+                           genomonSV.result.txt output.txt
+```
+
 ### concentrate
 obtain a list of concentrated variants
 ```
