@@ -18,5 +18,4 @@ before_script:
 
 script:
   - pip install . 
-#   - python setup.py test
-  - python tests/test_realign.py 
+  - python setup.py test
