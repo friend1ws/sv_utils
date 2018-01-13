@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
+import sys, re, math
 import pysam
-import math
 
 def exact_alignment(seq1, seq2):
 
@@ -39,13 +39,36 @@ def exact_alignment(seq1, seq2):
     print opt_coord
     """
 
-
+"""
 def get_seq(reference, chr, start, end):
 
     seq = ""    
     for item in pysam.faidx(reference, chr + ":" + str(start) + "-" + str(end)):
         if item[0] == ">": continue
         seq = seq + item.rstrip('\n')
+
+    if re.search(r'[^ACGTNacgtn]', seq) is not None:
+        print >> sys.stderr, "The return value in get_seq function includes non-nucleotide characters:"
+        print >> sys.stderr, seq
+        sys.exit(1)
+
+    return seq
+"""
+
+def get_seq(reference, chr, start, end):
+
+    seq = ""
+    for item in pysam.faidx(reference, chr + ":" + str(start) + "-" + str(end)):
+        # if item[0] == ">": continue
+        seq = seq + item.rstrip('\n')
+    seq = seq.replace('>', '')
+    seq = seq.replace(chr + ":" + str(start) + "-" + str(end), '')
+
+    if re.search(r'[^ACGTNacgtn]', seq) is not None:
+        print >> sys.stderr, "The return value in get_seq function includes non-nucleotide characters:"
+        print >> sys.stderr, seq
+        sys.exit(1)
+
 
     return seq
 
