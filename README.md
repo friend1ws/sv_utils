@@ -8,13 +8,18 @@ utility scripts for processing and summarizing Genomon-SV results
 ## Dependency
 
 ### Python
-Python (>= 2.7), [`genomonsv`](https://github.com/Genomon-Project/GenomonSV) (for merge_control, realign and primer), `pysam`, [`primer3-py`](http://libnano.github.io/primer3-py/index.html) (for primer) packages
+Python (>= 2.7), [`genomon_sv`](https://github.com/Genomon-Project/GenomonSV) (for merge_control, realign and primer), `pysam`, [`primer3-py`](http://libnano.github.io/primer3-py/index.html) (for primer) packages
 
 ### Software
 tabix, bgzip, blat (for realign)
 
 ## Install
 
+```
+pip install sv_utils
+```
+
+Alternatively, if you want to install from the source code:
 ```
 git clone https://github.com/friend1ws/sv_utils.git
 cd sv_utils
