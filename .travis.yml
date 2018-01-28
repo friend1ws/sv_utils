@@ -10,7 +10,7 @@ before_script:
   - pip install annot_utils
   - pip install pysam
   - pip install primer3-py
-  - pip install xlrd
+#   - pip install xlrd
   - pip install scipy
   - wget https://github.com/Genomon-Project/GenomonSV/archive/v0.4.2rc.tar.gz
   - tar zxvf v0.4.2rc.tar.gz
