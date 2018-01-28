@@ -463,7 +463,7 @@ def concentrate_main(args):
 
 def merge_control_main(args):
 
-    import genomonsv.mergeFunction, genomonsv.utils
+    import genomon_sv.mergeFunction, genomon_sv.utils
 
     # make directory for output if necessary
     if os.path.dirname(args.output_file) != "" and not os.path.exists(os.path.dirname(args.output_file)):
@@ -506,16 +506,16 @@ def merge_control_main(args):
     hout.close()
 
     # utils.processingMessage("sorting the aggregated junction file")
-    genomonsv.utils.sortBedpe(args.output_file + ".temp", args.output_file + ".temp.sort")
+    genomon_sv.utils.sortBedpe(args.output_file + ".temp", args.output_file + ".temp.sort")
 
     # utils.processingMessage("merging the same junction in the aggregated junction file")
-    genomonsv.mergeFunction.organizeControl(args.output_file + ".temp.sort", args.output_file + ".temp.merged", 20)
+    genomon_sv.mergeFunction.organizeControl(args.output_file + ".temp.sort", args.output_file + ".temp.merged", 20)
 
     # utils.processingMessage("sorting the merged junction file")
-    genomonsv.utils.sortBedpe(args.output_file + ".temp.merged", args.output_file + ".temp.merged.sort")
+    genomon_sv.utils.sortBedpe(args.output_file + ".temp.merged", args.output_file + ".temp.merged.sort")
 
     # utils.processingMessage("compressing the merged junction file")
-    genomonsv.utils.compress_index_bed(args.output_file + ".temp.merged.sort", args.output_file)
+    genomon_sv.utils.compress_index_bed(args.output_file + ".temp.merged.sort", args.output_file)
 
 
     # remove intermediate files
@@ -576,7 +576,7 @@ def merge_control_main_bk(args):
 
 def realign_main(args):
 
-    from genomonsv import filterFunction
+    from genomon_sv import filterFunction
 
     if args.tumor_bam is None:
         print >> sys.stderr, "tumor_bam file should be input"
@@ -682,7 +682,7 @@ def realign_main(args):
 
 def primer_main(args):
  
-    from genomonsv import realignmentFunction
+    from genomon_sv import realignmentFunction
     from primer3 import bindings 
 
     # make directory for output if necessary
