@@ -369,7 +369,7 @@ def mutation_main(args):
             F = line.rstrip('\n').split('\t')
             bed_key = F[0] + '\t' + F[1] + '\t' + F[2]
             if bed_key in dup_list: continue
-            print >> hout, '\t'.join(F) + "mut"
+            print >> hout, '\t'.join(F[3:]) + '\t' + "mut"
 
     subprocess.check_call(["rm", "-rf", args.output_file + ".mutation.bed.gz"])
     subprocess.check_call(["rm", "-rf", args.output_file + ".mutation.bed.gz.tbi"])

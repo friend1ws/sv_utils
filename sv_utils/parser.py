@@ -6,7 +6,7 @@ import argparse
 def create_parser():
 
     parser = argparse.ArgumentParser(prog = "sv_utils")
-    parser.add_argument("--version", action = "version", version = "sv_utils-0.5.0")
+    parser.add_argument("--version", action = "version", version = "sv_utils-0.5.1b1")
 
     subparsers = parser.add_subparsers()
 
@@ -61,7 +61,8 @@ def create_parser():
                         help = "the genome id used for selecting UCSC-GRC chromosome name corresponding files (default: %(default)s)")
 
     filter_parser.add_argument("--grc", default = False, action = 'store_true',
-                        help = "Use Genome Reference Consortium nomenclature rather than UCSC (default: %(default)s)")
+                        help = "Use Genome Reference Consortium nomenclature rather than UCSC. \
+                                This is relevant when --pooled_control_file or --simple_repeat_file are set. (default: %(default)s)")
 
     filter_parser.add_argument("--max_minus_log_fisher_pvalue", default = 1.0, type = float,
                        help = "remove if the - log(fisher p-value) is smaller than this value (default: %(default)s)")
@@ -94,7 +95,7 @@ def create_parser():
                         help = "the path to control data created by merge_control (default: %(default)s)")
 
     filter_parser.add_argument("--pooled_control_num_thres", default = 3, type = int,
-                        help = "remove if more than specified number of control sample are found (default: %(default)s)")
+                        help = "remove if equal or more than specified number of control sample are found (default: %(default)s)")
 
     filter_parser.add_argument("--simple_repeat_file", default = None, type = str,
                         help = "remove variants with overlapping simple repeat annotation. \
