@@ -69,7 +69,11 @@ def filter_sv_list(args):
             if F[header_info.minus_log_fisher_p_value] != "---":
                 if float(F[header_info.minus_log_fisher_p_value]) < float(args.max_minus_log_fisher_pvalue): continue
 
-            if int(F[header_info.max_over_hang_1]) < int(args.min_overhang_size) or int(F[header_info.max_over_hang_2]) < int(args.min_overhang_size): continue
+            if F[header_info.max_over_hang_1]  != "---":
+                if int(F[header_info.max_over_hang_1]) < int(args.min_overhang_size): continue
+
+            if F[header_info.max_over_hang_2] != "---":
+                if int(F[header_info.max_over_hang_2]) < int(args.min_overhang_size): continue
 
 
             """
