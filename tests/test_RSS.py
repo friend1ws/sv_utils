@@ -3,7 +3,7 @@
 import unittest
 import os, tempfile, shutil, filecmp
 import sv_utils
-from check_download import *
+from .check_download import *
 
 class TestRSS(unittest.TestCase):
 

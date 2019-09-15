@@ -1,10 +1,17 @@
 #! /usr/bin/env python
 
+from __future__ import print_function
 import sys, os, re, subprocess, gzip
+from functools import reduce
 import pysam
-import utils, my_seq
-from header_info import *
-from utils import header_check
+from . import utils, my_seq
+from .header_info import *
+from .utils import header_check
+
+try:
+    from builtins import round
+except ImportError:
+    pass
 
 def count_main(args):
 
@@ -14,10 +21,10 @@ def count_main(args):
     
     hout = open(args.output, 'w')
     if args.inseq == True:
-        print >> hout, '\t'.join(["sample", "type", "deletion_nonseq", "deletion_inseq", "tandem_duplication_nonseq", "tandem_duplication_inseq",
-                                    "inversion_nonseq", "inversion_inseq", "translocation_nonseq", "translocation_inseq", "total_nonseq", "total_inseq"])
+        print('\t'.join(["sample", "type", "deletion_nonseq", "deletion_inseq", "tandem_duplication_nonseq", "tandem_duplication_inseq",
+                         "inversion_nonseq", "inversion_inseq", "translocation_nonseq", "translocation_inseq", "total_nonseq", "total_inseq"]), file = hout)
     else:
-        print >> hout, '\t'.join(["sample", "type", "deletion", "tandem_duplication", "inversion", "translocation", "total"])
+        print('\t'.join(["sample", "type", "deletion", "tandem_duplication", "inversion", "translocation", "total"]), file = hout)
 
 
     
@@ -28,7 +35,7 @@ def count_main(args):
             if not os.path.exists(result_file):
                 raise ValueError("file not exists: " + result_file)
 
-            print >> sys.stderr, "reading: " + result_file
+            print("reading: " + result_file, file = sys.stderr)
 
             if args.inseq == True:
                 type2count = {"deletion_nonseq": 0, "deletion_inseq": 0, "tandem_duplication_nonseq": 0, "tandem_duplication_inseq": 0,
@@ -55,11 +62,11 @@ def count_main(args):
                 total_inseq = type2count["deletion_inseq"] + type2count["tandem_duplication_inseq"] + \
                                     type2count["inversion_inseq"] + type2count["translocation_inseq"]
 
-                print >> hout, sample + '\t' + tumor_type + '\t' + str(type2count["deletion_nonseq"]) + '\t' + str(type2count["deletion_inseq"]) + '\t' + \
-                                    str(type2count["tandem_duplication_nonseq"]) + '\t' + str(type2count["tandem_duplication_inseq"]) + '\t' + \
-                                    str(type2count["inversion_nonseq"]) + '\t' + str(type2count["inversion_inseq"]) + '\t' + \
-                                    str(type2count["translocation_nonseq"]) + '\t' + str(type2count["translocation_inseq"]) + '\t' + \
-                                    str(total_nonseq) + '\t' + str(total_inseq)
+                print(sample + '\t' + tumor_type + '\t' + str(type2count["deletion_nonseq"]) + '\t' + str(type2count["deletion_inseq"]) + '\t' + \
+                      str(type2count["tandem_duplication_nonseq"]) + '\t' + str(type2count["tandem_duplication_inseq"]) + '\t' + \
+                      str(type2count["inversion_nonseq"]) + '\t' + str(type2count["inversion_inseq"]) + '\t' + \
+                      str(type2count["translocation_nonseq"]) + '\t' + str(type2count["translocation_inseq"]) + '\t' + \
+                      str(total_nonseq) + '\t' + str(total_inseq), file = hout)
 
             else:
                 type2count = {"deletion": 0, "tandem_duplication": 0, "inversion": 0, "translocation": 0}
@@ -77,8 +84,8 @@ def count_main(args):
                         type2count[F[header_info.variant_type]] = type2count[F[header_info.variant_type]] + 1
 
                 total = type2count["deletion"] + type2count["tandem_duplication"] + type2count["inversion"] + type2count["translocation"]
-                print >> hout, sample + '\t' + tumor_type + '\t' + str(type2count["deletion"]) + '\t' + str(type2count["tandem_duplication"]) + '\t' + \
-                                            str(type2count["inversion"]) + '\t' + str(type2count["translocation"]) + '\t' + str(total) 
+                print(sample + '\t' + tumor_type + '\t' + str(type2count["deletion"]) + '\t' + str(type2count["tandem_duplication"]) + '\t' + \
+                      str(type2count["inversion"]) + '\t' + str(type2count["translocation"]) + '\t' + str(total), file = hout)
  
     hout.close()
 
@@ -112,7 +119,7 @@ def gene_summary_main(args):
             if not os.path.exists(result_file):
                 raise ValueError("file not exists: " + result_file)
 
-            print >> sys.stderr, "reading: " + sample + ' ' + tumor_type
+            print("reading: " + sample + ' ' + tumor_type, file = sys.stderr)
 
             with open(result_file, 'r') as hin:
                 for line in hin:
@@ -146,13 +153,13 @@ def gene_summary_main(args):
 
 
     if args.inframe_info == True:
-        print >> hout, '\t'.join(["gene", "all_type_total", "all_type_each", "all_type_total_inframe", "all_type_each_inframe"] + \
-                    reduce(lambda x, y: x + y, [[x + "_total", x + "_each", x + "_total_inframe", x + "_each_inframe"] for x in sorted(tumor_type_list.keys())])) + \
-                    '\t' + cancer_gene_header
+        print('\t'.join(["gene", "all_type_total", "all_type_each", "all_type_total_inframe", "all_type_each_inframe"] + \
+              reduce(lambda x, y: x + y, [[x + "_total", x + "_each", x + "_total_inframe", x + "_each_inframe"] for x in sorted(tumor_type_list.keys())])) + \
+              '\t' + cancer_gene_header, file = hout)
     else:
-        print >> hout, '\t'.join(["gene", "all_type_total", "all_type_each"] + \
-                    reduce(lambda x, y: x + y, [[x + "_total", x + "_each"] for x in sorted(tumor_type_list.keys())])) + \
-                    '\t' + cancer_gene_header
+        print('\t'.join(["gene", "all_type_total", "all_type_each"] + \
+              reduce(lambda x, y: x + y, [[x + "_total", x + "_each"] for x in sorted(tumor_type_list.keys())])) + \
+              '\t' + cancer_gene_header, file = hout)
 
     for gene in sorted(gene2type_sample):
         tumor_sample_var = list(set(gene2type_sample[gene]))
@@ -184,7 +191,7 @@ def gene_summary_main(args):
 
         info = gene2info[gene] if gene in gene2info else "---" + '\t' + "---" + '\t' + "---" + '\t' + "---"
 
-        print >> hout, gene + '\t' + count_bar + '\t' + info
+        print(gene + '\t' + count_bar + '\t' + info, file = hout)
 
 
     hout.close()
@@ -192,7 +199,7 @@ def gene_summary_main(args):
 
 def filter_main(args):
 
-    import filter
+    from . import filter
 
     if not os.path.exists(args.input_file):
         raise ValueError("file not exists: " + args.input_file)
@@ -210,24 +217,26 @@ def filter_main(args):
 
         # for meta info print
         if sv_good_list[i][0].startswith("#"):
-            print >> hout, sv_good_list[i]
+            print(sv_good_list[i], file = hout)
             continue
  
         # for header print
         if sv_good_list[i][header_info.chr_1] == "Chr_1" and sv_good_list[i][header_info.pos_1] == "Pos_1":
             print_header = '\t'.join(sv_good_list[i])
-            print >> hout, print_header
+            print(print_header, file = hout)
             continue
 
         print_line = '\t'.join(sv_good_list[i])
 
-        print >> hout, print_line
+        print(print_line, file = hout)
+
+    hout.close()
 
 
 def annotation_main(args):
 
     import annot_utils
-    import annotation
+    from . import annotation
 
     # prepare refseq annotation files
     ref_gene_info = args.output_file + ".refseq.gene.bed.gz"
@@ -247,7 +256,7 @@ def annotation_main(args):
         for line in hin:
 
             if line.startswith("#"):
-                print >> hout, line.rstrip('\n')
+                print(line.rstrip('\n'), file = hout)
                 continue
 
             if header_check(line.rstrip('\n')):
@@ -257,7 +266,7 @@ def annotation_main(args):
                 if args.closest_coding == True: print_header = print_header + '\t' + "Dist_To_Coding" + '\t' + "Target_Coding"
                 if args.coding_info == True: print_header = print_header + '\t' + "Intra_or_Inter_Gene" + '\t' + "Coding_Class" + '\t' + "Detailed_Coding_Info"
                 if args.fusion_list is not None: print_header = print_header + '\t' + "Known_Gene_Fusion_Comb" + '\t' + "Known_Gene_Fusion_Source"
-                print >> hout, print_header
+                print(print_header, file = hout)
                 continue
 
             F = line.rstrip('\n').split('\t')
@@ -300,7 +309,9 @@ def annotation_main(args):
                                                                 ref_gene_tb, args.fusion_list)
                 print_line = print_line + '\t' + fusion_info
 
-            print >> hout, print_line
+            print(print_line, file = hout)
+
+    hout.close()
 
     subprocess.check_call(["rm", "-rf", ref_gene_info])
     subprocess.check_call(["rm", "-rf", ref_exon_info])
@@ -312,7 +323,7 @@ def annotation_main(args):
 
 def mutation_main(args):
 
-    import mutation
+    from . import mutation
 
     mutation.make_mut_db(args.mutation_result_file, args.output_file + ".mutation", args.reference)
     mut_tb = pysam.TabixFile(args.output_file + ".mutation.bed.gz")
@@ -324,12 +335,12 @@ def mutation_main(args):
         for line in hin:
 
             if line.startswith("#"):
-                print >> hout, line.rstrip('\n')
+                print(line.rstrip('\n'), file = hout)
                 continue
 
             if header_check(line.rstrip('\n')):
                 header_info.read(line.rstrip('\n'))
-                print >> hout, line.rstrip('\n') + '\t' + "Mutation_Detection"
+                print(line.rstrip('\n') + '\t' + "Mutation_Detection", file = hout)
                 continue
 
             F = line.rstrip('\n').split('\t')
@@ -359,17 +370,17 @@ def mutation_main(args):
                             dup_list[record[0] + '\t' + record[1] + '\t' + record[2]] = 1
 
             if duplicated_flag == 1:
-                print >> hout, '\t'.join(F) + '\t' + "mut;sv"
+                print('\t'.join(F) + '\t' + "mut;sv", file = hout)
             else:
-                print >> hout, '\t'.join(F) + '\t' + "sv"
+                print('\t'.join(F) + '\t' + "sv", file = hout)
 
 
-    with gzip.open(args.output_file + ".mutation.bed.gz") as hin:
+    with gzip.open(args.output_file + ".mutation.bed.gz", 'rt') as hin:
         for line in hin:
             F = line.rstrip('\n').split('\t')
             bed_key = F[0] + '\t' + F[1] + '\t' + F[2]
             if bed_key in dup_list: continue
-            print >> hout, '\t'.join(F[3:]) + '\t' + "mut"
+            print('\t'.join(F[3:]) + '\t' + "mut", file = hout)
 
     subprocess.check_call(["rm", "-rf", args.output_file + ".mutation.bed.gz"])
     subprocess.check_call(["rm", "-rf", args.output_file + ".mutation.bed.gz.tbi"])
@@ -407,7 +418,7 @@ def concentrate_main(args):
 
                     F = line.rstrip('\n').split('\t')
                     if F[header_info.variant_type] in ["deletion", "tandem_duplication"]:
-                        print >> hout, sample + '\t' + tumor_type + '\t' + '\t'.join(F)
+                        print(sample + '\t' + tumor_type + '\t' + '\t'.join(F), file = hout)
 
     hout.close()
 
@@ -442,7 +453,7 @@ def concentrate_main(args):
                 if temp_ind == -1:
                     # flush
                     for i in range(0, len(passed_keys)):
-                        print >> hout, '\t'.join(passed_keys[i])
+                        print('\t'.join(passed_keys[i]), file = hout)
                     passed_keys = []
                     temp_ind = -1
                 else:
@@ -452,7 +463,7 @@ def concentrate_main(args):
 
         if len(passed_keys) > 0:
             for i in range(0, len(passed_keys)):
-                print '\t'.join(passed_keys[i])
+                print('\t'.join(passed_keys[i]))
 
     hout.close()
 
@@ -496,10 +507,10 @@ def merge_control_main(args):
                     F = line.rstrip('\n').split('\t')
                     inseqLen = len(F[header_info.inserted_seq]) if F[header_info.inserted_seq] != "---" else 0
 
-                    print >> hout, '\t'.join([F[header_info.chr_1], str(int(F[header_info.pos_1]) - 1), F[header_info.pos_1], \
-                                              F[header_info.chr_2], str(int(F[header_info.pos_2]) - 1), F[header_info.pos_2], \
-                                              "junction_" + str(num),  str(inseqLen), \
-                                              F[header_info.dir_1], F[header_info.dir_2], label, "1"])
+                    print('\t'.join([F[header_info.chr_1], str(int(F[header_info.pos_1]) - 1), F[header_info.pos_1], \
+                                    F[header_info.chr_2], str(int(F[header_info.pos_2]) - 1), F[header_info.pos_2], \
+                                    "junction_" + str(num),  str(inseqLen), \
+                                    F[header_info.dir_1], F[header_info.dir_2], label, "1"]), file = hout)
 
                     num = num + 1
 
@@ -556,9 +567,9 @@ def merge_control_main_bk(args):
 
                     F = line.rstrip('\n').split('\t')
 
-                    print >> hout, '\t'.join([F[header_info.chr_1], str(int(F[header_info.pos_1]) - 1), F[header_info.pos_1], \
-                                              F[header_info.chr_2], str(int(F[header_info.pos_2]) - 1), F[header_info.pos_2], \
-                                              sample, F[header_info.inserted_seq], F[header_info.dir_1], F[header_info.dir_2]])
+                    print('\t'.join([F[header_info.chr_1], str(int(F[header_info.pos_1]) - 1), F[header_info.pos_1], \
+                                     F[header_info.chr_2], str(int(F[header_info.pos_2]) - 1), F[header_info.pos_2], \
+                                     sample, F[header_info.inserted_seq], F[header_info.dir_1], F[header_info.dir_2]]), file = hout)
 
     hout.close()
 
@@ -579,7 +590,7 @@ def realign_main(args):
     from genomon_sv import filterFunction
 
     if args.tumor_bam is None:
-        print >> sys.stderr, "tumor_bam file should be input"
+        print("tumor_bam file should be input", file = sys.stderr)
         sys.exit(1)
 
     # make directory for output if necessary
@@ -604,15 +615,15 @@ def realign_main(args):
             F = line.rstrip('\n').split('\t')
 
             if utils.check_atypical_chromosomes(F[header_info.chr_1], F[header_info.chr_2]):
-                print >> sys.stderr, "Skip a SV incolving atypical chromosomes: %s,%s,%s,%s,%s,%s" % \
+                print("Skip a SV incolving atypical chromosomes: %s,%s,%s,%s,%s,%s" % \
                    (F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1], \
-                    F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2])
+                    F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2]), file = sys.stderr)
                 continue
 
-            print >> hout, '\t'.join([F[header_info.chr_1], str(int(F[header_info.pos_1]) - 1), F[header_info.pos_1], \
-                                      F[header_info.chr_2], str(int(F[header_info.pos_2]) - 1), F[header_info.pos_2], \
-                                      "genoemonSV_" + str(i), F[header_info.inserted_seq], F[header_info.dir_1], F[header_info.dir_2]] + \
-                                      ["---" for i in range(14)])
+            print('\t'.join([F[header_info.chr_1], str(int(F[header_info.pos_1]) - 1), F[header_info.pos_1], \
+                             F[header_info.chr_2], str(int(F[header_info.pos_2]) - 1), F[header_info.pos_2], \
+                             "genoemonSV_" + str(i), F[header_info.inserted_seq], F[header_info.dir_1], F[header_info.dir_2]] + \
+                             ["---" for i in range(14)]), file = hout)
             i = i + 1
 
     hout.close()
@@ -637,13 +648,13 @@ def realign_main(args):
             F = line.rstrip('\n').split('\t')
             key = '\t'.join(F[:7])
 
-            tumorAF = 0 
+            tumorAF = 0.0 
             if float(F[7]) + float(F[8]) > 0: tumorAF = float(F[8]) / (float(F[7]) + float(F[8]))     
             tumorAF = str(round(tumorAF, 4))
 
             normalAF = "---"
             if matchedControlFlag == True:
-                normalAF = 0
+                normalAF = 0.0
                 if float(F[9]) + float(F[10]) > 0: normalAF = float(F[10]) / (float(F[9]) + float(F[10]))
                 normalAF = str(round(normalAF, 4))
 
@@ -661,18 +672,18 @@ def realign_main(args):
             if utils.header_check(line.rstrip('\n')):
                 line = line.rstrip('\n')
                 if matchedControlFlag == True:
-                    print >> hout, line + '\t' + "Num_Tumor_Ref_Read_Pair_re" + '\t' + "Num_Tumor_Var_Read_Pair_re" + '\t' + "Tumor_VAF_re" + '\t' + \
-                                                 "Num_Control_Ref_Read_Pair_re" + '\t'+ "Num_Control_Var_Read_Pair_re" + '\t' + "Control_VAF_re" + '\t' + \
-                                                 "Minus_Log_Fisher_P_value_re" 
+                    print(line + '\t' + "Num_Tumor_Ref_Read_Pair_re" + '\t' + "Num_Tumor_Var_Read_Pair_re" + '\t' + "Tumor_VAF_re" + '\t' + \
+                                        "Num_Control_Ref_Read_Pair_re" + '\t'+ "Num_Control_Var_Read_Pair_re" + '\t' + "Control_VAF_re" + '\t' + \
+                                        "Minus_Log_Fisher_P_value_re", file = hout) 
                 else:
-                    print >> hout, line + '\t' + "Num_Tumor_Ref_Read_Pair_re" + '\t' + "Num_Tumor_Var_Read_Pair_re" + '\t' + "Tumor_VAF_re"
+                    print(line + '\t' + "Num_Tumor_Ref_Read_Pair_re" + '\t' + "Num_Tumor_Var_Read_Pair_re" + '\t' + "Tumor_VAF_re", file = hout)
                 continue
 
             F = line.rstrip('\n').split('\t')
             key = '\t'.join(F[:7])
             if key not in key2AF_info: continue
 
-            print >> hout, '\t'.join(F) + '\t' + key2AF_info[key]
+            print('\t'.join(F) + '\t' + key2AF_info[key], file = hout)
 
     hout.close()
 
@@ -699,7 +710,7 @@ def primer_main(args):
             if utils.header_check(line.rstrip('\n')):
                 line = line.rstrip('\n')
                 header_info.read(line)
-                print >> hout, line + '\t' + "Primer1" + '\t' + "Primer2" + '\t' + "Primer3" + '\t' + "Primer4" + '\t' + "Primer5"
+                print(line + '\t' + "Primer1" + '\t' + "Primer2" + '\t' + "Primer3" + '\t' + "Primer4" + '\t' + "Primer5", file = hout)
                 continue
             
             F = line.rstrip('\n').split('\t')
@@ -707,8 +718,8 @@ def primer_main(args):
                                                            F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2], F[header_info.inserted_seq]
 
             if utils.check_atypical_chromosomes(chr1, chr2):
-                print >> sys.stderr, "Skip a SV incolving atypical chromosomes: %s,%s,%s,%s,%s,%s" % \
-                            (chr1, pos1, dir1, chr2, pos2, dir2)
+                print("Skip a SV incolving atypical chromosomes: %s,%s,%s,%s,%s,%s" % \
+                      (chr1, pos1, dir1, chr2, pos2, dir2), file = sys.stderr)
                 continue
             
             junc_seq_len = 0 if junc_seq == "---" else len(junc_seq)
@@ -742,7 +753,7 @@ def primer_main(args):
                                                        str(round(primer["PRIMER_LEFT_" + str(i) + "_TM"], 3)) + ";" + str(round(primer["PRIMER_RIGHT_" + str(i) + "_TM"], 3)) + ';' + \
                                                        str(primer["PRIMER_PAIR_" + str(i) + "_PRODUCT_SIZE"])
  
-                        print >> hout, '\t'.join(F) + '\t' + '\t'.join(primer_left_right)
+                        print('\t'.join(F) + '\t' + '\t'.join(primer_left_right), file = hout)
               
 
     hout.close()    
@@ -776,14 +787,14 @@ def format_main(args):
                 ref_seq = alt_seq[0]
                 pos = str(int(F[header_info.pos_1]) - 1)
 
-            print >> hout, '\t'.join([F[header_info.chr_1], pos, '.', ref_seq, alt_seq, '.', "PASS", '.']) 
+            print('\t'.join([F[header_info.chr_1], pos, '.', ref_seq, alt_seq, '.', "PASS", '.']), file = hout)
 
     hout.close()
 
 
 def homology_main(args):
 
-    import homology
+    from . import homology
 
     hout = open(args.output, 'w')
     with open(args.result_file, 'r') as hin:
@@ -793,20 +804,20 @@ def homology_main(args):
             if utils.header_check(line.rstrip('\n')):
                 header_info.read(line.rstrip('\n'))
                 print_header = line.rstrip('\n') + '\t' + "Homology_Match"
-                print >> hout, print_header
+                print(print_header, file = hout)
                 continue
 
             F = line.rstrip('\n').split('\t')
 
             # for meta info print
             if F[0].startswith("#"):
-                print >> hout, '\t'.join(F)
+                print('\t'.join(F), file = hout)
                 continue
 
             if utils.check_atypical_chromosomes(F[header_info.chr_1], F[header_info.chr_2]):
-                print >> sys.stderr, "Skip a SV incolving atypical chromosomes: %s,%s,%s,%s,%s,%s" % \
+                print("Skip a SV incolving atypical chromosomes: %s,%s,%s,%s,%s,%s" % \
                    (F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1], \
-                    F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2])
+                    F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2]), file = sys.stderr)
                 continue
 
             var_size = 500000
@@ -819,14 +830,14 @@ def homology_main(args):
                                                      F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2], 
                                                      args.reference, min(var_size, 100))
 
-            print >> hout, '\t'.join(F) + '\t' + str(homology_match)
+            print('\t'.join(F) + '\t' + str(homology_match), file = hout)
  
     hout.close()
 
 
 def nonB_DB_main(args):
    
-    import nonB_DB
+    from . import nonB_DB
 
     all_nonB_DB_type = ["A_Phased_Repeat", "Direct_Repeat", "G_Quadruplex_Motif", "Inverted_Repeat", 
                          "Mirror_Repeat", "Short_Tandem_Repeat", "Z_DNA_Motif"]
@@ -844,20 +855,20 @@ def nonB_DB_main(args):
             if utils.header_check(line.rstrip('\n')):
                 header_info.read(line.rstrip('\n'))
                 print_header = line.rstrip('\n') + '\t' + '\t'.join([x + "_dist1" + '\t' + x + "_dist2" for x in all_nonB_DB_type])
-                print >> hout, print_header
+                print(print_header, file = hout)
                 continue
             
             F = line.rstrip('\n').split('\t')
 
             # for meta info print
             if F[0].startswith("#"):
-                print >> hout, '\t'.join(F)
+                print('\t'.join(F), file = hout)
                 continue
 
             if utils.check_atypical_chromosomes(F[header_info.chr_1], F[header_info.chr_2]):
-                print >> sys.stderr, "Skip a SV incolving atypical chromosomes: %s,%s,%s,%s,%s,%s" % \
+                print("Skip a SV incolving atypical chromosomes: %s,%s,%s,%s,%s,%s" % \
                   (F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1], \
-                  F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2])
+                  F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2]), file = sys.stderr)
                 continue
 
             chr_ucsc1 = F[header_info.chr_1] if F[header_info.chr_1].startswith("chr") else "chr" + F[header_info.chr_1]
@@ -869,8 +880,9 @@ def nonB_DB_main(args):
                 nonB_DB_dist2 = nonB_DB.nonB_DB_dist_check(chr_ucsc2, int(F[header_info.pos_2]), F[header_info.dir_2], nonB_DB_tb, nonB_DB_type)
                 print_dist_bar = print_dist_bar + '\t' + str(nonB_DB_dist1) + '\t' + str(nonB_DB_dist2)
 
-            print >> hout, '\t'.join(F) + print_dist_bar
-
+            print('\t'.join(F) + print_dist_bar, file = hout)
+    
+    hout.close()
 
 
 def RSS_main(args):
@@ -889,15 +901,15 @@ def RSS_main(args):
             if utils.header_check(line.rstrip('\n')):
                 line = line.rstrip('\n')
                 header_info.read(line)
-                print >> hout, line + '\t' + "RSS_score_1" + '\t' + "RSS_info_1" + '\t' + "RSS_score_2" + '\t' + "RSS_info_2"
+                print(line + '\t' + "RSS_score_1" + '\t' + "RSS_info_1" + '\t' + "RSS_score_2" + '\t' + "RSS_info_2", file = hout)
                 continue
 
             F = line.rstrip('\n').split('\t')
 
             if utils.check_atypical_chromosomes(F[header_info.chr_1], F[header_info.chr_2]):
-                print >> sys.stderr, "Skip a SV incolving atypical chromosomes: %s,%s,%s,%s,%s,%s" % \
+                print("Skip a SV incolving atypical chromosomes: %s,%s,%s,%s,%s,%s" % \
                    (F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1], \
-                    F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2])
+                    F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2]), file = sys.stderr)
                 continue
             
             seq1 = my_seq.get_seq(args.reference, F[header_info.chr_1], int(F[header_info.pos_1]) - args.check_size, int(F[header_info.pos_1]) + args.check_size)
@@ -906,11 +918,11 @@ def RSS_main(args):
             rss_info_1 = my_seq.get_max_rss_score(seq1, rss_pwm[0], rss_pwm[1])
             rss_info_2 = my_seq.get_max_rss_score(seq2, rss_pwm[0], rss_pwm[1])
    
-            print >> hout, '\t'.join(F) + '\t' + \
-                            str(round(rss_info_1[0], 3)) + '\t' + \
-                            ';'.join([rss_info_1[1], rss_info_1[2], str(int(rss_info_1[3] - 50)), str(rss_info_1[4]), str(rss_info_1[5])]) + '\t' + \
-                            str(round(rss_info_2[0], 3)) + '\t' + \
-                            ';'.join([rss_info_2[1], rss_info_2[2], str(int(rss_info_2[3] - 50)), str(rss_info_2[4]), str(rss_info_2[5])])
+            print('\t'.join(F) + '\t' + \
+                  str(round(rss_info_1[0], 3)) + '\t' + \
+                  ';'.join([rss_info_1[1], rss_info_1[2], str(int(rss_info_1[3] - 50)), str(rss_info_1[4]), str(rss_info_1[5])]) + '\t' + \
+                  str(round(rss_info_2[0], 3)) + '\t' + \
+                  ';'.join([rss_info_2[1], rss_info_2[2], str(int(rss_info_2[3] - 50)), str(rss_info_2[4]), str(rss_info_2[5])]), file = hout)
 
     hout.close()
 
@@ -930,15 +942,15 @@ def AID_main(args):
             if utils.header_check(line.rstrip('\n')):
                 line = line.rstrip('\n')
                 header_info.read(line)
-                print >> hout, line + '\t' + "CG_motif_info_1" + '\t' + "CG_motif_info_2" + '\t' + "WGCW_motif_info_1" + '\t' + "WGCW_motif_info_2"
+                print(line + '\t' + "CG_motif_info_1" + '\t' + "CG_motif_info_2" + '\t' + "WGCW_motif_info_1" + '\t' + "WGCW_motif_info_2", file = hout)
                 continue
 
             F = line.rstrip('\n').split('\t')
 
             if utils.check_atypical_chromosomes(F[header_info.chr_1], F[header_info.chr_2]):
-                print >> sys.stderr, "Skip a SV incolving atypical chromosomes: %s,%s,%s,%s,%s,%s" % \
+                print("Skip a SV incolving atypical chromosomes: %s,%s,%s,%s,%s,%s" % \
                    (F[header_info.chr_1], F[header_info.pos_1], F[header_info.dir_1], \
-                    F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2])
+                    F[header_info.chr_2], F[header_info.pos_2], F[header_info.dir_2]), file = sys.stderr)
                 continue
 
             seq1 = my_seq.get_seq(args.reference, F[header_info.chr_1], int(F[header_info.pos_1]) - args.check_size, int(F[header_info.pos_1]) + args.check_size)
@@ -955,11 +967,11 @@ def AID_main(args):
             if len(WGCW_starts_1) == 0: WGCW_starts_1.append("---")
             if len(WGCW_starts_2) == 0: WGCW_starts_2.append("---")
 
-            print >> hout, '\t'.join(F) + '\t' + \
-                            ','.join([str(x) for x in CG_starts_1]) + '\t' + \
-                            ','.join([str(x) for x in CG_starts_2]) + '\t' + \
-                            ','.join([str(x) for x in WGCW_starts_1]) + '\t' + \
-                            ','.join([str(x) for x in WGCW_starts_2]) 
+            print('\t'.join(F) + '\t' + \
+                  ','.join([str(x) for x in CG_starts_1]) + '\t' + \
+                  ','.join([str(x) for x in CG_starts_2]) + '\t' + \
+                  ','.join([str(x) for x in WGCW_starts_1]) + '\t' + \
+                  ','.join([str(x) for x in WGCW_starts_2]), file = hout)
 
     hout.close()
 

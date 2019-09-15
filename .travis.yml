@@ -1,10 +1,11 @@
 language: python
 python:
   - "2.7"
+  - "3.6"
 before_script:
-  - wget https://github.com/samtools/htslib/releases/download/1.3.2/htslib-1.3.2.tar.bz2
-  - tar jxvf htslib-1.3.2.tar.bz2 
-  - cd htslib-1.3.2 && make && export PATH=$PATH:$PWD && cd ..
+  - wget https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar.bz2
+  - tar jxvf htslib-1.9.tar.bz2 
+  - cd htslib-1.9 && make && export PATH=$PATH:$PWD && cd ..
   - wget http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/blat
   - chmod a+x blat && export PATH=$PATH:$PWD 
   - pip install annot_utils
@@ -12,7 +13,9 @@ before_script:
   - pip install primer3-py
   - pip install xlrd
   - pip install scipy
-  - pip install genomon_sv==0.5.0
+  - pip install requests
+  - pip install future
+  - pip install genomon_sv==0.7.0
 
 script:
   - pip install . 

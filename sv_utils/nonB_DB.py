@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 
+from __future__ import division
 
 def nonB_DB_dist_check(chr1, pos1, dir1, nonB_DB_tb, nonB_DB_type, margin = 500):
 

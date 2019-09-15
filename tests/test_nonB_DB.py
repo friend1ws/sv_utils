@@ -25,6 +25,7 @@ class TestNonB_DB(unittest.TestCase):
 
 
     def tearDown(self):
+        # pass
         cur_dir = os.path.dirname(os.path.abspath(__file__))
         shutil.rmtree(cur_dir + "/resource/nonB_DB/")
  
@@ -37,7 +38,8 @@ class TestNonB_DB(unittest.TestCase):
         output_file = tmp_dir + "/CCLE-253J-DNA-08.genomonSV.result.nonB_DB.txt"
         nonB_DB = cur_dir + "/resource/nonB_DB/nonB_DB.bed.gz"
         answer_file = cur_dir + "/data/nonB_DB/CCLE-253J-DNA-08.genomonSV.result.nonB_DB.txt"
- 
+
+        # print(output_file) 
         args = self.parser.parse_args(["nonB_DB", input_file, output_file, "--nonB_DB", nonB_DB])
         args.func(args)
 

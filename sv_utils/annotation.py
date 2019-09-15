@@ -21,7 +21,7 @@ def get_gene_annotation(chr1, pos1, chr2, pos2, gene_tb, exon_tb):
             gene1.append(record[3])
 
     if len(gene1) == 0: gene1.append("---")
-    gene1 = list(set(gene1))
+    gene1 = sorted(list(set(gene1)))
     ##########
 
     ##########
@@ -40,7 +40,7 @@ def get_gene_annotation(chr1, pos1, chr2, pos2, gene_tb, exon_tb):
             gene2.append(record[3])
 
     if len(gene2) == 0: gene2.append("---")
-    gene2 = list(set(gene2))
+    gene2 = sorted(list(set(gene2)))
     ##########
 
     ##########
@@ -59,7 +59,7 @@ def get_gene_annotation(chr1, pos1, chr2, pos2, gene_tb, exon_tb):
             exon1.append(record[3])
 
     if len(exon1) == 0: exon1.append("---")
-    exon1 = list(set(exon1))
+    exon1 = sorted(list(set(exon1)))
     ##########
 
     ##########
@@ -78,7 +78,7 @@ def get_gene_annotation(chr1, pos1, chr2, pos2, gene_tb, exon_tb):
             exon2.append(record[3])
 
     if len(exon2) == 0: exon2.append("---")
-    exon2 = list(set(exon2))
+    exon2 = sorted(list(set(exon2)))
 
     return [';'.join(gene1), ';'.join(gene2), ';'.join(exon1), ';'.join(exon2)]
 
@@ -143,7 +143,7 @@ def distance_to_closest(chr1, pos1, chr2, pos2, ref_tb, is_exon = True, search_m
                 target_gene.append(record[3])
 
 
-    target_gene = list(set(target_gene))
+    target_gene = sorted(list(set(target_gene)))
     return [cur_dist, target_gene]
 
 

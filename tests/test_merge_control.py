@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 
+from __future__ import print_function
 import unittest
 import os, glob, tempfile, shutil, filecmp
 import sv_utils
@@ -24,7 +25,7 @@ class TestMergeControl(unittest.TestCase):
         with open(tmp_dir + "/CCLE.genomonSV.reulst_list.txt", 'w') as hout:
             for sv_file in sorted(all_sv_file):
                 sample = os.path.basename(sv_file).replace(".genomonSV.result.txt", '')
-                print >> hout, "%s\t%s\t%s" % (sample, sample2type[sample], sv_file) 
+                print("%s\t%s\t%s" % (sample, sample2type[sample], sv_file), file = hout) 
 
         result_lsit_file = tmp_dir + "/CCLE.genomonSV.reulst_list.txt"
         output_file = tmp_dir + "/merge_control.bedpe.gz"

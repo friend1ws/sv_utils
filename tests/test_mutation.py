@@ -3,7 +3,7 @@
 import unittest
 import os, tempfile, shutil, filecmp
 import sv_utils
-from check_download import *
+from .check_download import *
 
 class TestMutation(unittest.TestCase):
 
@@ -27,6 +27,7 @@ class TestMutation(unittest.TestCase):
         ref_genome = cur_dir + "/resource/reference_genome/GRCh37.fa"
         answer_file = cur_dir + "/data/mutation/CCLE-253J-DNA-08.genomonSV.result.mutation.txt"
  
+        # print(' '.join(["sv_utils", "mutation", input_file, mut_file, output_file, "--reference", ref_genome]))
         args = self.parser.parse_args(["mutation", input_file, mut_file, output_file, "--reference", ref_genome])
         args.func(args)
 

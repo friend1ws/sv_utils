@@ -1,12 +1,12 @@
 #! /usr/bin/env python
 
-from run import *
+from .run import *
 import argparse
 
 def create_parser():
 
     parser = argparse.ArgumentParser(prog = "sv_utils")
-    parser.add_argument("--version", action = "version", version = "sv_utils-0.5.1")
+    parser.add_argument("--version", action = "version", version = "sv_utils-0.6.0")
 
     subparsers = parser.add_subparsers()
 

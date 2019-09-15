@@ -1,9 +1,9 @@
 #! /usr/bin/env python
 
 import unittest
-import os, urllib2, tempfile, shutil, filecmp
+import os, tempfile, shutil, filecmp
 import sv_utils
-from check_download import *
+from .check_download import *
 
 class TestAID(unittest.TestCase):
 

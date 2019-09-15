@@ -1,9 +1,10 @@
 #! /usr/bin/env python
 
+from __future__ import print_function
 import sys, subprocess
-from utils import header_check
-from simple_repeat import make_simple_repeat_info
-from header_info import *
+from .utils import header_check
+from .simple_repeat import make_simple_repeat_info
+from .header_info import *
 from annot_utils.junction import *
 # from annot_utils.simple_repeat import *
 import pysam
@@ -126,7 +127,7 @@ def control_check(chr1, pos1, dir1, chr2, pos2, dir2, inseq, control_tb, control
     try:
         records = control_tb.fetch(chr1, int(pos1) - control_panel_check_margin, int(pos1) + control_panel_check_margin)
     except Exception as inst:
-        print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
+        print("%s: %s" % (type(inst), inst.args), file = sys.stderr)
         tabixErrorMsg = str(inst.args)
         tabixErrorFlag = 1
     
@@ -243,7 +244,7 @@ def simple_repeat_check(chr, start, end, simple_repeat_tb):
     try:
         records = simple_repeat_tb.fetch(chr, int(start) - 1, int(end) + 1)
     except Exception as inst:
-        print >> sys.stderr, "%s: %s" % (type(inst), inst.args)
+        print("%s: %s" % (type(inst), inst.args), file = sys.stderr)
         tabixErrorFlag = 1
 
     if tabixErrorFlag == 0:

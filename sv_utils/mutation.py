@@ -1,7 +1,13 @@
 #! /usr/bin/env python
 
+from __future__ import print_function
 import subprocess
-import my_seq
+from . import my_seq
+
+try:
+    from builtins import round
+except ImportError:
+    pass
 
 
 def make_mut_db(input_file, output_file_prefix, reference):
@@ -54,7 +60,7 @@ def make_mut_db(input_file, output_file_prefix, reference):
                 if len(F[ref_ind]) >= 10:
                     var_info = F[0] + '\t' + str(int(F[1]) - 1) + '\t' + "+" + '\t' + \
                                    F[0] + '\t' + str(int(F[1]) + len(F[ref_ind])) + '\t' + "-" + '\t' + "---" + '\t' + "deletion"
-                    print >> hout, bed_key + '\t' + var_info + '\t' + gene_annotation + '\t' + read_info + '\t' + other_info
+                    print(bed_key + '\t' + var_info + '\t' + gene_annotation + '\t' + read_info + '\t' + other_info, file = hout)
 
 
                 # tandem_duplication
@@ -68,7 +74,7 @@ def make_mut_db(input_file, output_file_prefix, reference):
                     if flanking_seq_1_match == len(F[alt_ind]) or flanking_seq_2_match == len(F[alt_ind]):
                         var_info = F[0] + '\t' +  str(int(F[1]) + 1) + '\t' + "-" + '\t' + \
                                        F[0] + '\t' + str(int(F[1]) + len(F[alt_ind])) + '\t' + "+" + '\t' + "---" + '\t' + "tandem_duplication"
-                        print >> hout, bed_key + '\t' + var_info + '\t' + gene_annotation + '\t' + read_info + '\t' + other_info
+                        print(bed_key + '\t' + var_info + '\t' + gene_annotation + '\t' + read_info + '\t' + other_info, file = hout)
  
     hout.close()
 

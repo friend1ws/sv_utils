@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-import my_seq
+from . import my_seq
 
 
 def check_homology(chr1, pos1, dir1, chr2, pos2, dir2, reference, seq_size, min_match_size = 2, match_margin_ratio_thres = 0.5):

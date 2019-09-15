@@ -3,7 +3,7 @@
 import unittest
 import os, tempfile, shutil, filecmp
 import sv_utils
-from check_download import *
+from .check_download import *
 
 class TestRealign(unittest.TestCase):
 
@@ -38,6 +38,7 @@ class TestRealign(unittest.TestCase):
         ref_genome = cur_dir + "/resource/reference_genome/GRCh37.fa"
         answer_file = cur_dir + "/data/realign/CCLE-253J-DNA-08.genomonSV.result.realign.txt"
 
+        # print(output_file)
         args = self.parser.parse_args(["realign", "--reference", ref_genome, "--tumor_bam", tumor_bam_file,
                                        input_file, output_file])
         args.func(args)

@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 
+from __future__ import print_function
 import unittest
 import os, subprocess, glob, tempfile, shutil, filecmp
 import sv_utils
@@ -39,7 +40,7 @@ class TestGeneSummary(unittest.TestCase):
         with open(tmp_dir + "/CCLE.genomonSV.reulst_list.txt", 'w') as hout:
             for sv_file in sorted(all_sv_file):
                 sample = os.path.basename(sv_file).replace(".genomonSV.result.txt", '')
-                print >> hout, "%s\t%s\t%s" % (sample, sample2type[sample], sv_file) 
+                print("%s\t%s\t%s" % (sample, sample2type[sample], sv_file), file = hout) 
 
         result_lsit_file = tmp_dir + "/CCLE.genomonSV.reulst_list.txt"
         cancer_gene_list = cur_dir + "/resource/cancer_gene_db/CancerGeneSummary/CancerGeneSummary.proc.txt"

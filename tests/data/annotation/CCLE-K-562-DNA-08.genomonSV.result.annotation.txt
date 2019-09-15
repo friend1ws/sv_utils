@@ -17,7 +17,7 @@ Chr_1	Pos_1	Dir_1	Chr_2	Pos_2	Dir_2	Inserted_Seq	Variant_Type	Gene_1	Gene_2	Exon
 15	41866012	+	15	76551718	+	---	inversion	TYRO3	ETFA;TYRO3P	TYRO3	TYRO3P	108	7	0.0609	128	0	0.0	2.3173	---	0	196	47	0	TYRO3;TYRO3P	0	TYRO3	across_gene	---	---	---	---
 15	41866013	+	15	41870084	-	---	deletion	TYRO3	TYRO3	TYRO3	TYRO3	152	24	0.1364	186	0	0.0	7.8917	---	0	251	186	0	TYRO3	0	TYRO3	within_gene	I	TYRO3;I	---	---
 15	89992924	-	20	54941060	-	---	translocation	---	FAM210B	---	---	2	7	0.7778	13	0	0.0	3.6755	---	0	35	134	67	FAM210B	67	FAM210B	across_gene	---	---	---	---
-18	43666280	+	18	43666305	-	---	deletion	ATP5A1	ATP5A1	---	---	5	12	0.7059	24	0	0.0	6.106	---	0	135	133	48	ATP5A1	48	ATP5A1	within_gene	I	ATP5A1;I	---	---
+18	43666280	+	18	43666305	-	---	deletion	ATP5A1	ATP5A1	---	---	5	12	0.7059	24	0	0.0	6.106	---	0	135	133	48	ATP5F1A	48	ATP5F1A	within_gene	I	ATP5F1A;I	---	---
 19	15734327	+	19	15734390	-	---	deletion	CYP4F8	CYP4F8	---	---	4	5	0.5556	10	0	0.0	1.9651	---	0	276	132	119	CYP4F8	119	CYP4F8	within_gene	I	CYP4F8;I	---	---
 2	74128684	+	2	74128733	-	---	deletion	ACTG2	ACTG2	---	---	0	12	1.0	8	0	0.0	5.1003	---	0	321	58	120	ACTG2	120	ACTG2	within_gene	other	ACTG2;I;I	---	---
 22	17300238	+	9	134074584	+	---	translocation	XKR3	NUP214	---	---	17	10	0.3704	7	0	0.0	1.1915	---	0	175	239	182	NUP214	182	NUP214	across_gene	---	---	NUP214;XKR3	mitelman
@@ -27,8 +27,8 @@ Chr_1	Pos_1	Dir_1	Chr_2	Pos_2	Dir_2	Inserted_Seq	Variant_Type	Gene_1	Gene_2	Exon
 22	45577372	+	22	45577412	-	T	deletion	NUP50	NUP50	---	---	0	6	1.0	12	0	0.0	4.2687	---	0	166	47	124	NUP50	124	NUP50	within_gene	I	LOC105373064;I,NUP50;I	---	---
 3	70013476	+	3	70013890	-	---	deletion	MITF	MITF	---	---	0	8	1.0	6	0	0.0	3.4776	---	0	57	294	108	MITF	108	MITF	within_gene	I	MITF;I	---	---
 4	100522544	+	4	100522631	-	---	deletion	MTTP	MTTP	---	---	1	3	0.75	4	0	0.0	1.1461	---	0	44	202	133	MTTP	133	MTTP	within_gene	I	MTTP;I	---	---
-5	34008206	+	5	34008227	-	---	deletion	C1QTNF3-AMACR;AMACR	C1QTNF3-AMACR	AMACR	---	7	7	0.5	6	0	0.0	1.3539	TCGA-06-0190-10	1	99	60	0	AMACR	82	AMACR	within_gene	5	AMACR;5,C1QTNF3-AMACR;I	---	---
-5	75207506	+	5	75207542	-	---	deletion	---	---	---	---	7	16	0.6957	32	0	0.0	8.084	---	0	67	186	171697	SV2C	198744	POC5	intergenic	---	---	---	---
+5	34008206	+	5	34008227	-	---	deletion	C1QTNF3-AMACR;AMACR	C1QTNF3-AMACR	AMACR	---	7	7	0.5	6	0	0.0	1.3539	TCGA-06-0190-10	1	99	60	0	AMACR	82	AMACR	across_gene	---	---	---	---
+5	75207506	+	5	75207542	-	---	deletion	---	---	---	---	7	16	0.6957	32	0	0.0	8.084	---	0	67	186	171666	SV2C	198744	POC5	intergenic	---	---	---	---
 5	170827312	-	5	170827331	+	---	tandem_duplication	NPM1	NPM1	---	---	8	9	0.5294	23	0	0.0	4.0511	---	0	39	260	98	NPM1	98	NPM1	within_gene	other	NPM1;I;I	---	---
 6	31619064	-	6	31833713	+	---	tandem_duplication	BAG6	SLC44A4	---	SLC44A4	114	23	0.1679	52	2	0.037	2.007	---	0	201	260	0	SLC44A4	0	SLC44A4	across_gene	---	---	---	---
 6	33041188	+	6	33041207	-	---	deletion	HLA-DPA1	HLA-DPA1	---	---	32	88	0.7333	90	2	0.0217	28.7466	---	0	94	258	41	HLA-DPA1	41	HLA-DPA1	within_gene	I	HLA-DPA1;I	---	---
