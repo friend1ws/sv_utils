@@ -9,6 +9,14 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
+def get_version():
+    with open(path.join(here, "sv_utils/version.py"), encoding = 'utf-8') as hin:
+        for line in hin:
+            if line.startswith("__version__"):
+                version = line.partition('=')[2]
+                return version.strip().strip('\'"')
+    raise ValueError('Could not find version.')
+
 setup(
     name = 'sv_utils',
     version = '0.6.0',
@@ -24,6 +32,8 @@ setup(
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Operating System :: Unix',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Topic :: Scientific/Engineering :: Bio-Informatics'
     ],
 
