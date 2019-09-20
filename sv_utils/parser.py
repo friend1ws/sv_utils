@@ -216,6 +216,27 @@ def create_parser():
            
     realign_parser.set_defaults(func = realign_main)
 
+    ##########
+    # long_read_validate
+    long_read_validate_parser = subparsers.add_parser("long_read_validate", help = "Check whether conting around the breakpoints exist in long read data")
+
+    long_read_validate_parser.add_argument("result_file", metavar = "genomonSV.result.txt", default = None, type = str,
+                                help = "the path to genomon SV result")
+
+    long_read_validate_parser.add_argument("tumor_bam", metavar = "tumor.bam", default = None, type = str,
+                                help = "the path to the tumor bam file")
+
+    long_read_validate_parser.add_argument("output", metavar = "output.txt", default = None, type = str,
+                                help = "the path to the output file")
+
+    long_read_validate_parser.add_argument("reference", metavar = "reference.fa", default = None, type = str,
+                                help = "the path to the reference genomoe sequence")
+
+    long_read_validate_parser.add_argument("--control_bam", metavar = "control.bam", default = None, type = str,
+                                help = "the path to the control bam file (optional)")
+
+    long_read_validate_parser.set_defaults(func = long_read_validate_main)
+
     ###########
     # primer 
     primer_parser = subparsers.add_parser("primer", help = "Generate primer sequence for mainly PCR validation")

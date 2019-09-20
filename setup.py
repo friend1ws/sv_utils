@@ -19,7 +19,7 @@ def get_version():
 
 setup(
     name = 'sv_utils',
-    version = '0.6.0',
+    version = get_version(),
     description='Python programs for analyzing GenomonSV results',
     url = 'https://github.com/friend1ws/sv_utils',
     author = 'Yuichi Shiraishi',
