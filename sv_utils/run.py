@@ -693,12 +693,13 @@ def realign_main(args):
     subprocess.check_call(["rm", "-rf", args.output + ".tmp2.bedpe"])
 
 
+"""
 def long_read_validate_main(args):
 
     from . import long_read_validate
 
     long_read_validate.main(args.result_file, args.tumor_bam, args.output, args.reference, args.control_bam)
-
+"""
 
 def primer_main(args):
  
