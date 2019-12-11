@@ -16,7 +16,7 @@ before_script:
   - pip install scipy
   - pip install requests
   - pip install future
-  - pip install genomon_sv==0.7.0
+  - pip install genomon_sv==0.7.2
 
 script:
   - pip install . 
